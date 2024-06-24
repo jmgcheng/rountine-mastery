@@ -1,3 +1,0 @@
-
-147 Example-LONG-Bash-Script
-https://github.com/alexanderepstein/Bash-Snippets/blob/master/todo/todo

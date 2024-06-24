@@ -1,6 +1,0 @@
-
-120 The-URL-Regex-From-The-Video
-https://stackoverflow.com/a/3809435
-
-120 A-Great-Tool-To-Learn-More-About-RegEx
-https://regexone.com/
