@@ -1,0 +1,1251 @@
+The Command Line Bootcamp Beginner To Power User
+
+
+# different ways to exit
+	> q
+	> ctrl + c
+	> ctrl + x
+	> exit
+
+# ways to scroll
+	> spacebar
+	> arrow keys
+	> page up page down
+
+# ways to choose options
+	> arrow keys
+	> tab
+
+# install ncal
+	> sudo apt install ncal
+
+# clear terminal
+	> clear
+
+# syntax
+	> command -options arguments
+
+# print working directory
+	> pwd
+
+# who am i
+	> whoami
+
+# list the contents of a directory
+	> ls
+
+# your drive c:/ is
+	/
+
+# your home directory is
+	~
+	# this is short syntax of
+	/home/yourUserName
+
+
+# list the contents of the /bin directory
+	> ls /bin
+
+# go to root. This is like your drive c:/
+	> cd /
+	# note that / has a directory root. Dont this of /root for now
+
+# list the contents of a directory
+	> ls
+
+# list the contents of a directory 
+# including hidden files, long list, human readable, with size
+	> ls -alhs
+	# drwxrwxrwx or -rwxrwxrwx
+	# lrwxrwxrwx
+	# File Type
+		- d is a directory
+		- - regular file
+		- . hidden files
+		- l is a symbolic link, more of that later
+		- c special file
+
+# go to your home directory
+	> cd ~
+
+# check contents of your directory
+	> ls
+
+# go to your own desktop
+	> cd Desktop
+	# pwd should display /home/cheng/Desktop
+
+# check contents of your username directory
+	> ls /home/cheng
+
+# print working directory
+	> pwd
+
+# go back to your immediate parent directory
+	> cd ..
+
+# go to your own desktop
+	> cd Desktop
+
+# create file in your desktop
+	> touch colors.txt
+
+# add/edit content of your file
+	> nano colors.txt
+	# add colors every line for exercise later
+
+# check date
+	> date
+
+# redirect output of date to today.txt and creates the file if it doesn't exist. Also Overwrites content
+	> date > today.txt	
+
+# redirect output of date AND appends to today.txt and creates the file if it doesn't exist. Also Overwrites content
+	> date >> today.txt
+
+
+
+
+# check manual of command
+# synopsis is the command's syntax
+# check manual of command. [] means optinal, _______ means required if used
+# ... indicates one or more of the proceeding operand are allowed
+	> man echo
+	> man ncal
+
+# use help if manual is not available
+# some commands does not have man
+	> help cd
+
+# arguments
+	> echo mwahahahahaha
+	> ncal 2021
+	> sort colors.txt
+
+# options
+	> sort -r colors.txt
+
+# long form options
+	> sort -r colors.txt
+	> sort --reverse colors.txt
+
+# combine options, we cannot combine using long form
+	> sort -ru colors.txt
+
+# options with parameters. Some options requires parameters
+# check manual of command. [] means optinal, _______ means required if used
+	> ncal -A 1
+	> ncal -B1 -A2 july 1969
+
+# different manuals have different sections
+# some manuals does not have the complete 8 sections
+	- sections
+		1. User Commands
+		2. System Calls
+		3. C Library Functions
+		4. Special files
+		5. File forms
+		6. Games
+		7. Miscellaneous
+		8. System admin commands
+
+# search manuals that have a dog word
+	> man -k dog
+	rtkitctl (8) - Realtime Watchdog daemon control
+	wdctl (8) - show hardware watchdog status
+	# this means rtkitctl, wdctl have dog word in their section 8 at the description
+
+# search for a keyword in a manual
+	> man cp
+	> /
+	> /symbolic
+	> n
+	> N
+
+# types of commands
+	- executable stored in /bin
+	- built-in shell
+	- shell functions
+	- alias
+
+# check command type
+	> type echo
+
+# find exact location of executable
+# This only works for executables, not built-in shell commands or aliases
+	>  which echo
+
+# do Getting Help Exercise
+	02022024 - The Command Line Bootcamp Beginner To Power User - Linux\assets\04
+
+# do Navigation Exercise
+	02022024 - The Command Line Bootcamp Beginner To Power User - Linux\assets\05
+
+# check file file type
+	file colors.txt
+
+# create directory/folder
+	mkdir myFolder anotherFolder
+
+# do Making Files And Folders Exercise
+	02022024 - The Command Line Bootcamp Beginner To Power User - Linux\assets\06
+
+# open a file using nano
+	> nano colors.txt
+
+# save or "write out" your changes inside nano
+	> ctrl+o
+
+# exit nano
+	> ctrl+x
+
+# open a file using nano and go to specific line number
+	> nano +3 colors.txt
+
+# search a word in a file using nano
+	> ctrl+w
+
+# replacing a word in a file using nano
+	> ctrl+\
+
+# do Nano Exercise
+	02022024 - The Command Line Bootcamp Beginner To Power User - Linux\assets\07
+
+# create a file to be deleted
+	> touch deleteMe.txt
+
+# delete a file
+# there is no undo or recycling bin to retrieve them from! They are gone!
+	> rm deleteMe.txt
+
+# deleting directory/folder
+	> rm -d myFolder
+
+# deleting directory/folder that is not empty
+	> rm -r anotherFolder
+
+# deleting directory/folder that is not empty and interactive
+	> rm -ri anotherFolder
+
+# create dir
+	> mkdir styles
+
+# create file
+	> touch app.css
+
+# move a file
+	> mv app.css styles
+	> ls ./styles
+
+# renaming a file
+	> mv ./styles/app.css ./styles/styles.css
+	> ls ./styles
+
+# copy file
+	> cp colors.txt colors2.txt
+
+# symbolic link
+	- Symbolic links are references to the original files and do not contain the actual data. 
+	- They provide a convenient way to reference a file from multiple locations without duplicating the content
+	- common uses
+		- Path Shortening
+		- Referencing Shared Libraries
+		- Standardizing Configuration File Locations
+	- symbolic links do not have their own content. When you open a symbolic link, it essentially redirects you to the content of the target file or directory.
+	- to edit the content of the file, you should use the actual file, not the symbolic link
+		- although i wan able to edit the content of the source using the link
+
+# search for a keyword in a manual
+	> man cp
+	> /
+	> /symbolic
+	> n
+	> N
+
+# display contents of a file one page at a time
+	> less colors.txt
+	# press space or f to go to the next page of the file
+	# press b to go back to the previous page
+	# press Enter or Down arrow to scroll by one line
+	# to search, type forward slash / followed by a pattern
+	# press q to quit
+
+# concatenates and prints the contents of files
+	> cat colors.txt
+
+# create source file
+	> touch myfile.txt
+	# put some contents inside
+
+# create symbolic link from your source file
+	> cp -s myfile.txt mylink
+
+# check ls for symbolic links
+	> ls -l
+
+# edit myfile.txt
+	> nano myfile.txt
+	# save
+	# exit
+
+# check myfile.txt and mylink
+	> cat myfile.txt
+	> cat mylink
+
+# edit mylink
+	> nano mylink
+	# save
+	# exit
+
+# check myfile.txt and mylink
+	> cat myfile.txt
+	> cat mylink
+
+# do Deleting, Moving & Copying Exercise
+	02022024 - The Command Line Bootcamp Beginner To Power User - Linux\assets\08
+
+# shortcut clearing go down
+	> ctrl + l
+
+# shortcut line jumping
+	> ctrl + a
+	> ctrl + e
+	> home
+	> end
+
+# shortcut move cursor 1 char at a time
+	> ctrl + f
+	> ctrl + b
+	> arrow keys
+
+# shortcut move curser 1 word at a time
+	> alt + f
+	> alt + b
+	> ctrl + arrow keys
+
+# shortcut swapping characters
+	> ctrl + t
+
+# shortcut clear input going to left
+	> ctrl + u
+
+# shortcut clear input going to right
+	> ctrl + k
+
+# shortcut undo clear
+	> ctrl + y
+
+# check command history
+	> history
+	> history | less
+	> q
+
+# run a command from a history
+	> !365 
+
+# display contents of a file one page at a time
+	> less colors.txt
+	# press space or f to go to the next page of the file
+	# press b to go back to the previous page
+	# press Enter or Down arrow to scroll by one line
+	# to search, type forward slash / followed by a pattern
+	# press q to quit
+
+# concatenates and prints the contents of files
+	> cat colors.txt
+
+# concatenate and print contents of two files
+	> cat colors.txt colors2.txt
+
+# prints each line of a file, starting with the last line
+	> tac colors.txt
+
+# "horizontal" reverse content
+	> rev colors.txt
+
+# print a head portion of a file
+	> head colors.txt
+
+# print number of lines for head
+	> head -n 13 colors.txt
+
+# print number of bytes for head
+	> head -c 8 colors.txt
+
+# print a tail portion of a file
+	> tail colors.txt
+
+# check the lines, words, and bytes in a file
+	> wc colors.txt
+
+# sort print content of a file
+	> sort colors.txt
+
+# sort reverse print content of a file
+	> sort -r colors.txt
+
+# sort numerically print content of a file
+	> sort -n prices.txt
+
+# sort unique
+	> sort -u colors.txt
+
+# create data.txt file with dummy data
+	> touch data.txt
+		pencil 0.50
+		flowers 9.99
+		pie 4.99
+		soda 0.99	
+
+# sort by column price
+	> sort data.txt -nk 2
+
+# do Working With Files Exercise
+	02022024 - The Command Line Bootcamp Beginner To Power User - Linux\assets\10
+
+# 3 standard streams
+	- standard input
+	- standard output
+	- standard error
+	-
+						---> standard output
+	standard input  --<
+						---> standard error
+
+
+# redirecting output
+	> command > filename
+	> echo "moo" > cow.js
+	> ls -l > files.txt
+
+# appending output
+	> echo "hello" >> greeting.txt
+	> echo "world" >> greeting.txt
+
+# redirecting intput
+	> command < filename
+	> cat < greeting.txt
+
+# combo input and output
+	> cat < greeting.txt > myLetter.txt
+	> sort < colors.txt > sortedColors.txt
+
+# redirecting standard error
+	> cat nonExistingFile 2> error.txt
+	# why 2>
+		# 0 - standard input
+		# 1 - standard output
+		# 2 - standard error
+
+# append redirecting standard error
+	> ls -zzzzz 2>> error.txt
+
+# concatinate 2 files and redirect output
+	> cat bees.txt ants.txt > insect.txt 2> error.txt
+
+# redirect both standard output and error to the same file
+	> ls docs > output.txt 2> output.txt
+	OR
+	> ls docs > output.txt 2>&1
+	for newer bash
+	> ls docs &> output.txt
+	OR
+	> ls docs &>> output.txt
+
+# do Redirection Exercise
+	02022024 - The Command Line Bootcamp Beginner To Power User - Linux\assets\11
+
+# pipes
+	- take the output of one command and redirect it to the input of another
+	- syntax
+		> command1 | command2
+
+# show ls and pipe output to word count
+	> ls | wc
+
+# show ls and pipe output to cat or head
+	> ls | cat
+
+# show ls of /usr/bin and show it per page
+	> ls -l /usr/bin | less
+	# space for next page
+	# q for quit
+
+# > vs |
+	- > connects a command to some file.
+		> ls -l /usr/bin > list.txt
+	- | connects a command to another command
+		> ls -l /usr/bin | less
+
+# more samples of pipping
+	> cat colors.txt pets.txt | sort
+	> cat file | head -7 | tail -5
+
+# displays the 3 largest files in the current directory, using ls, sort,
+and head
+	> ls -lh | sort -rhk 5 | head -3
+
+# tee command
+	- allows us to capture information part of the way through a pipeline, without interrupting the flow
+	- syntax
+		> command1 | tee file.txt | command2
+		> cat file1 file2 file3 | tee combo.txt | wc -w
+		> ls -l /usr/bin | tee allfiles.txt | less
+
+# do Piping Exercise
+	02022024 - The Command Line Bootcamp Beginner To Power User - Linux\assets\12
+
+# list all .txt files. * means zero or more characters
+	> ls *.txt
+
+# concatinate and print all files starts with color
+	> cat color*
+
+# list colors.txt, colora.txt, colorb.txt but not coloraaa.txt. ? means single character
+	> ls color?.txt
+
+# range wildcards
+
+# will only match pic1.png, pic2.png, and pic3.png
+	> ls pic[123].png
+
+# match file1, file2, file3, up to file9
+	> ls file[0-9]
+
+# match any files that begin with a capital A, B, C, D, E, or F
+	> ls [A-F]*
+
+# match any files that do NOT start with "a"
+	> ls [^a]*
+
+# match any files that do NOT start with a numeric digit (0-9)
+	> ls [^0-9]*
+
+# character classes
+	[:alpha:] - alphabetic characters, upper and lower
+	[:digit:] - digits 0-9
+	[:lower:] - lower case letters
+	[:upper:] - upper case letters
+	[:blank:] - blank characters: space and tab
+	[:punct:] - punctuation characters
+	[:alnum:] - alphanumeric characters (alpha + digit)
+
+# any file that starts with an uppercase letter
+	> echo [[:upper:]]*
+
+# create file directory from jan1, jan2, jan3, etc. until jan31
+	> mkdir testDates
+	> mkdir ./testDates/jan{1..31}
+	> ls -l testDates
+
+# print out the numbers 2, 4, 6, 8, and 10
+	> echo {2..10..2}
+
+# generate the files group-a.txt, ... to group-e.txt 
+	> mkdir groupFiles
+	> touch ./groupFiles/group-{a..e}.txt
+	> ls -l groupFiles
+
+# echo a1 a2 a3 b1 b2 b3 c1 c2 c3
+	> echo echo {a,b,c}{1,2,3}
+
+# echo beef bat bag reef rat rag
+	> echo {b,r}{eef,at,ag}
+
+# echo x y1 y2 y3 y4 y5 z
+	> echo {x,y{1..5},z}
+
+# Arithmetic Expansion
+	- syntax
+		$((expression))
+	-
+		+ addition
+		- subtraction
+		* multiplication
+		/ division
+		** exponentiation
+		% modulo (remainder operator)
+
+#
+	> echo $((10+7))
+
+# command substitute
+	> echo "today is $(date)"
+
+# do Expansion Exercise
+	> 02022024 - The Command Line Bootcamp Beginner To Power User - Linux\assets\13
+
+# find all files in current directory
+	> find
+
+# find all files in current directory limit files
+	> find -type f
+
+# find all files in current directory limit directories
+	> find -type f
+
+# find all files on our Desktop that end in the .txt
+	> find ~/Desktop -name "*.txt"
+
+# count results of fine
+	> find -name "*.txt" | wc -l
+
+# find all files larger than 1 gigabyte
+	> find -size +1G
+
+# find all files that are exactly 20 kilobytes
+	> find -size 20k	
+
+# find all files under 50 megabytes
+	> find -size 50M
+
+# find files belong to a user
+	> find -user cheng
+
+# matches items that were modified more than 60 minutes ago
+	> find -mmin +60
+
+# xargs 
+	- build up the input into a bundle that will be provided as an argument list to the next command.
+
+# finds four individual chapter files (chapter1, chapter2, chapter3, and chapter4) 
+	and then passes them to the cat command, which 
+	then outputs the combined contents to a file called fullbook.txt.
+	> find -name "chapter[1-4].txt" | xargs cat > fullbook.txt
+
+#
+	> echo "hello" "world" | xargs mkdir
+
+# do Find Exercise
+	02022024 - The Command Line Bootcamp Beginner To Power User - Linux\assets\14
+
+# Regex Crash Course
+	. - matches any single character
+	^ - matches the start of a line
+	$ - matches the end of a line
+	[abc] - matches any character in the set
+	[^abc] - matches any char NOT in set
+	[A-Z] - matches characters in a range
+	* - repeat previous expression 0 or more times
+	\ - escape meta-characters
+
+# search for a pattern in each file's contents
+	# prepare file first
+	# add some grocery items with prices
+	> touch prices.txt	
+	> grep "banana" prices.txt
+
+# grep case insensitive
+	> grep -i "banana" prices.txt
+
+# grep exact whole word search
+	> grep -w "banana" prices.txt
+
+# grep recursive search. Will search current directory if starting directory not stated
+	> grep -r "banana"
+
+# grep matches a string contains 1-9 followed by any 4 characters
+	> grep '[1-9]....' prices.txt
+
+# grep count matches
+	> grep -c "\$[1-9]" prices.txt
+
+#
+	> ps -aux | grep cheng
+
+# grep/search a manual for a keyword you looking for
+	> man cp | grep "symbol"
+
+# File Type
+	- d is a directory
+	- - regular file
+	- . hidden files
+	- l is a symbolic link, more of that later
+	- c special file
+
+# Owner Group World
+	- rwxrwxrwx
+	- 1st rwx for owner, 2nd rwx for group, 3rd rwx for world
+	- r - can be read
+	- w - can be modified
+	- x - can be executed
+	- - - cannot be read, modified, or executed
+
+# chmod syntax
+	> chmod mode file
+	# who
+		u - user (the owner of the file)
+		g - group (members of the group the file belongs to
+		o - others (the "world"
+		a - all of the above	
+	# what
+		- (minus sign) removes the permission
+		+ (plus sign) grants the permission
+		= (equals sign) set a permission and removes others
+	# which
+		r - the read permission
+		w - the write permission
+		x - the execute permission
+
+# Add write permissions to the group
+	- rw-r--r--
+	> chmod g+w colors.txt
+	- rw-rw-r--
+	> ls -l
+
+# Remove write permissions from all
+	> chmod a-w colors.txt
+
+# Set permissions to read ONLY for al.
+	> chmod a=r file.txt
+
+# chmod octals
+	Octal 	Binary 	File Mode
+	0 		000 	---
+	1 		001 	--x	
+	2 		010 	-w-
+	3 		011 	-wx
+	4 		100 	r--
+	5 		101 	r-x
+	6 		110 	rw-
+	7 		111 	rwx
+
+# 
+	- 111101101
+	- rwxr-xr-x
+	> chmod 755 file.txt
+
+# start a shell as another user from within our own shell session
+# hermione here is a different user in your computer
+	> su - hermione
+	> exit
+
+# change owner of file to bojack
+# bojack here is a different user in your computer
+	> chown bojack file.txt
+
+# change owner of file to bojack and group named horses
+	> chown bojack:horses file.txt
+
+# change only the group
+	> chown :horses file.txt
+
+# view the groups that a given user belongs
+	> groups USERNAME
+
+# create a new group
+	> addgroup friends
+
+# add user to a group
+	> adduser cheng friends
+
+# check enrironment
+	> printenv | less
+
+# check variable in environment
+	> echo $USER
+
+# define local variable
+# this is a local variable and will not be saved outside this terminal
+	> myvalue=999
+
+# define environment/global variable
+# this will now exist in this specific terminal session
+	> export animal=mandrill
+	> echo $animal
+	> printenv | grep animal
+	# update
+	> animal="Cow"
+	> printenv | grep animal
+
+# update your own .bashrc
+# do now update the global etc/bash.bashrc
+	> cd ~
+	> ls -a
+	# check your bashrc
+	> less .bashrc
+	# backup before update
+	> cp .bashrc .bashrc.bak
+	> ls -a
+	# edit PS1 in bashrc
+	> nano .bashrc
+		# PS1="TYPE SOMETHING"
+		# save
+	# open a new terminal window to see changes
+	# update in current window
+	> source .bashrc
+
+# create your own local alias
+# this will only work in your own terminal
+	> alias pig="echo OINNNK"
+	> pig
+	> type cd
+	> type touch
+	> type pig
+	> ll
+	> type ll
+	> alias ..="cd .."
+	> ..
+	> ..
+	> type ..
+	> cd ~
+
+# create your own global alias
+	> cd ~
+	> nano .bashrc
+	# find a place to put your custom alias near with the other alias
+	# alias cow="echo MMMMMOOOOOooooo....."
+	# save
+	> source .bashrc
+	> cow
+
+# check top eating process
+	# you might want to alias this
+	> ps auxf | sort -nr -k 3 | head -10
+
+# create your own .bash_aliases file
+	> cd ~
+	> nano .bash_aliases
+	# paste here your custom aliases
+	# if you check .bashrc, they recommend you seperate it like this
+	# .bashrc will auto load .bash_aliases if it exist in your ~
+
+# create own bash script
+	> cd ~
+	> nano hi
+	# code
+		#!/bin/bash
+
+		#this is a comment, not a shebang
+
+		echo "Hello there, $USER"
+		echo "Today is $(date)"
+		echo "last ran hi at $(date)" >> hi.log
+		# save
+	> bash hi
+	> bash hi
+	> bash hi
+	> ls
+	> cat hi.log
+
+# create path for your custom bash script
+	> cd ~
+	> printenv | grep PATH
+	> echo $PATH
+	> ls /usr/bin
+	> which ls
+	> which adduser
+	# advisable to define your own custom script in your home directory
+	> cd ~
+	> mkdir bin
+	> mv hi bin/
+	> ls bin/
+	# add path
+	# .profile has already instructions for this
+	# check code in .profile PATH="$HOME/bin:$PATH"
+	> less .profile
+	> source .profile
+	> printenv | grep PATH
+	> echo $PATH | grep cheng
+	#
+		# if .profile does not have the default path, add below in your .bashrc
+		PATH="$HOME/bin:$PATH"
+		# save
+		> source .bashrc
+	# update permission
+	> cd ~
+	> cd bin/
+	> ls -l
+	> chmod a+x hi
+	> ls -l
+	> hi
+	> cd ~
+	> hi
+	> cd /
+	> hi
+	> cd ~
+
+# create own python script
+	> cd ~
+	> python3 --version
+	> which python3
+	> cd bin/
+	> nano pyhi
+	# code
+		#!/usr/bin/python3
+
+		print("hello there form Python")
+		# save
+	> ls -l
+	> chmod a+x pyhi
+	> ls -l
+	> pyhi
+	> cd ~
+	> pyhi
+
+# cron
+	- to set up a cron job, we need to edit the crontab configuration file
+	- rather than edit the files directly, its best to use the crontab -e command
+
+# cron syntax
+	a b c d e command
+	a - minute 0-59
+	b - hour 0-23
+	c - day 1-31
+	d - month 1-12
+	e - day(of wee) 0-6
+
+# cron characters
+	* - any value
+	5,6 - list of values (5 and 6)
+	1-4 - range of values (1 to 4)
+	*/5 - step values (every 5)
+
+# run a job at minute 30, every hour
+# run our command every hour, day, month, and week where the minutes on the clock is exactly 30
+# 1'30
+# 2'30
+# ...
+	30 * * * * command
+
+# run a job every day at midnight
+	0 0 * * * command
+
+# run a job every day at 6:30am
+	30 6 * * * command
+
+# run a job every monday at 6:30am
+	30 6 * * 1 command
+
+# run a job every money in april at 6:30am
+	30 6 * 4 1 command
+
+# run a job at midnight on the first of every month
+	0 0 1 * * command
+
+#
+	crontab.guru
+
+# setup first cronjob
+	> crontab -e
+	# code
+		* * * * * echo "Another Minute! Date is $(date)" >> ~/time.log
+	# save
+	# ls
+	# wait for log
+
+# setup cronjob with errors
+	> crontab -e
+	# code
+		* * * * * echosdfdsf "Another Minute! Date is $(date)" >> ~/time.log 2>&1
+	# save
+	# ls
+	# wait for log
+
+# zip and unzip files
+	# zip
+		> cd ~
+		> man tar
+		> mkdir TarDemo
+		> cd TarDemo
+		> mkdir TarMe
+		> touch TarMe/File{1..500}.txt
+		> ls TarMe/
+		> tar -cvzf backup.tar.gz TarMe/
+		> rm -r TarMe/
+	# unzip
+		> tar -xvzf backup.tar.gz
+
+# setup cron backup
+	> cd ~
+	> mkdir backups
+	> cd bin/
+	> ls
+	> nano my-backup
+		# code
+			#!/bin/bash
+			DATE=$(date +%m-%d-%Y-%M)
+			BACKUP_DIR="/home/cheng/backups"
+
+			tar -cvzf $BACKUP_DIR/backup-$DATE.tar.gz /home/cheng/Desktop
+		# save
+	> chmod a+x my-backup
+	> ls -l
+	> my-backup
+	> cd ~
+	> crontab -e
+		# code
+			* * * * * /home/cheng/bin/my-backup
+		# save
+	> cd ~
+	> cd backups
+	> ls
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> press space
+	// continue showing long result
+
+
+> q
+	// when you are stack in a long file to be showed and want to quit/escape/stop
+  OR
+> ctrl + c
+
+
+> ncal
+	// new calendar style
+
+> cal
+	// old calendar style
+
+> date
+	// show date
+
+> echo
+	// prints something
+
+> man
+	// manual of a command
+
+> help 
+	// some commands does not have manual, use help for them
+
+> help
+	// sometimes command manual does not exist, so check here
+
+> man passwd
+	// shows manual of passwd
+
+> man -k passwd
+	// shows different sections manuals that has passwd
+
+> type
+	// shows the type of a comman
+
+> which
+	// find the exact location of executable
+
+> /
+	// root
+
+> ~
+	// home. Shortcut for /home/loginUser
+
+> /root
+	// a root subdirtory named folder inside root
+
+> xdg-open /
+	// open root directory in ui
+
+> pwd
+	// print working directory
+
+> ls
+	// list contents of directory
+
+> ls -l
+	// list with long option
+
+> ls -a
+	// list contents including hidden files
+
+> ls -lhs
+	// list with long, human readable, with size
+
+> ls -R
+	// list directory in recursive way to look like a directory
+
+> cd
+	// change directory
+
+> cd .
+	// go to current directory
+
+> cd ..
+	// go to parent directory
+
+> touch
+	// creates a file if it does not exist, or change current file timestamps
+
+> mkdir
+	// creates a directory
+
+> mkdir -p
+	// no errors if existing, make parent directories as needed
+
+> rm
+	// remove file
+
+> rm -ri
+	// remove directory recursive and interactive
+
+> mv
+	// move or rename
+
+> cp
+	// copy
+
+> date > today.txt
+	// redirect output of date to today.txt and creates the file if it doesn't exist. Also Overwrites content
+
+> less
+	// display contents of file 1 page at a time
+
+> cat
+	// display contents of file
+
+> tac
+	// display contents of file reverse lines
+
+> rev
+	// display contents of file mirror reverse
+
+> head
+	// display beginning contents of file
+
+> tail
+	// display end contents of file
+
+> wc
+	// display number of words, lines, bytes of file
+
+> sort
+	// display file content with sort
+
+> sort -rkn3
+	// display file content in reversve sorted by 3rd column which is numbers
+
+> sort -u
+	// show unique file content only
+
+> date > today.txt
+	// redirect output of date to today.txt and creates the file if it doesn't exist. Also Overwrites content
+
+> date >> today.txt
+	// redirect output of date AND appends to today.txt and creates the file if it doesn't exist. Also Overwrites content
+
+> cat < cal.txt
+	// pass data in cal.txt to cat
+
+> cat < original.txt > output.txt
+	// original.txt data goes to cat and cat will pass it to output.txt
+
+> cat nonexistentfile 2> error.txt
+	// outputs error in error.txt if nonexistentfile doesn't exist
+
+
+> command1 | command 2
+	// 
+		use pipe to seperate 2 commands
+		The output of 1st command will be passed to standard input of 2nd command
+
+
+> date | rev
+	// outputs date and send it to rev to be reversed
+
+
+> ls /usr/bin -l | less
+	// pass long detail output of listed bin and pass it to less to show it 1 page at a time
+
+
+> ls /usr/bin -l | wc -l
+	// how many lines in bin showed by ls
+
+
+> cat msg | tr s S
+	// replace all s to S that can be seen in msg
+
+
+> cat data.txt | tr -d a-z
+	// remove all small letters that can be seen in data.txt
+
+
+> cat data.txt | tr -d [:alpha:]
+	// remove all letters(capital or small) that can be seen in data.txt
+
+> 

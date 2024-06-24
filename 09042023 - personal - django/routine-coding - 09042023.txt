@@ -1,0 +1,40 @@
+setup python - django
+
+- cd to desktop
+	> cd desktop
+- create project folder
+	# desktop
+	> mkdir projName01
+- cd in your project folder
+	# desktop
+	> cd projName01
+- check python
+	> python --version
+- check pip
+	> pip --version
+- create environment named venv
+	# desktop/projName01
+	> python -m venv venv
+- run environment activate	
+	# desktop/projName01
+	> venv\Scripts\activate.bat
+- install django
+	# (venv) desktop/projName01
+	> python -m pip install Django
+- check django verion installed
+	# (venv) desktop/projName01
+	> python -m django --version
+- start project
+	# (venv) desktop/projName01
+	> django-admin startproject core
+- cd in your project
+	# (venv) desktop/projName01
+	> cd core
+- ide
+	- drag outer core folder in your IDE(visual studio code)
+	OR
+	# (venv) desktop/projName01/core
+	- code .
+- run project
+	# (venv) desktop/projName01/core
+	> python manage.py runserver

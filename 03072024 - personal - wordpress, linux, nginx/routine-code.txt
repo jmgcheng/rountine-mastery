@@ -1,0 +1,1837 @@
+
+
+#
+> sudo apt update
+> sudo apt install php-fpm
+
+# create database 
+> sudo apt install mysql-server
+> sudo mysql_secure_installation
+> sudo service mysql start
+#
+> sudo mysql -u root -p
+# StrongP@ss123
+> SHOW databases;
+> CREATE DATABASE IF NOT EXISTS testDB;
+> USE database_name
+> SHOW tables;
+
+
+# install wordpress
+> wget https://wordpress.org/latest.tar.gz
+OR
+> sudo apt install wordpress
+> tar -xzvf latest.tar.gz
+> cp wordpress/wp-config-sample.php wordpress/wp-config.php
+# update wordpress config
+> nano wordpress/wp-config.php
+# move wordpress files
+> sudo rsync -avP wordpress/* /path/to/your/web/root/
+> sudo rsync -avP wordpress/* /var/www/wordpress01/
+> ll /var/www/
+# permissions
+> sudo chown -R www-data:www-data /path/to/your/web/root/
+> sudo chown -R $USER:$USER /var/www/wordpress01/
+
+# nginx
+	cd /etc/nginx/sites-available/
+	sudo nano wordpress01.conf
+	code
+		server {
+		    listen 80;
+		    server_name your_domain.com www.your_domain.com;
+
+		    root /var/www/wordpress01;
+		    index index.php index.html index.htm;
+
+		    location / {
+		        try_files $uri $uri/ /index.php?$args;
+		    }
+
+		    location ~ \.php$ {
+		        include snippets/fastcgi-php.conf;
+		        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+		        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		        include fastcgi_params;
+		    }
+
+		    # Additional Nginx configuration goes here
+		}
+
+- create symbolic link
+	> sudo ln -s /etc/nginx/sites-available/wordpress01.conf /etc/nginx/sites-enabled/
+
+> sudo nginx -t
+> sudo service nginx restart
+> sudo systemctl status nginx
+> sudo service php8.1-fpm restart
+> sudo systemctl status php8.1-fpm
+
+# setup hosts
+
+- update hosts
+	> sudo nano /etc/hosts
+	- code
+		127.0.0.1 	wordpress01.com
+
+
+- visit
+http://wordpresstest01.com
+
+# 
+Your PHP installation appears to be missing the MySQL extension which is required by WordPress.
+Please check that the mysqli PHP extension is installed and enabled.
+> sudo apt install php-mysql
+> sudo service php8.1-fpm restart
+> sudo systemctl status php8.1-fpm
+#
+> echo "<?php phpinfo(); ?>" | sudo tee /var/www/wordpress01/phpinfo.php
+OR
+> just create a file there using nano
+- visit
+http://wordpress01.com/phpinfo.php
+
+
+- setup site 
+http://wordpresstest01.com
+
+
+# phpmyadmin
+> sudo mysql -u root -p
+# StrongP@ss123
+> CREATE USER 'phpmyadmin'@'localhost' IDENTIFIED BY 'StrongP@ss123';
+#
+> sudo apt install phpmyadmin
+> ll /usr/share/phpmyadmin/
+> sudo nano /etc/nginx/sites-available/phpmyadmin
+	code
+		server {
+		    listen 80;
+		    server_name phpmyadmin.com;
+
+		    root /usr/share/phpmyadmin;
+		    index index.php index.html index.htm;
+
+		    location / {
+		        try_files $uri $uri/ /index.php?$args;
+		    }
+
+		    location ~ \.php$ {
+		        include snippets/fastcgi-php.conf;
+		        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+		        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		        include fastcgi_params;
+		    }
+
+		    location ~ /\.ht {
+		        deny all;
+		    }
+		}
+> sudo ln -s /etc/nginx/sites-available/phpmyadmin /etc/nginx/sites-enabled/
+> sudo nginx -t
+> sudo service nginx restart
+> sudo systemctl status nginx
+> sudo service php8.1-fpm restart
+> sudo systemctl status php8.1-fpm
+
+- visi phpmyadmin
+	http://phpmyadmin.com
+
+
+
+
+
+
+
+
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+

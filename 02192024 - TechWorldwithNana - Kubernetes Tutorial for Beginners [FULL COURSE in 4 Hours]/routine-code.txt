@@ -1,0 +1,3101 @@
+https://www.youtube.com/watch?v=X48VuDVv0do
+
+
+
+
+
+
+> neil degrasse explain style
+	- orchestration
+		- is about automating several task to achieve a purpose rather than doing them manually
+			- eg
+				- task 1: gathers data in website database and save it to aws s3 weekly
+				- task 2: use aws machine learning to predict something from data in task 1
+				- task 3: send a report to an email from task 2
+		- is the automated configuration, management, and coordination of computer systems, applications, and services
+		- helps easily manage complex tasks and workflows
+	- orchestration tool
+		- a tool or application that lets you setup or code to schedule and run several tasks that are interdependent to one another
+	- kubernetes
+		- is just an orchestration tool that helps you manage containerized applications in different environment
+			- this is so that your applications are
+				- high availability
+				- scalability
+				- disaster recovery
+			- these just means that k8s automatically helps you make sure you can run a lot of docker containers and replace a new container if an old one crash
+	- k8s have a lot of "components". Knowing their names and terminologies will help you understand k8s faster
+		- some of them are node, pod, service, ingress, config map, secret, deployment, and statefulset
+		- node
+			- is just a physical server or virtual server
+			- k8s can run a single node or to how many you want
+			- can be a master or a slave, each have their own specific tasks
+			- can contain multiple pod inside of it
+			- 
+		- pod
+			- lives inside the node
+			- is just a layer that wraps your docker container
+			- can wrap more than 1 container(application) inside of it but not recommended
+			- can crash easily
+			- other "components" will take notice if a pod crash so they can replace it with a new pod
+			- has a permanent "service" "ip address" component attached to it
+			- 
+		- service
+			- is staticly "permanently" attached to a pod
+			- is the "ip address" that allows pods to communicate to each other
+			- will not crash together with the pod. Pod can be replace with a new one but the "service ip" stays
+			- is just a yml config file
+			- 
+		- external service
+			- is use so that your eg website application inside the container that is inside the pod can be access by external source like your website visitors
+		- internal service
+			- is just like the external service but is used for database application where access is not for public use
+		- ingress
+			- makes the external service url human friendly rather than using ip address and ports
+			- needs to install ingress controller pod first before ingress component can work
+				- ingress controller pod do the evaluation of rules and manage redirections
+		- config map
+			- contains variables like eg url path so one of your "application pod" knows the url of your "db pod"
+			- values can be also check in container using environment variables
+			- should not contain passwords as we have a different component for that
+		- secret
+			- is just like config map but is used for passwords or certificates that you want to be hashed
+		- deployment
+			- is just a blueprint
+			- is just a yml config file
+			- is the config file that creates the pod
+				- creates the pod automatically, not you manually
+			- indicates the name of pod, number of "replicas", the attached service, and other configs
+			- in practice, you will most likely work with deployments, not with pods
+			- manage replicasets, replicaset manage pod, pod is a wrapper of Docker container
+		- statefulset
+			- just like deployment component but for database
+			- takes care of replicating and scaling up/down db pods
+			- also manage which db pod is currently reading/writing to a storage to avoid data inconsistencies
+		- volumes
+			- is a component that make sure your data persist incase your db pod crash
+			- can be a physically attached storage drive to your pod or remote like cloud storage
+		- communication service "a different service, not talking about the service that is attached in a pod"
+			- picture this
+				- you have a node that has a website pod and a db pod inside it
+				- your db pod crash and it may take several seconds for a new db pod to respawn
+				- solution is make another replica of a node that has the same thing
+				- now you have 2 node each have the same website pod and db pod inside them
+				- so eg if websitepod1 can't connect to dbpod1, the service will pass the request to dbpod2 in a different replica
+			- connecting these multiple nods are these "communication service"
+				- these service can act as a load balancer
+				- normally pods communicate to each other within their node, but if others crash or is loaded, the service will pass the request to the least busiest pod
+	- namespace
+		- to avoid conflicts if you have multiple teams
+	- k8s master node and slave node
+		- slave 
+			- has a runtime container eg docker container
+			- has kubelet, the process that schedules those pods that has containers in it and assign resource like cpu, ram, storage
+			- has communication service
+				- catch the request from a pod and forwards it to a different pod
+				- sits between nodes
+			- has kube proxy
+				- also responsible for forwarding requests from pods to pods
+				- make sure low overhead happens for each request, dbpod1 gets request from websitepod1 rather than going to other node
+			- needs more resource eg cpu, ram, storage
+		- master
+			- api server
+				- gets the initial request for any updates into the cluster
+				- also acts as gatekeeper for authenticating user
+				- can be a dashboard, kubelet command line, or k8s api
+				- pass the request to scheduler if authentication pass
+			- scheduler
+				- intelligently starts an application pod on one of the worker nodes base on least usage
+				- the request receives by scheduler is actually pass to kubelet 
+			- controller manager
+				- detects if a pod crash and reschedule those pods asap
+			- etcd
+				- is the key value store 
+				- holds at anytime the current status of any k8s component
+			- needs less resource eg cpu, ram, storage
+	- normal k8s production/live cluster setup
+		- in a very small cluster setup, you would probably have
+			- 2 master nodes
+			- 3 worker/slave nodes
+	- minikube
+		- is what you use if you want to test a local setup of k8s cluster
+		- you need minikube on local machine if you dont have enough cpu, ram, storage for the normal production cluster setup
+		- is basically
+			- a 1 node k8s cluster
+				- where both master processes and slave processes run in 1 node
+			- trying to simulate normal k8s production cluster setup
+		- will run in your machine using a virtual box like hyperkit
+		- has Docker runtime daemon pre-installed so it will still work if you dont have Docker installed in your machine
+	- kubectl
+		- is the command line tool that you use to interact with a cluster 
+			- to create components
+			- configuration, etc
+		- is use to communicate with the master process api server
+	- labels and selectors are inside the yml configuration files for different components
+		- these names is how you connect different configuration. eg deployment configuration to service configuration
+	- services yml config
+		- internal
+			- services by default are internal so no external users can access them
+		- external
+			- you make a service external by adding type: LoadBalancer and nodePort in the config file
+	- helm
+		- use as the package manager for k8s, just like pip is for python
+		- can be use to create helm charts which are just a bundle of yml files
+		- can also be a "templating engine"
+			- "templating engine" only means just a yml config file that has replacable {{values}} so you can reuse it as a template and use a values.yml file to change the values for the setup
+		- can also be use as release management
+	- helm charts
+		- just a bundle of yml files
+		- you use helm to create helm charts so you can push it in a help repository 
+			- or you can also use helm charts created by others
+		- you can use helm chart that others made that possibly have the same setup as you are tyring to build
+		- so this is also one way you can learn how to setup a cluster by trying to check how other have setup their config files
+	- TELL YOUR INTERVIEWER that you were able to do these in your local machine
+		- 1st
+			- install minikube using hyperv
+			- use kubectl to setup a minikube k8s cluster
+		- 2nd
+			- use kubectl 
+				- to create a deployment of an nginx image to create a pod
+				- to create a deployment of a mongo image to create a pod
+				- to edit a deployment
+				- check pod logs for debugging
+				- to exec -it a pod to interact inside a pod for debugging and testing other things
+				- to delete a deployment to delete a pod
+				- to check status of nodes, pod, services, replicaset, deployment
+				- to use apply command to create deployment and service using a yml config file
+				- to delete deployment and services
+			- create basic configuration yml files for
+				- deployment
+				- service
+				- secret
+				- configmap
+				- ingress
+			- 	
+		- 3rd
+			- use kubectl
+				- to deploy mongodb and mongo-express that communicates to each other
+					- 2 deployment, 2 services, 1 configmap, 1 secret
+					- where mongo-express is the web app communicating to mongodb
+		- 4th
+			- tried using minicube and kubectl to setup django and mysql
+				- but mysql container always crash
+			- tell your interviewer we already have 16gb memory and Docker or k8s still keeps crashing
+				- you can see in the task manager the high level usage of memory and disk
+				- I have no issue with docker and k8s for basic commands and configuration because its easily understandable, but it would be great if they have
+					- a lot of resource in their computer if they will use these tech
+					- someone to guide me on the configurations. I will be able to catch up and understand right away with the correct guide since I can setup in a local machine with poor resource
+					- otherwise development would be slow since everybody would spend time setting up the server, docker, k8s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+			- kubernetes
+				- open source orchestration tool
+				- by google
+				- manage containerized applications in different environment
+			- orchestration offers
+				- high availability
+				- scalability
+				- disaster recovery
+	*/
+
+
+
+https://youtu.be/X48VuDVv0do?t=337
+> routine n - components
+	/*
+		Notes:
+			- some of k8s components:
+				- node
+					- a simple physical server or virtual machine
+				- pod
+					- abstraction of containers
+					- the basic component or the smallest unit of kubernetes 
+					- is basically an abstration over a container(eg docker container)
+					- creates this running environment or a layer on top of the container
+						- why/reasons?
+							- kubernetes wants to abstract away the container runtime or container technologies so that you can replace them if you want to and also because you don't have to directly work with Docker
+					- usually meant to run one application container inside of it
+						- though you can run multiple inside it but not recommended
+					- each pod can communicate with each other using their own IP address which is an internal ip address. The ip address is a service component
+					- pod components in kubernetes are ephemeral
+						- means that they can die very easily
+						- when that happens, because maybe the application inside crash, a new one will be created in its place
+				- service (static ip address of a pod)
+					- a static ip address or permanent ip address that can be attached to each pod
+					- the life cycles of service and the pod are not connected
+						- so even if the pod dies, the service and its ip address will stay
+					- also acts as a load balancer. Which means the it catch the request and forward it to whichever part is the least busy
+				- exertnal service
+					- a service that opens the communication from the external sources. for public request
+				- internal service
+					- for private request
+				- ingress
+					- instead of request going straight to a service, it goes to ingress and ingress does the forwarding to the service
+					- route traffic into cluster
+				- configMap
+					- its an external configuration to you application 
+					- usually contain configuration data like urls of a database or some other services that you use
+						- you dont have to rebuilt a new image when you change the service endpoint or other values, you just have to adjust values in the config map
+					- dont put your credentials inside configmap
+				- secret
+					- just like configMap but its use to store secret data. eg credentails
+					- use base64 encoded format
+				- volumes
+					- attaches a physical storage on a hard drive to your pod
+						- that storage can be either on a local machine, remote storage
+					- an external hard drive plugged into the kubernetes cluster
+				- deployment
+					- blue print to specify how many replicas of pod you would like run
+					- in practice, you would not be create a pod, you would be creating deployments
+					- this is where you can specify to scale up or scale down  number of replicas of parts that you need 
+					- abstraction of pods
+					- database can't be replicated via deployment
+						- because database has state
+				- statefulset
+					- clone/replicas of database would all need to access the same shared data storage
+					- manage which pods are currently writing to that storage or which pods are reading from that storage in order to avoid data inconsistencies
+					- this component is meant specifically for applications like databases(mysql, mongodb, elastisearch, or any other stateful applications)
+					- databases should be created using statefulsets, not deployments
+					- will take care of replicating the pods of databases and making sure the databases reads and writes are synchronized so that no database inconsistencies are offered
+			- kubernetes
+				- offers out of the box virtual network
+					- means each pod gets its own IP address, NOT the container, the pod gets the IP address
+			- k8s cluster
+				- explicitly(manually) doesn't manage any data persistance, which means that you as a k8s user or admin are responsible for backing up the data, replicating and managing it and making sure that it's kept on a proper hardware 
+			- databases
+				- are often hosted outside the k8s cluster
+	*/
+
+
+
+
+https://youtu.be/X48VuDVv0do?t=1362
+> routine n - k8s architecture
+	/*
+		Notes:
+			- 2 types of nodes that kubernestes operates on
+				- 1 is master
+				- 1 is slave
+			- node
+				- each node has multiple pods on it
+				- 3 processes must be installed on every slave/worker node
+					- container runtime
+						- the 1st process that needs to run on every node
+						- it could be docker but it could be some other technology as well
+						- a container runtime needs to be installed on every node
+					- kubelet
+						- the process that actually schedules those pods and the containers
+						- interacts with both container and node
+						- at the end of the day, kubelet is responsible for taking that configuration and actually running a pod or starting a pod with a container inside and then assigning resources from that node to the container like cpu, ram, storage
+					- kube proxy
+						- forwarding request from services to pods
+						- must also be installed on every node
+						- has intelligent forwarding logic that make sure that the communication also works in a performant way with low overhead
+				- nodes are the cluster servers that actually do the work
+				- worker nodes do the actual work
+			- kubernetes cluster
+				- is made up of multiple nodes which also must have container runtime and kubelet services installed
+				- is usually made up of multiple masters where each master node runs its master processes
+			- communication via Services
+				- the way that communication between them(node) works is using Services 
+				- why is this called services where you also have services between pods? they running out of names?
+					- https://youtu.be/X48VuDVv0do?t=1506
+				- 
+			- how do you interact with these cluster?
+				- all these managing processes are done by Master nodes
+			- Master Nodes
+				- managing processes are done by master nodes
+				- master servers = masternodes
+				- have complete different processes running inside
+				- 4 processes run on every master node
+					- api server
+						- when you as a user want to deploy a new application in k8s cluster, you interact with the api server using some client
+						- like a cluster gateway
+						- gets the initial request of any updates into the cluster or even the queries from the cluster
+						- also acts as a gatekeeper for authentication
+					- scheduler
+						- after api server validates your requests, it will hand the request over to the scheduler in order to start that application in the pod on one of the worker nodes
+						- has intelligent way of deciding on which specific worker node the next pod will be scheduled
+						- scheduler just decides on which node new pod should be schedules
+							- scheduling that actually starts that pod with a container is the kubelet
+					- controller manager
+						- when pods die on any node, there must be a way to detect that the nodes died and then reschedule those pods asap
+						- detect the state changes like crashing of pods. eg so when pods die, controller manager detects that and tries to recover the cluster state asap
+							- and for that, it makes a request to the scheduler to reschedule those dead pods 
+					- etcd -
+						- key value store of a cluster state
+						- think of it as a cluster brain
+						- means that every change in the cluster eg when a new pod get scheduled, when a pod dies, all of these changes get saved or updated into this key value store of etcd
+						- how does scheduler know what resources are available on each worker node or how does controller manager know that a cluster stay changed in some way or when you make a query request to api server but the cluster health or for example your application deployment state where does api server get all this state information from..... all these information is stored in etcd 
+	*/
+
+
+
+
+
+
+
+https://youtu.be/X48VuDVv0do?t=1987
+> routine n - nnn
+	/*
+		Notes:
+			- minikube
+				- if you want to test something on your local environment OR if you want to try something out very quickly eg deploying new application or new componenets and you want to test in your local machine
+				- minikube is basically one node cluster where the master processes and the worker processes both run on one node
+					- and this node will have a docker container runtime preinstalled
+				- the way its going to run in your machine is through a virtual box or some other hyperviso
+				- basically minikube will create a virtual box on your laptop
+					- nodes runs in that virtual box
+				- to summarize, minikube is a 1 node kubernetes cluster that runs in a virualbox
+					- which you use for testing kubernetes on you local setup
+			- kubectl
+				- after you have setup the minickube, you need some way to interact
+				- is the way for you to interact with a cluster 
+				- kubectl is a command line tool for kubernetes cluster 
+				- you can talk to the api server of the master processes using different clients eg like a dashboard, kubernetes api, or command line tool which is kubectl
+				- sample of 3 clients	
+					- ui
+					- api
+					- cli (kubectl)
+				- kubectl is the most powerful of all 3 clients because with kubectl you can basically do anything in kubernetes
+				- once the kubectl submits commands to the api server, to create components, delete components, etc, the the work processes on minikube node will actually make it happen
+				- kubectl isn't just for minikube cluster. If you have a cloud cluster or a hybrid cluster, kubectl is the tool to use to interact with any type of kubernetes cluster setup
+			- minikube cluster
+				- 
+	*/
+
+
+
+https://youtu.be/X48VuDVv0do?t=2339
+> routine n - installation - minikube cluster 
+	/*
+		Notes:
+	*/
+	# search kubernetes install minikube
+
+	https://www.youtube.com/watch?v=xNefZ51jHKg
+
+
+	# ! minikube needs virtualization on your machine
+		- kvm OR
+		- virtualbox
+
+	# she was using mac, it would be better if we search windows or ubuntu installation
+	# she's also using hyperkit rather than virtualbox
+
+
+
+> routine n - check if kubectl and minikube is installed
+	/*
+		Notes:
+	*/
+	> minikube
+	> kubectl
+
+
+
+> routine n - create and start the cluster
+	/*
+		Notes:
+			- it seems minikube auto select virtualbox since its already installed in my computer
+			-
+			- WARNING
+				- open task manager first to see usage
+				- wait for everthing to cool down before proceeding to next steps
+				- you also need to turn on docker desktop when doing this
+	*/
+	# this will take time at the first time
+	> minikube start
+	# this did not work on the next day
+	# i used hyperv the next day as it also being used by docker
+	# cmd need to be run as administrator
+	> minikube start --driver=hyperv
+
+	# use this if you will use your preferred virtualmachine
+	# virtualbox was already installed in my computer and it uses that as default
+	> minikube start --vm-driver=hyperkit
+
+
+
+	# stop and destroy
+	> minikube --help
+	> minikube stop
+	> minikube delete
+	> minikube profile list
+
+
+
+> routine n - get status of nodes
+	/*
+		Notes:
+			- in the tutorial, her minikube role is master, mine is control-plane
+				- further research suggest this is the new name for their master
+	*/
+	> kubectl get nodes
+
+
+
+> routine n - get status using minikube
+	/*
+		Notes:
+	*/
+	> minikube status
+
+
+
+> routine n - check version
+	/*
+		Notes:
+	*/
+	> kubectl version
+
+
+
+> routine n - kubectl cli vs minikube cli
+	/*
+		Notes:
+			- kubectl cli
+				- for configuring the minikube cluster
+			- minikube cli
+				- for start up/deleting the cluster
+	*/
+
+
+
+> routine n - get status of the nodes
+	/*
+		Notes:
+	*/
+	> kubectl get nodes
+
+	#
+	> kubectl get nodes | pod | services | replicaset | deployment
+
+
+
+> routine n - get/check pods
+	/*
+		Notes:
+	*/
+	> kubectl get pod
+
+
+
+> routine n - get services
+	/*
+		Notes:
+	*/
+	> kubectl get services
+
+
+
+> routine n - check help for kubectl create
+	/*
+		Notes:
+	*/
+	> kubectl create -h
+
+
+
+> routine n - create deployment - sample nginx - not using configuration file
+	/*
+		Notes:
+			- remember "deployment" is a blueprint/what you use to create pods
+			- this is creating a deployment but not using configuration yaml files
+				- later below and most of the time you will use configuration yaml files
+	*/
+	# https://youtu.be/X48VuDVv0do?t=2841
+	> kubectl create deployment name --image=imageNameAtDockerHub [--dry-run] [options]
+	> kubectl create deployment nginx-depl --image=nginx
+	> kubectl get deployment
+	> kubectl get pod
+	> kubectl get replicaset
+	# check status which kubernetes automatically generates in yaml format
+	# this is the updated configuration of your deployment that actually resides in etcd
+	# all of this is automatically edited and updated by kubernetes
+	> kubectl get deployment nginx-depl -o yaml	
+
+	# edit syntax
+	> kubectl edit deployment deploymentName
+
+	# delete syntax
+	> kubectl delete deployment deploymentName
+
+
+
+> routine n - get deployment
+	/*
+		Notes:
+	*/
+	> kubectl get deployment
+
+
+
+> routine n - get replica set
+	/*
+		Notes:
+			- this is another layer which is automatically managed by kubernetes deployment
+			- replicaset
+				- basically manage the replicas of a pod
+				- you, in practice, will never have to create replicaset or delete or update in anyway. You're gonna be working with deployment component directly
+			- deployment
+				- manages a replicaset
+			- replicaset
+				- manages all the replicas of that pod
+			- pod
+				- is an abstraction of a container
+			- everything below deployment is/should be managed automatically by kubernetes
+	*/
+	> kubectl get replicaset
+
+
+
+> routine n - edit a deployment
+	/*
+		Notes:
+			- use this to edit deployment when its already running
+				- i was able to follow in tutorial where first its just 1 replica and we made it 2 after updating the content
+	*/
+	# this will open a notepad, in the tutorial she was editing in the terminal
+	# you will see the autogenerted configuration file of deployment
+	> kubectl edit deployment nameOfDeployment
+	> kubectl edit deployment nginx-depl
+	> kubectl get deployment
+	> kubectl get pod
+	> kubectl get replicaset
+
+
+
+> routine n - logs
+	/*
+		Notes:
+			- shows you what the application running inside the pod actually log
+	*/
+	> kubectl get pod
+	> kubectl logs podName
+	# you will get nothing yet because nginx didn't log anything yet
+	> kubectl logs nginx-depl-6bdcdf7f5
+
+	# lets create another deployment
+	> kubectl create deployment mongo-depl --image=mongo
+	> kubectl get pod
+	> kubectl logs mongo-depl-558475c797-472fp
+	> kubectl describe pod mongo-depl-558475c797-472fp
+
+
+
+> routine n - describe pod
+	/*
+		Notes:
+	*/
+	> kubectl describe pod podName
+
+
+
+> routine n - exec - get inside the terminal of the container
+	/*
+		Notes:
+	*/
+	> kubectl get pod
+	> kubectl exec -it podName -- bin/sh
+	> kubectl exec -it mongo-depl-558475c797-472fp -- bin/sh
+	> exit
+
+
+
+> routine n - delete pods - you should delete the deployment
+	/*
+		Notes:
+	*/
+	> kubectl get deployment
+	> kubectl get pod
+	> kubectl delete deployment deploymentName
+	> kubectl delete deployment mongo-depl
+	> kubectl get deployment
+	> kubectl get pod
+	> kubectl get replicaset
+	> kubectl delete deployment nginx-depl
+	> kubectl get deployment
+	> kubectl get pod
+	> kubectl get replicaset
+
+
+
+> routine n - apply - creating deployment
+	/*
+		Notes:
+			- apply
+				- this is how you create a deployment when using a configuration file
+				-
+				- basically takes the configuration file as a parameter and does whatever you have written there
+				- kubectl apply -f [file name]
+	*/
+	> kubectl apply -f config-file.yaml
+	> kubectl apply -f nginx-deployment.yaml
+	# windows terminal only
+	> type nul > nginx-deployment.yaml
+	> notepad nginx-deployment.yaml
+		# code explanation https://youtu.be/X48VuDVv0do?t=3553
+		# note that yaml use spaces rather than tab and they use 2 spaces by default
+		code
+			apiVersion: apps/v1
+			kind: Deployment 							# specify what I want to create, I want to create a Deployment
+			metadata:
+			  name: nginx-deployment 					# the name of the deployment
+			  labels:
+			    app: nginx
+			spec: 										# specification for the deployment you want to apply for the component
+			  replicas: 1 								# how many replicas
+			  selector:
+			    matchLabels:
+			      app: nginx
+			  template: 								# blueprint for the pods
+			    metadata:
+			      labels:
+			        app: nginx
+			    spec: 									# specification for pod
+			      containers:
+			      - name: nginx
+			        image: nginx:1.16
+			        ports:
+			        - containerPort: 80
+
+	> kubectl apply -f nginx-deployment.yaml
+	> kubectl get deployment
+	> kubectl get replicaset
+	> kubectl get pod
+
+	# now, if you want to change anythin in that deployment
+	# you just
+	> notepad nginx-deployment.yaml
+	or
+	> nano nginx-deployment.yaml
+	# apply again
+	> kubectl apply -f nginx-deployment.yaml
+	> kubectl get pod
+	> kubectl get deployment
+	> kubectl get replicaset
+
+	# delete configuration file
+	> kubectl delete -f [file name]
+
+
+
+https://youtu.be/X48VuDVv0do?t=3730
+https://youtu.be/X48VuDVv0do?t=3941
+> routine n - create simple yaml configuration file in kubernetes
+	/*
+		Notes:
+			- yaml online validator
+				- check in google when your trying to make yml so your code is correct just like json beautifier
+			- metadata part contains the labels
+			- specification part contains selectors
+			- using kubectl apply and kubectl delete
+				- using both of these basically you can work with the configuration files
+			- 
+			- each configuration file has 3 parts
+				- metadata
+				- specification
+				- status
+					- auto generated/added by kubernetes
+			- template
+				- inside the template is the configuration for a pod
+				- so pod should have its own configuration inside of deployments configuraion
+				- this will be the blueprint of the pod
+					- this will say what image should it be based on
+					- which port it should open
+					- what is going to be thename of the container
+			- labels and selectors
+				- the way the connection is establish is using labels and selectors
+				- metadata contains the labels
+				- specification contains selector
+			- metadata
+				- you give a kay-value pair, it could be any key value pair that you can think of and that label sticks to that component
+				- 
+			- connecting services to deployments - Service selector
+				- service > spec > selector > app > nginx
+					- this is pointing (makes a connection) to 	
+						- deployment > metadata > labels > app > nginx
+						OR its pods
+						- deployment > spec > template > metadata > labels > app > nginx
+			- Service ports
+				- port
+					- eg port: 80
+					- this is where the service is accessible at
+					- so if you have another service that need to send somthing on this port, it needs to send it on port 80
+				- targetPort
+					- this is where the pod port is listening
+			- Service targetPort AND Deployment containerPort
+				- both of these should match
+			- Deployment > spec > selector > matchLabels > app > nginx
+				- this match to
+				- Deployment > spec > template > metadata > labels > app > nginx
+				- this way, deployment will know which pods belong to it
+	*/
+	# sample code
+		apiVersion: apps/v1									# apiVerion value. You cannot arbitrarily define it with any value; it needs to adhere to the Kubernetes API schema
+		kind: Deployment 									# Deployment, Service, Secret, ConfigMap, ...
+		metadata:
+		  name: nginx-deployment
+		  labels: 
+		    app: nginx 										# this should match part2222222
+		spec:
+		  replicas: 2
+		  selector: 
+		    matchLabels:
+		      app: nginx 									# this should match part1111111
+		  template:  										# template here is the blueprint for a pod
+		    metadata:
+		      labels:
+		        app: nginx 									# this should match part1111111
+		    spec:
+		      containers:
+		      - name: nginx 								# this is just a name for your container
+		        image: nginx:1.16
+		        ports:
+		        - containerPort: 8080 						# this should match part3333333
+	# sample code
+		apiVersion: v1
+		kind: Service
+		metadata:
+		  name: nginx-service
+		spec:
+		  selector: 
+		    app: nginx 										# this should match part2222222
+		  ports: 
+		    - protocol: TCP
+		      port: 80 										# Service Port. This is the port where the Service will listen within the cluster. When traffic is directed to the Service's port, the Service forwards that traffic to the targetPort of the pods it selects based on its selector.
+		      targetPort: 8080 								# this should match part3333333. Container Port of Deployment This is where the pod port is listening. This is the port on which the containers in the pods being served by the Service are listening
+
+	> kubectl get service
+	> kubectl get pod -o wide
+	# create deployment using configuration file
+	> kubectl apply -f nginx-deployment.yaml
+	# create service using configuration file
+	> kubectl apply -f nginx-service.yaml
+
+	# check data and validate the service has the right parts 
+	> kubectl describe service nginx-service
+	> kubectl get pod -o wide
+
+	# check status which kubernetes automatically generates in yaml format
+	# this is how you get the auto generated status by kubernetes which actually resides in etcd
+	# this is the updated configuration of your deployment that actually resides in etcd
+	# all of this is automatically edited and updated by kubernetes
+	> kubectl get deployment nginx-deployment -o yaml
+	# if you want a reference someday
+	# you will need to remove some details to reuse it
+	> kubectl get deployment nginx-deployment -o yaml > nginx-deployment-result.yaml
+
+	# delete configration files
+	> kubectl delete -f nginx-deployment.yaml
+	> kubectl delete -f nginx-service.yaml
+	> kubectl get pod -o wide
+	> kubectl get replicaset
+	> kubectl get deployment
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+			---
+				 - in yaml, 3 dashes is basically a syntax for document seperation in yaml
+				 	- that means you can put more in a single file rather than seperating it if its related
+	*/
+	# get all the components that are inside the cluster
+	> kubectl get all
+
+	# create a mongodb deployment
+
+	# secret configuration
+	# echo -n 'username' | base64 in linux
+	# or windows powershell [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("username")) to get base64 has
+	- mongo-secret.yaml
+		apiVersion: v1
+		kind: Secret
+		metadata:
+		  name: mongodb-secret
+		type: Opaque
+		data:
+		  mongo-root-username: dXNlcm5hbWU=
+		  mongo-root-password: cGFzc3dvcmQ=
+
+	# deployment configuration
+	- mongo.yaml
+		apiVersion: apps/v1 									# apiVerion value. You cannot arbitrarily define it with any value; it needs to adhere to the Kubernetes API schema
+		kind: Deployment
+		metadata:
+		  name: mongodb-deployment
+		  labels:
+		    app: mongodb 										# this should match part2222222
+		spec:
+		  replicas: 1
+		  selector:
+		    matchLabels:
+		      app: mongodb 										# this should match part1111111
+		  template: 											# template here is the blueprint for a pod
+		    metadata:
+		      labels:
+		        app: mongodb 									# this should match part1111111
+		    spec:
+		      containers: 										# this is just a name for your container
+		        - name: mongodb
+		          image: mongo
+		          ports:
+		            - containerPort: 27017 						# this should match part3333333
+		          env:
+		            - name: MONGO_INITDB_ROOT_USERNAME
+		              valueFrom:
+		                secretKeyRef:
+		                  name: mongodb-secret
+		                  key: mongo-root-username
+		            - name: MONGO_INITDB_ROOT_PASSWORD
+		              valueFrom:
+		                secretKeyRef:
+		                  name: mongodb-secret
+		                  key: mongo-root-password
+		---
+		apiVersion: v1
+		kind: Service
+		metadata:
+		  name: mongodb-service
+		spec:
+		  selector:
+		    app: mongodb 										# this should match part2222222
+		  ports:
+		    - protocol: TCP
+		      port: 27017 										# This is the port where the Service will listen within the cluster. When traffic is directed to the Service's port, the Service forwards that traffic to the targetPort of the pods it selects based on its selector.
+		      targetPort: 27017 								# this should match part3333333. This is where the pod port is listening. This is the port on which the containers in the pods being served by the Service are listening
+
+
+	# apply secret first before deployment
+	> kubectl apply -f mongo-secret.yaml
+	> kubectl get secret
+	# apply deployment
+	> kubectl apply -f mongo.yaml
+	> kubectl get all
+	# it might take some time to create it
+	> kubectl get pod --watch
+
+
+	# create service configuration
+	# in tutorial, she added --- in the later part as to why she run the command below again
+	> kubectl apply -f mongo.yaml
+	> kubectl get service
+	> kubectl describe service mongodb-service
+	> kubectl get pod -o wide
+
+
+
+	# create mongo express deployment and service configration
+
+	- mongo-configmap.yaml
+		apiVersion: v1
+		kind: ConfigMap
+		metadata:
+		  name: mongodb-configmap
+		data:
+		  database_url: mongodb-service
+
+
+	- mongo-express.yaml
+		apiVersion: apps/v1
+		kind: Deployment
+		metadata:
+		  name: mongo-express
+		  labels:
+		    app: mongo-express
+		spec:
+		  replicas: 1
+		  selector:
+		    matchLabels:
+		      app: mongo-express
+		  template:
+		    metadata:
+		      labels:
+		        app: mongo-express
+		    spec:
+		      containers:
+		        - name: mongo-express
+		          image: mongo-express
+		          ports:
+		            - containerPort: 8081
+		          env:
+		            - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+		              valueFrom:
+		                secretKeyRef:
+		                  name: mongodb-secret
+		                  key: mongo-root-username
+		            - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+		              valueFrom:
+		                secretKeyRef:
+		                  name: mongodb-secret
+		                  key: mongo-root-password
+		            - name: ME_CONFIG_MONGODB_SERVER
+		              valueFrom:
+		                configMapKeyRef:
+		                  name: mongodb-configmap
+		                  key: database_url
+		---
+		apiVersion: v1
+		kind: Service
+		metadata:
+		  name: mongo-express-service
+		spec:
+		  selector:
+		    app: mongo-express
+		  type: LoadBalancer
+		  ports:
+		    - protocol: TCP
+		      port: 8081 										# This is the port on which the service will be exposed internally within the Kubernetes cluster.
+		      targetPort: 8081 									# This is the port to which the traffic will be forwarded inside the pod.
+		      nodePort: 30000 									# This is the port on each node of the Kubernetes cluster on which the service will be exposed externally. It allows external traffic to reach your service.
+
+
+
+
+	# 
+	> kubectl apply -f mongo-configmap.yaml
+	> kubectl apply -f mongo-express.yaml
+	# it might take some time to create it
+	> kubectl get pod
+	> kubectl logs nameOfPod
+
+
+
+	# create external service
+	# like before in tutorial, later na niya gi butang ang ---
+	> kubectl apply -f mongo-express.yaml
+	> kubectl get service
+
+	> kubectl get service
+	# TYPE
+		# ClusterIP is default when you don't assign a type in service
+		# ClusterIP and LoadBalancer will auto assign internal ip
+		# LoadBalancer assigns additional External IP 
+
+	# command below will basically assign my external service a public ip address
+	# this should open your browser showing mongo express
+	# admin and pass for default
+	> minikube service mongo-express-service
+
+
+
+
+https://youtu.be/X48VuDVv0do?t=6376
+> routine n - namespaces
+	/*
+		Notes:
+			- namespace
+				- in kubernetes cluster, you can organize resource in namespaces
+				- you can have multiple namespaces in a cluster
+				- think of namespace as a virtual cluster inside a cluster
+				- kubectl get namespace
+					- kube-system
+						- do not create or modify this
+					- kube-public
+						- contain publicly accessible data
+						- configmap which contains cluster information
+					- kube-node-lease
+						- holds information about the hearbeats of nodes 
+					- default
+						- the one that you're going to be using to create the resources at the beginning if you haven't created a new namespace
+			* when you create a cluster, by default, kubernetes gives you namespaces out of the box
+
+			- namespace uses
+				* imagine you have only default namespace which is provided by kubernetes and you create all your resources in that default namespace
+					- if you have a complex application that has multiple deployments which create replicas of many pods and have resources like services and configMaps and etc
+					- very soon your default namespace is going to be filled with different components and it will be really difficult to have an overview of what's in there
+				1. Structure your components. resources grouped in namespaces
+					- example you can have a database namespace where you deploy your database and all its required resources and then you can have a monitoring namespace, elastic stack namespace, nginx-ingress namespace
+				2. Avoid conflicts. if you have multiple teams. Conflicts: many teams, same application
+					- you can use namespaces so that each team can work in their own namespace without disrupting the other
+				3. Share services. resource sharing
+					- staging and development
+					- blue/green deployment
+				4. Access and Resource Limits on namespaces
+
+			- characteristics of namespace to consider before deciding how to group and how to use namespaces
+				- you can't access most resource from another namespace. Each namespace must define own configMap, secret
+				- 
+
+
+	*/
+	# check default namespace created
+	> kubectl get namespace
+	# get info
+	> kubectl cluster-info
+
+	# create own namespace
+	> kubectl create namespace my-namespace
+	# other way to create namespace is to use configuration file
+		eg code
+			apiVersion: v1
+			kind: ConfigMap
+			metadata: 
+			  name: mysql-configmap
+			  namespace: my-namespace
+			data:
+			  db_url: mysql-service.database
+
+	# create component in a namespace by command line
+	> kubectl apply -f mysql-configmap.yaml --namespace=my-namespace
+	# OR by configuration file
+	> type nul > mysql-configmap.yaml
+		eg code
+			apiVersion: v1
+			kind: ConfigMap
+			metadata: 
+			  name: mysql-configmap
+			  namespace: my-namespace
+			data:
+			  db_url: mysql-service.database
+	> kubectl apply -f mysql-configmap.yaml 
+	# get the component that i created in this specific namespace
+	> kubectl get configmap -n my-namespace
+
+	# change active namespace
+	# kubectn doesn't have any out of the box solution for that, that is why you need to download a tool
+	# you need to download kubectx for this
+	# in mac, she use brew to intall this
+	# in windows right now I used choco, not sure yet for linux
+	> choco install kubectx
+	# verify installtion
+	> kubectx
+	# Install kubens (Namespace Switcher)
+	> choco install kubens
+
+	# check the active namespace
+	> kubens
+	# change the active namespace
+	> kubens my-namespace
+	> kubens
+
+
+
+https://youtu.be/X48VuDVv0do?t=7313
+> routine n - nnn
+	/*
+		Notes:
+			- ingress
+				- making a ingress external so it can be access in the browser properly
+					- so that service component stays internal
+				- making a http://124.89.101.2:35010 into https://my-app.com
+				- if the request comes from the browser, its going to first reach ingress and then ingress will redirect it to the internal service and then it will eventually end up with the pod
+			- how to configure ingress in your cluster
+				- implementation = ingress controller
+			- ingress controller
+				- to evaluate all the rules that you have defined in your cluster
+				- manage all the redirections
+				- entrypoint to cluster
+			* in order to install this implementation of ingress in your cluster
+				- you have to decide which one of many different 3rd party implementations
+				- there are different kinds of ingress controllers to choose from
+					- k8s nginx ingress controller
+						- this one is from kubernetes itself
+
+			- flow
+				ingress controller pod > my-app ingress > my-app service > my-app pod
+	*/
+	# external service VS ingress
+	# external service code
+		apiVersion: v1
+		kind: Service
+		metadata:
+		  name: myapp-external-service
+		spec:
+		  selector:
+		    app: myapp
+		  type: LoadBalaner
+		  ports:
+		    - protocol: TCP
+		      port: 8080
+		      targetPort: 8080
+		      nodePort: 35010 			# access in browser like http://124.89.101.2:35010
+		      							# nodePort is removed when you use ingress as shown below
+	# ingress code
+		apiVersion: networking.k8s.io/v1beta1
+		kind: Ingress
+		metadata:
+		  name: myapp-ingress
+		spec:
+		  rules:
+		  - host: myapp.com 			# access in browser like http://my-app.com
+		    http:
+		      paths: 					# paths are like ______ of http://my-app.com/______
+		      - backend:
+		        serviceName: myapp-internal-service
+		        servicePort: 8080
+
+	
+	# internal service & ingress
+	# internal service code
+		apiVersion: v1
+		kind: Service
+		metadata:
+		  name: myapp-internal-service 					# should match part111111
+		spec:
+		  selector:
+		    app: myapp
+		  ports:
+		    - protocol: TCP
+		      port: 8080 								# should match part222222
+		      targetPort: 8080
+	# ingress code
+		apiVersion: networking.k8s.io/v1beta1
+		kind: Ingress
+		metadata:
+		  name: myapp-ingress
+		spec:
+		  rules:
+		  - host: myapp.com 			 				# this should be a valid domain address
+		    http:
+		      paths: 					
+		      - backend:
+		        serviceName: myapp-internal-service 	# should match part111111
+		        servicePort: 8080 						# should match part222222
+
+
+
+	# ingress controller setup in minikube. because there are many ways to set this up in different env eg aws
+	# install ingress in minikube
+	# enable minikube addons
+	> minikube addons enable ingress
+	> kubectl get pod -n kube-system
+
+	# install minikube dashboard
+	# this will open the dashboard in the browser
+	> minikube dashboard
+	> kubectl get ns
+
+	# show all components that i have in kubernetes dashboard
+	> kubectl get all -n kubernetes-dashboard
+	# create ingress rule in order to access the k8s dashboard using some hostname
+	> type nul > dashboard-ingress.yaml
+	> code dashboard-ingress.yaml
+		code. note that her code in tutorial is depreciated, below update by chatgpt
+			apiVersion: networking.k8s.io/v1
+			kind: Ingress
+			metadata:
+			  name: dashboard-ingress
+			  namespace: kubernetes-dashboard
+			spec:
+			  rules:
+			    - host: dashboard.com
+			      http:
+			        paths:
+			          - path: /
+			            pathType: Prefix
+			            backend:
+			              service:
+			                name: kubernetes-dashboard
+			                port:
+			                  number: 80
+
+	# create rule
+	> kubectl apply -f dashboard-ingress.yaml
+	# get ingress in namespace. copy the ip address. wait if its still not showing. now mine is 172.21.61.153
+	> kubectl get ingress -n kubernetes-dashboard
+	# update host file linux style
+	> sudo vim /etc/hosts
+	# windows
+	> notepad C:\Windows\System32\drivers\etc\hosts
+		code added below
+		172.21.61.153 	dashboard.com
+	# windows clear dns if needed, i did not do this
+	> ipconfig /flushdns
+	# visit dashboard.com in browser
+
+	# check ingress default backend
+	> kubectl get ingress -n kubernetes-dashboard
+	> kubectl describe ingress nameOfIngress -n nameOfNamespace
+	> kubectl describe ingress dashboard-ingress -n kubernetes-dashboard
+
+	# define multiple paths for same host
+	> type nul > simple-fanout-example.yaml
+	> code simple-fanout-example.yaml
+		code base on chatgpt update version
+			apiVersion: networking.k8s.io/v1
+			kind: Ingress
+			metadata:
+			  name: simple-fanout-example
+			  annotations:
+			    nginx.ingress.kubernetes.io/rewrite-target: /
+			spec:
+			  rules:
+			    - host: myapp.com
+			      http:
+			        paths:
+			          - path: /analytics
+			            pathType: Prefix
+			            backend:
+			              service:
+			                name: analytics-service
+			                port:
+			                  number: 3000
+			          - path: /shopping
+			            pathType: Prefix
+			            backend:
+			              service:
+			                name: shopping-service
+			                port:
+			                  number: 8080
+	> type nul > name-virtual-host-ingress.yaml
+	> code name-virtual-host-ingress.yaml
+		code base on chatgpt update version
+			apiVersion: networking.k8s.io/v1
+			kind: Ingress
+			metadata:
+			  name: name-virtual-host-ingress
+			spec:
+			  rules:
+			    - host: analytics.myapp.com
+			      http:
+			        paths:
+			          - backend:
+			              service:
+			                name: analytics-service
+			                port:
+			                  number: 3000
+			    - host: shopping.myapp.com
+			      http:
+			        paths:
+			          - backend:
+			              service:
+			                name: shopping-service
+			                port:
+			                  number: 8080
+
+
+	# configuration tls certificate https
+	> type nul > tls-example-ingress.yaml
+	> code tls-example-ingress.yaml
+		code base on chatgpt update version
+			apiVersion: networking.k8s.io/v1
+			kind: Ingress
+			metadata:
+			  name: tls-example-ingress
+			spec:
+			  tls:
+			    - hosts:
+			        - myapp.com
+			      secretName: myapp-secret-tls 			# reference of a secret that you have to create in a cluster that holds that tls certificate
+			  rules:
+			    - host: myapp.com
+			      http:
+			        paths:
+			          - path: /
+			            pathType: Prefix
+			            backend:
+			              service:
+			                name: myapp-internal-service
+			                port:
+			                  number: 8080
+	# code for the secrect sample
+		code
+			apiVersion: v1
+			kind: Secret
+			metadata: 
+			  name: myapp-secret-tls
+			  namespace: default
+			data:
+			  tls.crt: base64 encoded cert
+			  tls.key: base64 encoded key
+			type: kubernetes.io/tls
+
+
+
+https://youtu.be/X48VuDVv0do?t=8659
+> routine n - helm
+	/*
+		Notes:
+			- helm
+				- helm changes a lot from version to version
+				- package manager for kubernetes
+				- templating engine
+					- define a common blueprint
+					- dynamic values are replaced by placeholders
+				- release management
+			- helm chart
+				- bundle of yaml file that was package by helm
+				- create your own helm charts with helm
+				- push them to helm repository
+				- download and use existing ones
+	*/
+
+
+
+https://youtu.be/X48VuDVv0do?t=9489
+> routine n - nnn
+	/*
+		Notes:
+			- volumes
+				- persist data in kubernetes
+				- is just a directory with some data
+				- are accessible in containers in a pod
+				- 
+			- 3 components of kubernetes storage
+				- persistent volume
+					- a cluster resource just like ram or cpu that is used to store data
+					- created via yaml file
+				- persistent volume claim - pvc
+					- also created with yaml file
+					- pvc claims a volume with certain storage size or capacity which is defined in the persistent volume claim and some additional characterristics
+				- storage class
+					- basically creates or provisions persistent volumes dynamically whenever pvc claims it 
+	*/
+
+
+
+
+
+
+
+
+
+
+
+
+https://youtu.be/X48VuDVv0do?t=10717
+> routine n - k8s statefulset
+	/*
+		Notes:
+			- statefulset
+				- a k8s component that is used specifically for stateful application
+			- stateful application examples
+				- keep records
+				- all databases
+					- mysql
+					- elasticsearch
+					- mongodb
+					...
+			- stateless applications
+				- don't keep records
+	*/
+
+
+
+
+
+
+
+https://youtu.be/X48VuDVv0do?t=11625
+> routine n - k8s services explained
+	/*
+		Notes:
+			- service
+				- each pod has its own static ip address and you call that service
+			- types of services in k8s
+				- ClusterIP
+					- default type
+						- meaning its the default type whenyou create a service and not specifying the type
+					- 
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+

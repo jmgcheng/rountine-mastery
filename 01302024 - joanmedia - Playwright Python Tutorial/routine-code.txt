@@ -1,0 +1,3386 @@
+https://www.youtube.com/playlist?list=PLYDwWPRvXB8_W56h2C1z5zrlnAlvqpJ6A
+
+
+> neil degrasse explain style
+	- playwright can be use for testing a website
+		- like crawl a specific page and check("assert") if the value of a paragraph is showing if the code use the login form incorrectly
+			- though you can login properly if you want using the code
+			- but playwright can do more than just testing
+	- selenium is being compared to playwright for testing purposes
+		- but playwright is so far way better base 
+			- on how easy to set it up
+			- on the features it offers
+			- on cross browser
+			- on cross platform
+			- on cross language. Python, Javascript, Java, .Net
+			- on screenshot
+			- on async style coding to wait for the page results
+			- on emulating mobile devices
+			- on tracing features so you can trace each event and have a screenshot of each event for testing proof
+			- on playwright inspector
+			- on codegen while using playwright inspector
+			- on testing in different browser at the same time
+			- on testing an api and do crud and check the data
+			- and many more
+	- the problem with selenium is you need use an old version of a browser
+		- and your setup might break because of updates and you need to resetup everything again
+		- basically i dont want to use selenium just because its a headache to setup
+	- pip install playwright to install
+	- playwright install to install the browsers and other stuffs
+	- just use playwright class, code to launch a specific browser, code to go to a page, etc
+		- codegen can auto create these codes for you also if you let playwright inspector record your mouse and keyboard inputs
+	- you can run playwright in headless(you cannot see browser running) mode, or head mode so you can see how things are going
+	- you can run playwright and login through a website by making the code interact with the sites form and other elements
+	- run your code by command python file.py
+
+
+
+
+
+> routine n - installation
+	/*
+		Notes:
+	*/
+	> pip install playwright
+	# you need to do playwright install so that it will install its own browsers, libraries to record video, etc
+	> playwright install
+
+
+
+> routine n - sync style - simple open page and take screenshot
+	/*
+		Notes:
+	*/
+	- sync.py
+		from playwright.sync_api import sync_playwright
+
+		with sync_playwright() as p:
+		    browser = p.chromium.launch(headless=False)
+		    page = browser.new_page()
+		    page.goto("https://whatmyuseragent.com/")
+		    page.screenshot(path="demo.png")
+		    browser.close()
+
+	> python sync.py
+
+
+
+> routine n - async style - get page title
+	/*
+		Notes:
+	*/
+	- async.py
+		import asyncio
+		from playwright.async_api import async_playwright
+
+
+		async def main():
+		    async with async_playwright() as p:
+		        browser = await p.firefox.launch(headless=False)
+		        page = await browser.new_page()
+		        await page.goto("https://whatmyuseragent.com/")
+		        print(await page.title())
+		        await browser.close()
+
+		asyncio.run(main())
+
+	> python async.py
+
+
+
+> routine n - install pytest
+	/*
+		Notes:
+			- pytest
+				- a framework makes it easy to write small, readable tests, and can scale to support complex functional testing for applications and libraries
+			- chatgpt said
+				- playwright to check the frontend
+				- pytest to check the backend
+				- note sure if this is correct
+	*/
+	> pip install pytest-playwright
+
+
+
+> routine n - sync - check if page title is equal to value
+	/*
+		Notes:
+			- prefix test_ for each def is important
+	*/
+	- pytest/test_saucedemo.py
+		from playwright.sync_api import Page
+		import pytest
+
+		def test_title(page: Page):
+		    page.goto("https://www.saucedemo.com/")
+		    # check if page title visited is Swag Labs
+		    assert page.title() == "Swag Labs"
+
+	> pytest
+
+	# test using headed so you can see the browser open
+	> pytest --headed
+
+
+
+> routine n - sync - check if page title is equal to value AND check a different url has h3 with a value
+	/*
+		Notes:
+			- each def will be called when you run pytest in terminal
+				- this is why test_ prefix is important
+	*/
+	- pytest/test_saucedemo.py
+		from playwright.sync_api import Page
+		import pytest
+
+
+		def test_title(page: Page):
+		    page.goto("https://www.saucedemo.com/")
+		    assert page.title() == "Swag Labs"
+
+
+		def test_inventory(page: Page):
+		    page.goto("https://www.saucedemo.com/inventory.html")
+		    assert page.inner_text('h3') == "Epic sadface: You can only access '/inventory.html' when you are logged in."
+
+
+	# test using headed so you can see the browser open
+	> pytest --headed
+
+
+
+> routine n - pytest --base-url
+	/*
+		Notes:
+	*/
+	- pytest/test_saucedemo.py
+		...
+
+		def test_title(page: Page):
+		    page.goto("/")
+
+
+		def test_inventory(page: Page):
+		    page.goto("/inventory.html")
+		    ...
+
+
+	> pytest --headed --base-url https://www.saucedemo.com/
+
+
+
+> routine n - --browser
+	/*
+		Notes:
+			- test on both chromium and firefox
+	*/
+	> pytest --headed --base-url https://www.saucedemo.com/ --browser chromium --browser firefox
+
+
+
+> routine n - skip a browser for a specific def test - @pytest.mark.skip_browser
+	/*
+		Notes:
+	*/
+	- pytest/test_saucedemo.py	
+		from playwright.sync_api import Page
+		...
+
+		@pytest.mark.skip_browser("chromium")
+		def test_title(page: Page):
+		    ...
+
+		def test_inventory(page: Page):
+		    ...
+
+	> pytest --headed --base-url https://www.saucedemo.com/ --browser chromium --browser firefox
+
+
+
+> routine n - use a specific browser for a specific def test - @pytest.mark.only_browser
+	/*
+		Notes:
+	*/
+	@pytest.mark.only_browser("chromium")
+	def test_title(page: Page):
+	    ...
+
+
+
+> routine n - run in a real browser and not just playwright demo browsers - --browser-channel
+	/*
+		Notes:
+	*/
+	> pytest --headed --base-url https://www.saucedemo.com/ --browser-channel chrome
+
+
+
+> routine n - --tracing on
+	/*
+		Notes:
+			- --tracing on
+				- saves the result of test in your project folder in a zip file for each def
+	*/
+	> pytest --headed --base-url https://www.saucedemo.com/ --browser-channel chrome --tracing on
+
+	# check your project folder
+	project > test-results
+
+
+
+> routine n - check the result of --tracing on
+	/*
+		Notes:
+			- https://trace.playwright.dev/
+	*/
+	# option 1
+	- https://trace.playwright.dev/
+		- drag the zip file here
+
+
+	# option 2
+	> playwright show-trace .\test-results\pytest-test-saucedemo-py-test-title-chromium\trace.zip
+
+
+
+> routine n - pytest.ini
+	/*
+		Notes:
+			- pytest.ini
+				- this file allows you to have options in your terminal coded in a file so you dont have to in the terminal
+				- you need to be on the same directory for this to run
+	*/
+	- pytest/pytest.ini
+		[pytest]
+		addopts = --base-url https://www.saucedemo.com/ --browser firefox --browser chromium --headed --slowmo 1000 --tracing on
+
+	# running pytest should be in same directory
+	> cd pytest
+	projectfolder\pytest> pytest
+
+
+
+> routine n - codegen
+	/*
+		Notes:
+			- use this when you want to record your actions when visiting the target website and playwright will autogen the test code for you
+				- in their inspector, you can change the target programing language
+	*/
+	# to just open a browser then you enter the url manually
+	> playwright codegen 
+
+	#
+	> playwright codegen https://www.saucedemo.com/
+	# 2 window should open up
+		- chromium
+		- playwright inspector
+	# use chromium to do the actions in your target website
+	# playwright inspector will record and autogen the test code for you
+	# create new file pytest/codegendemo.py
+	# paste autogen code from playwright inspector in your new file
+
+	> pytest pytest\codegendemo.py
+
+
+
+> routine n - emulate device
+	/*
+		Notes:
+	*/
+	> playwright codegen --device="iPhone 13" https://www.saucedemo.com/
+
+
+
+> routine n - viewport
+	/*
+		Notes:
+	*/
+	> playwright codegen --viewport-size=800,600 https://www.saucedemo.com/
+
+
+
+> routine n - Emulate geolocation, language and timezone
+	/*
+		Notes:
+	*/
+	> playwright codegen --timezone="Europe/Rome" --geolocation="41.890221,12.492348" --lang="it-IT" bing.com/maps
+
+
+
+> routine n - async - checkbox
+	/*
+		Notes:
+			- https://github.com/JoanEsquivel/playwright-python-test-framework/blob/master/inputs/checkboxes.py
+			- BrowserContext
+				- is an isolated incognito-alike session within a browser instance
+				- it is recommended running each test scenario in its own new Browser context so that the browser state is isolated between the tests
+				- this happens out of the box for each test if you use Playwright Test, otherwise you can create it manually
+				- with context, you can also use .tracing 
+
+	*/
+	- inputs/checkboxes.py
+		# to run this: python3 inputs/checkboxes.py
+		import asyncio
+		from playwright.async_api import async_playwright, expect
+
+		async def main():
+		    async with async_playwright() as p:
+		        browser = await p.chromium.launch(headless=False)
+		        # create BrowserContext, an isolated incognito-alike session
+		        context = await browser.new_context()
+		        await context.tracing.start(screenshots=True, snapshots=True, sources=True)
+		        page = await context.new_page()
+
+		        await page.set_viewport_size({"width": 1800, "height": 1200})
+		        await page.goto("https://demoqa.com/checkbox")
+		        # -Actions
+		        await page.check('label[for="tree-node-home"]')
+		        await page.screenshot(path="screenshots/checkboxes.png")
+		        # -Assertions
+		        await expect(page.get_by_label("Home")).to_be_checked()
+		        await expect(page.locator("#result")).to_have_text("You have selected :homedesktopnotescommandsdocumentsworkspacereactangularveuofficepublicprivateclassifiedgeneraldownloadswordFileexcelFile")
+		        # -Stoping Tracing
+		        await context.tracing.stop(path="logs/trace.zip")
+		        # -Closing browser
+		        await browser.close()
+
+		asyncio.run(main())
+
+
+	> python inputs/checkboxes.py
+	> playwright show-trace logs/trace.zip
+
+
+
+> routine n - async - click button
+	/*
+		Notes:
+	*/
+	- inputs/clicks.py
+		# to run this: python3 inputs/clicks.py
+		import asyncio
+		from playwright.async_api import async_playwright, expect
+
+		async def main():
+		    async with async_playwright() as p:
+		        browser = await p.chromium.launch(headless=False)
+		        context = await browser.new_context()
+		        await context.tracing.start(screenshots=True, snapshots=True, sources=True)
+		        page = await context.new_page()
+
+		        await page.set_viewport_size({"width": 1800, "height": 1200})
+		        await page.goto("https://demoqa.com/buttons")
+
+		        # - Generic Click - Dynamic Selector
+		        button = page.locator("text=Click Me").nth(2)
+		        await button.click()
+		        await page.screenshot(path="screenshots/dynamicClick.png")
+		        # -Assertion
+		        await expect(page.locator("#dynamicClickMessage")).to_have_text("You have done a dynamic click")
+		        # - Double Click
+		        button = page.locator("text=Click Me").nth(0)
+		        await button.dblclick()
+		        await page.screenshot(path="screenshots/doubleClick.png")
+		        # -Assertion
+		        await expect(page.locator("#doubleClickMessage")).to_have_text("You have done a double click")
+		        # -Stoping Tracing
+		        await context.tracing.stop(path="logs/trace.zip")
+		        # -Closing browser
+		        await browser.close()
+		        # #- Right Click - Asking behavior at: https://github.com/microsoft/playwright-python/issues/1426
+		        # button = page.locator("text=Click Me").nth(1)
+		        # await button.click(button="right")
+		        # await page.screenshot(path="rightClick.png")
+		        # #-Assertion
+		        # await expect(page.locator("#doubleClickMessage")).to_have_text("You have done a right click")
+		        # #-Closing browser
+		        # await browser.close()
+
+		asyncio.run(main())
+
+	> python inputs/clicks.py
+	> playwright show-trace logs/trace.zip
+
+
+
+
+
+> routine n - async - options
+	/*
+		Notes:
+	*/
+	- inputs/options.py
+		# to run this: python3 inputs/options.py
+		import asyncio
+		from playwright.async_api import async_playwright, expect
+
+		async def main():
+		    async with async_playwright() as p:
+		        browser = await p.chromium.launch(headless=False)
+		        context = await browser.new_context()
+		        await context.tracing.start(screenshots=True, snapshots=True, sources=True)
+		        page = await context.new_page()
+
+		        await page.set_viewport_size({"width": 1800, "height": 1200})
+		        await page.goto("https://demoqa.com/select-menu")
+
+		        # -Actions
+		        await page.select_option('select#cars', ['volvo', 'saab', 'audi'])
+		        await page.screenshot(path="screenshots/options.png")
+		        # -Stoping Tracing
+		        await context.tracing.stop(path="logs/trace.zip")
+		        # -Closing browser
+		        await browser.close()
+
+		asyncio.run(main())
+
+	> python inputs/options.py
+	> playwright show-trace logs/trace.zip		
+
+
+
+> routine n - async - radio buttons
+	/*
+		Notes:
+	*/
+	- inputs/radio-button.py
+		# to run this: python3 inputs/radio-button.py
+		import asyncio
+		from playwright.async_api import async_playwright, expect
+
+		async def main():
+		    async with async_playwright() as p:
+		        browser = await p.chromium.launch(headless=False)
+		        context = await browser.new_context()
+		        await context.tracing.start(screenshots=True, snapshots=True, sources=True)
+		        page = await context.new_page()
+
+		        await page.set_viewport_size({"width": 1800, "height": 1200})
+		        await page.goto("https://demoqa.com/radio-button")
+
+		        # -Actions
+		        await page.check("#yesRadio", force=True)
+		        await page.screenshot(path="screenshots/radioButton.png")
+		        # -Assertions
+		        await page.is_checked("#yesRadio") is True
+		        await expect(page.locator(".text-success")).to_have_text("Yes")
+		        # -Stoping Tracing
+		        await context.tracing.stop(path="logs/trace.zip")
+		        # -Closing browser
+		        await browser.close()
+
+		asyncio.run(main())
+
+	> python inputs/radio-button.py
+	> playwright show-trace logs/trace.zip
+
+
+
+
+> routine n - api testing
+	/*
+		Notes:
+			- https://github.com/JoanEsquivel/testing-lists
+				- note that his first test was done locally using this repo
+	*/
+	# i was not able to run his local site for test
+		> git clone https://github.com/JoanEsquivel/testing-lists.git
+		> cd testing-lists
+		> npm i
+		> npm start
+		# App runs on localhost:3000
+
+
+	# check video for now
+		https://www.youtube.com/watch?v=2eNKNx8Va5s&list=PLYDwWPRvXB8_W56h2C1z5zrlnAlvqpJ6A&index=5
+
+
+
+
+> routine n - crud
+	/*
+		Notes:
+	*/
+	# check video for now
+		https://www.youtube.com/watch?v=_i-XNZSSa5Q&list=PLYDwWPRvXB8_W56h2C1z5zrlnAlvqpJ6A&index=6
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+

@@ -1,0 +1,5294 @@
+https://www.youtube.com/watch?v=ZyhVh-qRZPA&list=PL-osiE80TeTsWmV9i9c58mdDCSskIFdDS&index=1
+	- note 
+		- he only use jupyter here to easily visualize what we are doing in the data using pandas
+		- he has another tutorial on how to use jupyter effectively
+			- https://www.youtube.com/watch?v=HW29067qVWk
+
+			
+
+
+
+> neil degrasse explain style
+	- you need the python pandas library if you want to manipulate data easily
+	- picture this in your head
+		> get data using pandas or crawl > transform some data using pandas > save the data to somewhere using a panda
+		- as you can see, pandas is very important
+	- some examples of how you can load a data by
+		- df = pd.DataFrame(aDictionary)
+		- df = pd.read_excel('c://path-to-an-excel-file.xslx')
+		- df = pd.json_normalize(aJson)
+		- df = pd.read_sql_query(f'SELECT * FROM {table}', mssql_conn)
+		- df = and many more
+	- an examples of manipulating data
+		- df['FullName'] = df['FirstName'] + ' ' + df['LastName']
+	- an example of saving the data
+		- engine = sqlalchemy.create_engine(connection_string)
+		- df.to_sql(name='tableName', con=engine, index=False, if_exists='replace')
+	- you can use jupyter to practice a lot of data manipulation of your df to easily master pandas library
+
+
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+
+
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+	> python -m venv env
+	> env\Scripts\activate
+
+
+
+
+> routine n - install pandas and jupyter
+	/*
+		Notes:
+			- jupyter allows you to visualize your data much easily when using print
+	*/
+	> pip install pandas
+	> pip install jupyterlab
+	> pip install jupyter notebook
+
+
+
+> routine n - start jupyter
+	/*
+		Notes:
+	*/
+	> jupyter notebook
+	# this will auto open a browser showing you jupyter
+	# or check http://localhost:8888/tree
+
+
+
+> routine n - create new notebook in jupyter
+	/*
+		Notes:
+	*/
+	new > notebook
+
+
+
+> routine n - run a line in jupyter
+	/*
+		Notes:
+	*/
+	import pandas as pd
+	# shift + enter
+
+
+
+> routine n - load a dataframe using a csv file
+	/*
+		Notes:
+			- df
+				- dataframe is basically just rows and columns of data
+	*/
+	df = pd.read_csv('data/survey_results_public.csv')
+	# shift + enter
+
+
+
+> routine n - print/show inside of dataframe
+	/*
+		Notes:
+	*/
+	df
+	# shift + enter
+	# no need print()
+	# this is concatenated by default just to give us a short overview of the data
+		- meaning row and field names are not complete
+		- by default it will display 20 columns
+	#
+				Respondent 		MainBranch 		Hobbyist 		...
+		0 		1 				...				...				...
+		1 		2 				...				...				...
+
+
+
+> routine n - load the schema of df
+	/*
+		Notes:
+			- the sample we have had a schema
+	*/
+	schema_df = pd.read_csv('data/survey_results_schema.csv')
+	schema_df
+
+
+
+> routine n - display how many rows and columns your df have
+	/*
+		Notes:
+	*/
+	df.shape
+	# (888883, 85) # note that this is a tuple
+	# (rows, columns)
+
+
+
+> routine n - restart and run all
+	/*
+		Notes:
+			- if your jupyter textbox seems to be slowly cutoff, you can rerun everything
+	*/
+	kernel > Restart & Run All
+
+
+
+> routine n - df.info()
+	/*
+		Notes:
+			- info()
+				- shows row, column, as well as data types
+			- datatypes
+				- object
+					- most of the time string
+				- int64
+					- int
+				- float64
+					- float
+				- 
+	*/
+	df.info()
+
+
+
+> routine n - see all the columns
+	/*
+		Notes:
+	*/
+	pd.set_option('display.max_columns', 85) 
+	df
+
+
+
+> routine n - see all the rows
+	/*
+		Notes:
+	*/
+	pd.set_option('display.max_rows', 85)
+
+
+
+
+> routine n - df.head()
+	/*
+		Notes:
+	*/
+	# display first 5, default
+	df.head()
+	# display first 10
+	df.head(10)
+
+
+
+> routine n - df.tail()
+	/*
+		Notes:
+	*/
+	# display last 5
+	df.tail()
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+> routine n - snippets sample data
+	/*
+		Notes:
+	*/
+	person = {
+		"first": "Corey",
+		"last": "Schafer",
+		"email": "CoreyMSchafer@gmail.com"
+	}
+	people = {
+		"first": ["Corey"],
+		"last": ["schafer"],
+		"email": ["CoreyMSchafer@gmail.com"]
+	}
+	people = {
+		"first": ["Corey", "Jane", "John"],
+		"last": ["Schafer", "Doe", "Doe"],
+		"email": ["CoreyMSchafer@gmail.com", "JadeDoe@email.com", "JohnDoe@email.com"]
+	}
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+	people['email']
+	# ['CoreyMSchafer@gmail.com', 'JadeDoe@email.com', 'JohnDoe@email.com']
+
+	import pandas as pd
+	df = pd.DataFrame(people)
+	df
+	# shows table like similar to df = pd.read_csv('data/survey_results_public.csv')
+	#
+			first		last 		email
+		0 	Corey 		Schafer 	Co....
+		1 	...
+		2 	...
+
+	df['email']
+	#
+		0 		Corey.....com
+		1 		Jane....com
+		... 	...
+		Name: email, dtype: object
+
+	df.email
+	#
+		0 		Corey.....com
+		1 		Jane....com
+		... 	...
+		Name: email, dtype: object
+	# almost the same result as ['email']. Much better to use ['email'] style
+
+	type(df['email'])
+	#
+		pandas.core.series.Series
+	# basically just a list of data but has more functionality
+
+	df[['email']]
+	#
+			email
+		0	CoreyMSchafer@gmail.com
+		1	JadeDoe@email.com
+		2	JohnDoe@email.com
+	# index here is the 0, 1, 2
+
+	df[['last', 'email']]
+	#
+			last		email
+		0	Schafer		CoreyMSchafer@gmail.com
+		1	Doe			JadeDoe@email.com
+		2	Doe			JohnDoe@email.com	
+	# index here is the 0, 1, 2
+	# this is how you show and filter column style
+
+	df.columns
+	#
+		Index(['first', 'last', 'email'], dtype='object')
+
+	df.iloc[0]
+	#
+		first                      Corey
+		last                     Schafer
+		email    CoreyMSchafer@gmail.com
+		Name: 0, dtype: object
+	# index here is the first, last, email
+	# this is how you show and filter row style
+	# iloc searching by interger by location
+	# loc, searching by label
+
+	df.iloc[[0, 1]]
+	#
+			first	last		email
+		0	Corey	Schafer		CoreyMSchafer@gmail.com
+		1	Jane	Doe			JadeDoe@email.com	
+	# this is how you show and filter row style
+
+	df.iloc[[0, 1], 2]
+	#
+		0    CoreyMSchafer@gmail.com
+		1          JadeDoe@email.com
+		Name: email, dtype: object	
+	# iloc searching by interger by location
+	# loc, searching by label
+
+	df.loc[0]
+	#
+		first                      Corey
+		last                     Schafer
+		email    CoreyMSchafer@gmail.com
+		Name: 0, dtype: object
+	# loc, searching by label
+
+	df.loc[[0, 1]]
+	#
+				first	last		email
+		0		Corey	Schafer		CoreyMSchafer@gmail.com
+		1		Jane	Doe			JadeDoe@email.com
+
+	df.loc[[0, 1], 'email']
+	#
+		0    CoreyMSchafer@gmail.com
+		1          JadeDoe@email.com
+		Name: email, dtype: object	
+	# loc, searching by label
+
+	df.loc[[0, 1], ['email', 'last']]
+	#
+			email						last
+		0	CoreyMSchafer@gmail.com		Schafer
+		1	JadeDoe@email.com			Doe	
+
+	# similar output for df.iloc[[0, 1], [2, 1]]
+	# but much better to use loc since we can use label to filter what column to show
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+> routine n - df.columns
+	/*
+		Notes:
+	*/
+	df.columns
+	#
+		Index(['Respondent', 'MainBranch', 'Hobbyist', ..., 'SurveyEase'],
+		      dtype='object')
+
+
+
+> routine n - df[['Hobbyist']]
+	/*
+		Notes:
+	*/
+	df[['Hobbyist']]
+	#
+				Hobbyist
+		0		Yes
+		1		No
+		2		Yes
+		3		No
+		4		Yes
+		...		...
+		88878	Yes
+		88879	No
+		88880	No
+		88881	No
+		88882	Yes
+		88883 rows × 1 columns
+
+
+
+> routine n - .value_counts()
+	/*
+		Notes:
+	*/
+	df[['Hobbyist']].value_counts()
+	#
+		Hobbyist
+		Yes         71257
+		No          17626
+		Name: count, dtype: int64
+
+
+
+> routine n - df.loc[0]
+	/*
+		Notes:
+	*/
+	df.loc[0]
+	#
+		Respondent                                                      1
+		MainBranch                 I am a student who is learning to code
+		Hobbyist                                                      Yes
+		OpenSourcer                                                 Never
+		OpenSource      The quality of OSS and closed source software ...
+		                                      ...                        
+		Sexuality                                 Straight / Heterosexual
+		Ethnicity                                                     NaN
+		Dependents                                                     No
+		SurveyLength                                Appropriate in length
+		SurveyEase                             Neither easy nor difficult
+		Name: 0, Length: 85, dtype: object
+
+
+
+> routine n - df.loc[0, ['Hobbyist']]
+	/*
+		Notes:
+	*/
+	df.loc[0, ['Hobbyist']]
+	#
+		Hobbyist    Yes
+		Name: 0, dtype: object	
+
+
+
+> routine n - df.loc[[0, 1, 2], ['Hobbyist']]
+	/*
+		Notes:
+	*/
+	df.loc[[0, 1, 2], ['Hobbyist']]
+	#
+			Hobbyist
+		0	Yes
+		1	No
+		2	Yes
+
+
+
+> routine n - df.loc[0:2, ['Hobbyist']]
+	/*
+		Notes:
+			- 0:2 just like in normal python
+	*/
+	df.loc[0:2, ['Hobbyist']]
+	#
+			Hobbyist
+		0	Yes
+		1	No
+		2	Yes
+
+
+
+> routine n - df.loc[0:2, 'Hobbyist':'Employment']
+	/*
+		Notes:
+	*/
+	df.loc[0:2, 'Hobbyist':'Employment']
+	#
+			Hobbyist	OpenSourcer					OpenSource												Employment
+		0	Yes			Never						The quality of OSS and closed source software ...		Not employed, and not looking for work
+		1	No			Less than once per year		The quality of OSS and closed source software ...		Not employed, but looking for work
+		2	Yes			Never						The quality of OSS and closed source software ...		Employed full-time	
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+> routine n - change index
+	/*
+		Notes:
+	*/
+	df
+	#
+			first	last		email
+		0	Corey	Schafer		CoreyMSchafer@gmail.com
+		1	Jane	Doe			JadeDoe@email.com
+		2	John	Doe			JohnDoe@email.com	
+
+	df.set_index('email', inplace=True)
+	df
+	#
+									first	last
+		email		
+		CoreyMSchafer@gmail.com		Corey	Schafer
+		JadeDoe@email.com			Jane	Doe
+		JohnDoe@email.com			John	Doe	
+
+
+
+> routine n - check index
+	/*
+		Notes:
+	*/
+	df.index
+	#
+		Index(['CoreyMSchafer@gmail.com', 'JadeDoe@email.com', 'JohnDoe@email.com'], dtype='object', name='email')
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+			- by changing the index, were able to use a value in loc rather than 0, 1, 2, ...
+	*/
+	df.loc['CoreyMSchafer@gmail.com', ['last']]
+	#
+		last    Schafer
+		Name: CoreyMSchafer@gmail.com, dtype: object	
+
+
+
+> routine n - reset index
+	/*
+		Notes:
+	*/
+	df.reset_index(inplace=True)
+	df	
+	#
+			email						first	last
+		0	CoreyMSchafer@gmail.com		Corey	Schafer
+		1	JadeDoe@email.com			Jane	Doe
+		2	JohnDoe@email.com			John	Doe	
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+> routine n - change index while loading data
+	/*
+		Notes:
+	*/
+	df = pd.read_csv('data/survey_results_public.csv', index_col='Respondent')
+	df.head()
+	#
+					MainBranch										...				...
+		Respondent																																																																																				
+		1			I am a student who is learning to code			...				...
+
+
+
+> routine n - schema_df.loc['MgrIdiot']
+	/*
+		Notes:
+	*/
+	schema_df.loc['MgrIdiot']
+	#
+		QuestionText    How confident are you that your manager knows ...
+		Name: MgrIdiot, dtype: object
+
+	schema_df.loc['MgrIdiot', 'QuestionText']
+	#
+		'How confident are you that your manager knows what they’re doing?'	
+
+
+
+> routine n - .sort_index()
+	/*
+		Notes:
+	*/
+	schema_df.sort_index(inplace=True)
+	#
+							QuestionText
+		Column	
+		Age					What is your age (in years)? If you prefer not...
+		Age1stCode			At what age did you write your first line of c...
+		BetterLife			Do you think people born today will have a bet...
+		BlockchainIs		Blockchain / cryptocurrency technology is prim...
+		BlockchainOrg		How is your organization thinking about or imp..	
+		...
+
+	schema_df.sort_index(ascending=False)
+	#
+							QuestionText
+		Column	
+		YearsCodePro		How many years have you coded professionally (...
+		YearsCode			Including any education, how many years have y...
+		WorkWeekHrs			On average, how many hours per week do you work?
+		WorkRemote			How often do you work remotely?
+		WorkPlan			How structured or planned is your work?
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+> routine n - filtering
+	/*
+		Notes:
+			- filt
+				- filter is a reserved word as to why we use filt
+	*/
+	df['last'] == 'Doe'
+	#
+		0    False
+		1     True
+		2     True
+		Name: last, dtype: bool
+
+	filt = df['last'] == 'Doe'
+	df[filt]
+	#
+						email	first	last
+		1	JadeDoe@email.com	Jane	Doe
+		2	JohnDoe@email.com	John	Doe	
+
+	df[df['last'] == 'Doe']
+	#
+						email	first	last
+		1	JadeDoe@email.com	Jane	Doe
+		2	JohnDoe@email.com	John	Doe	
+
+	df.loc[filt]
+	#
+						email	first	last
+		1	JadeDoe@email.com	Jane	Doe
+		2	JohnDoe@email.com	John	Doe	
+
+	df.loc[filt, ['email']]
+	#
+						email
+		1	JadeDoe@email.com
+		2	JohnDoe@email.com	
+
+
+
+> routine n - filter and
+	/*
+		Notes:
+	*/
+	filt = (df['last'] == 'Doe') & (df['first'] == 'John')
+	df.loc[filt, ['email']]
+	#
+						email
+		2	JohnDoe@email.com
+
+
+
+> routine n - filter or
+	/*
+		Notes:
+	*/
+	filt = (df['last'] == 'Schafer') | (df['first'] == 'John')
+	df.loc[filt, ['email']]	
+	#
+						email
+		0	CoreyMSchafer@gmail.com
+		2	JohnDoe@email.com	
+
+
+
+> routine n - filter not
+	/*
+		Notes:
+	*/
+	filt = (df['last'] == 'Schafer') | (df['first'] == 'John')
+	df.loc[~filt, ['email']]
+	#
+						email
+		1	JadeDoe@email.com
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+	high_salary = (df['ConvertedComp'] > 70000)
+	df.loc[high_salary, ['Country', 'LanguageWorkedWith', 'ConvertedComp']]
+	#
+						Country				LanguageWorkedWith										ConvertedComp
+		Respondent			
+		6				Canada				Java;R;SQL												366420.0
+		9				New Zealand			Bash/Shell/PowerShell;C#;HTML/CSS;JavaScript;P...		95179.0
+		13				United States		Bash/Shell/PowerShell;HTML/CSS;JavaScript;PHP;...		90000.0
+		16				United Kingdom		Bash/Shell/PowerShell;C#;HTML/CSS;JavaScript;T...		455352.0
+		22				United States		Bash/Shell/PowerShell;C++;HTML/CSS;JavaScript;...		103000.0
+		...
+
+
+
+> routine n - filter .isin
+	/*
+		Notes:
+	*/
+	countries = ['United States', 'India', 'United Kingdom', 'Germany', 'Canada']
+	filt = df['Country'].isin(countries)
+	df.loc[filt, ['Country']]
+	#
+						Country
+		Respondent	
+		1				United Kingdom
+		4				United States
+		6				Canada
+		8				India
+		10				India
+		...				...
+
+
+
+> routine n - filter str.contains
+	/*
+		Notes:
+	*/
+	filt = df['LanguageWorkedWith'].str.contains('Python', na=False)
+	df.loc[filt, ['LanguageWorkedWith']]
+	#
+						LanguageWorkedWith
+		Respondent	
+		1				HTML/CSS;Java;JavaScript;Python
+		2				C++;HTML/CSS;Python
+		4				C;C++;C#;Python;SQL
+		5				C++;HTML/CSS;Java;JavaScript;Python;SQL;VBA
+		8				Bash/Shell/PowerShell;C;C++;HTML/CSS;Java;Java...
+		...				...	
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+> routine n - updating column
+	/*
+		Notes:
+	*/
+	df.columns
+	#
+		Index(['first', 'last', 'email'], dtype='object')
+
+	df.columns = ['first_name', 'last_name', 'email']
+	df
+	#
+			first_name		last_name		email
+		0	Corey			Schafer			CoreyMSchafer@gmail.com
+		1	Jane			Doe				JadeDoe@email.com
+		2	John			Doe				JohnDoe@email.com	
+
+
+
+> routine n - updating column comprehension
+	/*
+		Notes:
+	*/
+	df.columns = [x.upper() for x in df.columns]
+	df
+	#
+			FIRST_NAME		LAST_NAME		EMAIL
+		0	Corey			Schafer			CoreyMSchafer@gmail.com
+		1	Jane			Doe				JadeDoe@email.com
+		2	John			Doe				JohnDoe@email.com
+
+
+
+> routine n - updating column str.replace
+	/*
+		Notes:
+	*/
+	df.columns = df.columns.str.replace('_', '-')
+	df
+	#
+			FIRST-NAME		LAST-NAME		EMAIL
+		0	Corey			Schafer			CoreyMSchafer@gmail.com
+		1	Jane			Doe				JadeDoe@email.com
+		2	John			Doe				JohnDoe@email.com
+
+
+
+> routine n - updating column .rename
+	/*
+		Notes:
+	*/
+	df.rename(columns={'first_name': 'first', 'last_name': 'last'}, inplace=True)
+	df
+	#
+			first	last		email
+		0	Corey	Schafer		CoreyMSchafer@gmail.com
+		1	Jane	Doe			JadeDoe@email.com
+		2	John	Doe			JohnDoe@email.com
+
+
+
+> routine n - updating row value
+	/*
+		Notes:
+	*/
+	df.loc[2]
+	#
+		first                 John
+		last                   Doe
+		email    JohnDoe@email.com
+		Name: 2, dtype: object	
+
+	df.loc[2] = ['John', 'Smith', 'JohnDoe@email.com']
+	df
+	#
+			first	last		email
+		0	Corey	Schafer		CoreyMSchafer@gmail.com
+		1	Jane	Doe			JadeDoe@email.com
+		2	John	Smith		JohnDoe@email.com	
+
+
+
+> routine n - updating row value
+	/*
+		Notes:
+	*/
+	df.loc[2, ['last', 'email']] = ['Doe', 'JohnDoe@email.com']
+	df
+	#
+			first	last		email
+		0	Corey	Schafer		CoreyMSchafer@gmail.com
+		1	Jane	Doe			JadeDoe@email.com
+		2	John	Doe			JohnDoe@email.com
+
+
+
+> routine n - updating row
+	/*
+		Notes:
+	*/
+	df.loc[2, 'last'] = 'Smith'
+	df
+	#
+			first	last		email
+		0	Corey	Schafer		CoreyMSchafer@gmail.com
+		1	Jane	Doe			JadeDoe@email.com
+		2	John	Smith		JohnDoe@email.com
+
+
+
+> routine n - updating row .at
+	/*
+		Notes:
+			- same at before to update single data row
+	*/
+	df.at[2, 'last'] = 'Doe'
+
+
+
+> routine n - updating row with filter
+	/*
+		Notes:
+	*/
+	filt = (df['email'] == 'JohnDoe@email.com')
+	df.loc[filt, 'last'] = 'Smith'
+	df
+	#
+			first	last		email
+		0	Corey	Schafer		CoreyMSchafer@gmail.com
+		1	Jane	Doe			JadeDoe@email.com
+		2	John	Smith		JohnDoe@email.com
+
+
+
+> routine n - updating row multiple
+	/*
+		Notes:
+	*/
+	df['email'] = df['email'].str.lower()
+	df
+	#
+			first	last		email
+		0	Corey	Schafer		coreymschafer@gmail.com
+		1	Jane	Doe			jadedoe@email.com
+		2	John	Smith		johndoe@email.com
+
+
+
+> routine n - updating row .apply
+	/*
+		Notes:
+	*/
+	df['email'].apply(len)
+	#
+		0    23
+		1    17
+		2    17
+		Name: email, dtype: int64	
+
+	def update_email(email):
+	    return email.upper()
+	df['email'].apply(update_email)
+	#
+		0    COREYMSCHAFER@GMAIL.COM
+		1          JADEDOE@EMAIL.COM
+		2          JOHNDOE@EMAIL.COM
+		Name: email, dtype: object	
+
+	def update_email(email):
+	    return email.upper()
+	df['email'] = df['email'].apply(update_email)
+	df
+	#
+				first		last		email
+		0		Corey		Schafer		COREYMSCHAFER@GMAIL.COM
+		1		Jane		Doe			JADEDOE@EMAIL.COM
+		2		John		Smith		JOHNDOE@EMAIL.COM
+
+
+
+> routine n - updating row lambda
+	/*
+		Notes:
+	*/
+	df['email'] = df['email'].apply(lambda x: x.lower())
+	df	
+	#
+			first	last		email
+		0	Corey	Schafer		coreymschafer@gmail.com
+		1	Jane	Doe			jadedoe@email.com
+		2	John	Smith		johndoe@email.com
+
+
+
+> routine n - updating row .map
+	/*
+		Notes:
+	*/
+	df.map(len)
+	#
+		first	last	email
+	0	5		7		23
+	1	4		3		17
+	2	4		5		17
+
+	df.map(str.lower)
+	#
+			first	last		email
+		0	corey	schafer		coreymschafer@gmail.com
+		1	jane	doe			jadedoe@email.com
+		2	john	smith		johndoe@email.com
+
+	df['first'].map({'Corey': 'Chris', 'Jane': 'Mary'})
+	#
+		0    Chris
+		1     Mary
+		2      NaN
+		Name: first, dtype: object
+
+
+
+> routine n - updating row .replace
+	/*
+		Notes:
+	*/
+	df['first'].replace({'Corey': 'Chris', 'Jane': 'Mary'})
+	#
+		0    Chris
+		1     Mary
+		2     John
+		Name: first, dtype: object
+
+	df['first'] = df['first'].replace({'Corey': 'Chris', 'Jane': 'Mary'})
+
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+> routine n - update column .rename
+	/*
+		Notes:
+	*/
+	df.rename(columns={'ConvertedComp': 'SalaryUSD'}, inplace=True)
+	df['SalaryUSD']
+	#
+		Respondent
+		1            NaN
+		2            NaN
+		3         8820.0
+		4        61000.0
+		5            NaN	
+
+
+
+> routine n - update row .map
+	/*
+		Notes:
+	*/
+	df['Hobbyist']
+	#
+		Respondent
+		1        Yes
+		2         No
+		3        Yes
+		4         No
+		5        Yes
+
+	df['Hobbyist'].map({'Yes': True, 'No': False})
+	#
+		Respondent
+		1         True
+		2        False
+		3         True
+		4        False
+		5         True
+
+	df['Hobbyist'] = df['Hobbyist'].map({'Yes': True, 'No': False})
+	# .map does not have inplace setting
+
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+
+> routine n - add column
+	/*
+		Notes:
+	*/
+	df['full_name'] = df['first'] + ' ' + df['last']
+	df
+	#
+			first	last		email						full_name
+		0	Corey	Schafer		coreymschafer@gmail.com		Corey Schafer
+		1	Jane	Doe			jadedoe@email.com			Jane Doe
+		2	John	Smith		johndoe@email.com			John Smith	
+
+
+
+> routine n - remove column
+	/*
+		Notes:
+	*/
+	df.drop(columns=['first', 'last'], inplace=True)
+	df
+	#
+			email						full_name
+		0	coreymschafer@gmail.com		Corey Schafer
+		1	jadedoe@email.com			Jane Doe
+		2	johndoe@email.com			John Smith
+
+
+
+> routine n - reverse remove column
+	/*
+		Notes:
+	*/
+	df['full_name'].str.split(' ',  expand=True)
+	#
+			0		1
+		0	Corey	Schafer
+		1	Jane	Doe
+		2	John	Smith	
+
+	df[['first', 'last']] = df['full_name'].str.split(' ',  expand=True)
+	df
+	#
+			first	last		email						full_name
+		0	Corey	Schafer		coreymschafer@gmail.com		Corey Schafer
+		1	Jane	Doe			jadedoe@email.com			Jane Doe
+		2	John	Smith		johndoe@email.com			John Smith
+
+
+
+> routine n - add row data
+	/*
+		Notes:
+			- append depreciated
+			- concat after research
+	*/
+	df.append({'first': 'Tony'}, ignore_index=True)
+	#
+		error as append already depreciated
+		can't use concat if its not a dataframe
+
+	new_data = {'first': 'Tony'}
+	new_row = pd.DataFrame([new_data])
+	pd.concat([df, new_row], ignore_index=True)
+	#
+			first	last		email						full_name
+		0	Corey	Schafer		coreymschafer@gmail.com		Corey Schafer
+		1	Jane	Doe			jadedoe@email.com			Jane Doe
+		2	John	Smith		johndoe@email.com			John Smith
+		3	Tony	NaN			NaN							NaN	
+
+
+
+> routine n - add 2 DataFrame
+	/*
+		Notes:
+	*/
+	people2 = {
+	    'first': ['Tony', 'Steve'],
+	    'last': ['Stark', 'Rogers'],
+	    'email': ['IronMan@avenge.com', 'Cap@avenge.com']
+	}
+	df2 = pd.DataFrame(people2)
+	df = pd.concat([df, df2], ignore_index=True)
+	df
+	#
+			first	last		email						full_name
+		0	Corey	Schafer		coreymschafer@gmail.com		Corey Schafer
+		1	Jane	Doe			jadedoe@email.com			Jane Doe
+		2	John	Smith		johndoe@email.com			John Smith
+		3	Tony	Stark		IronMan@avenge.com			NaN
+		4	Steve	Rogers		Cap@avenge.com				NaN	
+
+
+
+> routine n - .drop
+	/*
+		Notes:
+	*/
+	df.drop(index=4)
+	#
+			first	last		email						full_name
+		0	Corey	Schafer		coreymschafer@gmail.com		Corey Schafer
+		1	Jane	Doe			jadedoe@email.com			Jane Doe
+		2	John	Smith		johndoe@email.com			John Smith
+		3	Tony	Stark		IronMan@avenge.com			NaN	
+
+
+
+> routine n - .drop conditional
+	/*
+		Notes:
+	*/
+	df.drop(index=df[df['last'] == 'Doe'].index)
+	#
+			first	last		email						full_name
+		0	Corey	Schafer		coreymschafer@gmail.com		Corey Schafer
+		2	John	Smith		johndoe@email.com			John Smith
+		3	Tony	Stark		IronMan@avenge.com			NaN
+		4	Steve	Rogers		Cap@avenge.com				NaN
+
+	filt = df['last'] == 'Doe'
+	df.drop(index=df[filt].index)
+	#
+			first	last		email						full_name
+		0	Corey	Schafer		coreymschafer@gmail.com		Corey Schafer
+		2	John	Smith		johndoe@email.com			John Smith
+		3	Tony	Stark		IronMan@avenge.com			NaN
+		4	Steve	Rogers		Cap@avenge.com				NaN
+
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+
+> routine n - sorting
+	/*
+		Notes:
+	*/
+	df.sort_values(by='last')
+	#
+			first	last		email						full_name
+		1	Jane	Doe			JadeDoe@email.com			Jane Doe
+		2	John	Doe			JohnDoe@email.com			John Doe
+		4	Steve	Rogers		Cap@avenge.com				NaN
+		0	Corey	Schafer		CoreyMSchafer@gmail.com		Corey Schafer
+		3	Tony	Stark		IronMan@avenge.com			NaN	
+
+	df.sort_values(by='last', ascending=False)
+
+	df.sort_values(by=['last', 'first'], ascending=False)
+	#
+			first	last		email						full_name
+		3	Tony	Stark		IronMan@avenge.com			NaN
+		0	Corey	Schafer		CoreyMSchafer@gmail.com		Corey Schafer
+		4	Steve	Rogers		Cap@avenge.com				NaN
+		2	John	Doe			JohnDoe@email.com			John Doe
+		1	Jane	Doe			JadeDoe@email.com			Jane Doe	
+
+	df.sort_values(by=['last', 'first'], ascending=[False, True])
+
+	df.sort_values(by=['last', 'first'], ascending=[False, True], inplace=True)
+
+
+
+> routine n - sorting by index
+	/*
+		Notes:
+	*/
+	df.sort_index()
+	#
+			first	last		email						full_name
+		0	Corey	Schafer		CoreyMSchafer@gmail.com		Corey Schafer
+		1	Jane	Doe			JadeDoe@email.com			Jane Doe
+		2	John	Doe			JohnDoe@email.com			John Doe
+		3	Tony	Stark		IronMan@avenge.com			NaN
+		4	Steve	Rogers		Cap@avenge.com				NaN	
+
+
+
+> routine n - sorting
+	/*
+		Notes:
+	*/
+	df['last'].sort_values()
+	#
+		1        Doe
+		2        Doe
+		4     Rogers
+		0    Schafer
+		3      Stark
+		Name: last, dtype: object	
+
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+
+> routine n - sort
+	/*
+		Notes:
+	*/
+	df.sort_values(by='Country', inplace=True)
+	df['Country'].head(50)
+	#
+		Respondent
+		39258    Afghanistan
+		63129    Afghanistan
+		85715    Afghanistan
+		50767    Afghanistan
+		2782     Afghanistan
+		63019    Afghanistan
+		6417     Afghanistan
+		40000    Afghanistan
+		88731    Afghanistan
+		...
+
+	df[['Country', 'SalaryUSD']].head(50)
+	#
+						Country			SalaryUSD
+		Respondent		
+		39258			Afghanistan		19152.0
+		63129			Afghanistan		1000000.0
+		85715			Afghanistan		NaN
+		50767			Afghanistan		NaN
+		2782			Afghanistan		NaN
+		63019			Afghanistan		NaN
+		6417			Afghanistan		NaN
+
+	df.sort_values(by=['Country', 'SalaryUSD'], ascending=[True, False] ,inplace=True)
+	df[['Country', 'SalaryUSD']].head(50)
+	#
+						Country			SalaryUSD
+		Respondent		
+		63129			Afghanistan		1000000.0
+		50499			Afghanistan		153216.0
+		39258			Afghanistan		19152.0
+		58450			Afghanistan		17556.0
+		7085			Afghanistan		14364.0
+
+
+
+> routine n - sorting nlargest
+	/*
+		Notes:
+	*/
+	df['SalaryUSD'].nlargest(10)
+	#
+		Respondent
+		25983    2000000.0
+		87896    2000000.0
+		22013    2000000.0
+		28243    2000000.0
+		72732    2000000.0
+		78151    2000000.0
+		80200    2000000.0
+		52132    2000000.0
+		75561    2000000.0
+		32250    2000000.0
+		Name: SalaryUSD, dtype: float64
+
+	df.nlargest(10, 'SalaryUSD')
+	#
+						MainBranch							Hobbyist	...
+		Respondent																																																																																				
+		25983			I am a developer by profession		Yes 		...
+		...
+
+
+
+> routine n - .nsmallest
+	/*
+		Notes:
+	*/
+	df.nsmallest(10, 'SalaryUSD')
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+> routine n - .median
+	/*
+		Notes:
+	*/
+	df['ConvertedComp'].head(15)
+	#
+		Respondent
+		1          NaN
+		2          NaN
+		3       8820.0
+		4      61000.0
+		5          NaN
+		6     366420.0
+
+	df['ConvertedComp'].median()
+	#
+		57287.0
+
+
+
+> routine n - describe()
+	/*
+		Notes:
+	*/
+	df.describe()
+	#
+					CompTotal		ConvertedComp	WorkWeekHrs		CodeRevHrs		Age
+		count		5.594500e+04	5.582300e+04	64503.000000	49790.000000	79210.000000
+		mean		5.519014e+11	1.271107e+05	42.127197		5.084308		30.336699
+		std			7.331926e+13	2.841523e+05	37.287610		5.513931		9.178390
+		...
+
+
+
+> routine n - count
+	/*
+		Notes:
+	*/
+	df['ConvertedComp'].count()
+	#
+		55823
+
+
+
+> routine n - value_counts
+	/*
+		Notes:
+	*/
+	df['Hobbyist']
+	#
+		Respondent
+		1        Yes
+		2         No
+		3        Yes
+		4         No
+		5        Yes
+		        ... 
+		88377    Yes
+		88601     No
+		88802     No
+		88816     No
+		88863    Yes
+		Name: Hobbyist, Length: 88883, dtype: object
+
+	df['Hobbyist'].value_counts()
+	#
+		Hobbyist
+		Yes    71257
+		No     17626
+		Name: count, dtype: int64
+
+	schema_df.loc['SocialMedia']
+	#
+		QuestionText    What social media site do you use the most?
+		Name: SocialMedia, dtype: object
+
+	df['SocialMedia']
+	#
+		Respondent
+		1          Twitter
+		2        Instagram
+		3           Reddit
+		4           Reddit
+		5         Facebook
+		           ...    
+		88377      YouTube
+		88601          NaN
+		88802          NaN
+		88816          NaN
+		88863     WhatsApp
+		Name: SocialMedia, Length: 88883, dtype: object
+
+	df['SocialMedia'].value_counts()
+	#
+		SocialMedia
+		Reddit                      14374
+		YouTube                     13830
+		WhatsApp                    13347
+		Facebook                    13178
+		Twitter                     11398
+		Instagram                    6261
+		I don't use social media     5554
+		LinkedIn                     4501
+		WeChat 微信                     667
+		Snapchat                      628
+		VK ВКонта́кте                 603
+		Weibo 新浪微博                     56
+		Youku Tudou 优酷                 21
+		Hello                          19
+		Name: count, dtype: int64
+
+	df['SocialMedia'].value_counts(normalize=True) # by percentage
+	#
+		SocialMedia
+		Reddit                      0.170233
+		YouTube                     0.163791
+		WhatsApp                    0.158071
+		Facebook                    0.156069
+		Twitter                     0.134988
+		Instagram                   0.074150
+		I don't use social media    0.065777
+		LinkedIn                    0.053306
+		WeChat 微信                   0.007899
+		Snapchat                    0.007437
+		VK ВКонта́кте               0.007141
+		Weibo 新浪微博                  0.000663
+		Youku Tudou 优酷              0.000249
+		Hello                       0.000225
+		Name: proportion, dtype: float64
+
+
+
+> routine n - grouping
+	/*
+		Notes:
+	*/
+	df['Country'].value_counts()
+	#
+		Country
+		United States        20949
+		India                 9061
+		...
+
+	df.groupby(['Country'])
+	#
+		<pandas.core.groupby.generic.DataFrameGroupBy object at 0x0000016FD18F43D0
+
+	country_grp = df.groupby(['Country'])
+	country_grp.get_group('United States')
+	
+	filt = df['Country'] == 'United States'
+	df.loc[filt]['SocialMedia'].value_counts()
+	#
+		SocialMedia
+		Reddit                      5700
+		Twitter                     3468
+		Facebook                    2844
+		YouTube                     2463
+		I don't use social media    1851
+		Instagram                   1652
+		LinkedIn                    1020
+		WhatsApp                     609
+		Snapchat                     326
+		WeChat 微信                     93
+		VK ВКонта́кте                  9
+		Weibo 新浪微博                     8
+		Hello                          2
+		Youku Tudou 优酷                 1
+		Name: count, dtype: int64
+
+	country_grp['SocialMedia'].value_counts()
+	#
+		Country      SocialMedia             
+		Afghanistan  Facebook                    15
+		             YouTube                      9
+		             I don't use social media     6
+		             WhatsApp                     4
+		             Instagram                    1
+		...
+		Zimbabwe     Facebook                     3
+		             YouTube                      3
+		             LinkedIn                     2
+		             Instagram                    2
+		             Reddit                       1
+		Name: count, Length: 1220, dtype: int64
+
+	country_grp['SocialMedia'].value_counts().loc['United States']
+	#
+		SocialMedia
+		Reddit                      5700
+		Twitter                     3468
+		Facebook                    2844
+		YouTube                     2463
+		I don't use social media    1851
+		Instagram                   1652
+		LinkedIn                    1020
+		WhatsApp                     609
+		Snapchat                     326
+		WeChat 微信                     93
+		VK ВКонта́кте                  9
+		Weibo 新浪微博                     8
+		Hello                          2
+		Youku Tudou 优酷                 1
+		Name: count, dtype: int64
+
+	country_grp['SocialMedia'].value_counts(normalize=True).loc['United States']
+	#
+		SocialMedia
+		Reddit                      0.284346
+		Twitter                     0.173002
+		Facebook                    0.141874
+		YouTube                     0.122867
+		I don't use social media    0.092338
+		Instagram                   0.082410
+		LinkedIn                    0.050883
+		WhatsApp                    0.030380
+		Snapchat                    0.016263
+		WeChat 微信                   0.004639
+		VK ВКонта́кте               0.000449
+		Weibo 新浪微博                  0.000399
+		Hello                       0.000100
+		Youku Tudou 优酷              0.000050
+		Name: proportion, dtype: float64
+
+	country_grp['ConvertedComp'].median()
+	#
+		Country
+		Afghanistan                               6222.0
+		Albania                                  10818.0
+		Algeria                                   7878.0
+		Andorra                                 160931.0
+		Angola                                    7764.0
+		...
+
+	country_grp['ConvertedComp'].median().loc['Germany']
+	#
+		63016.0
+
+
+
+> routine n - .agg
+	/*
+		Notes:
+	*/
+	country_grp['ConvertedComp'].agg(['median', 'mean'])
+	#
+						median		mean
+		Country		
+		Afghanistan		6222.0		101953.333333
+		Albania			10818.0		21833.700000
+		Algeria			7878.0		34924.047619
+		Andorra			160931.0	160931.000000
+		Angola			7764.0		7764.000000
+
+	country_grp['ConvertedComp'].agg(['median', 'mean']).loc['Canada']
+	#
+		median     68705.000000
+		mean      134018.564909
+		Name: Canada, dtype: float64
+
+	filt = df['Country'] == 'India'
+	df.loc[filt]['LanguageWorkedWith']
+	#
+		Respondent
+		8        Bash/Shell/PowerShell;C;C++;HTML/CSS;Java;Java...
+		10                           C#;Go;JavaScript;Python;R;SQL
+		15       Assembly;Bash/Shell/PowerShell;C;C++;HTML/CSS;...
+		50       Bash/Shell/PowerShell;C;C++;HTML/CSS;Java;Java...
+		65                         Assembly;C;C++;C#;HTML/CSS;Java
+		...
+
+	filt = df['Country'] == 'India'
+	df.loc[filt]['LanguageWorkedWith'].str.contains('Python')
+	#
+		Respondent
+		8         True
+		10        True
+		15       False
+		50        True
+		65       False
+		...
+
+	filt = df['Country'] == 'India'
+	df.loc[filt]['LanguageWorkedWith'].str.contains('Python').sum()
+	#
+		3105
+
+	country_grp['LanguageWorkedWith'].apply(lambda x: x.str.contains('Python').sum())
+	#
+		Country
+		Afghanistan                              8
+		Albania                                 23
+		Algeria                                 40
+		Andorra                                  0
+		Angola                                   2
+
+	country_respondents = df['Country'].value_counts()
+	country_uses_python = country_grp['LanguageWorkedWith'].apply(lambda x: x.str.contains('Python').sum())
+	python_df = pd.concat([country_respondents, country_uses_python], axis='columns', sort=False)
+	#
+							count	LanguageWorkedWith
+		Country		
+		United States		20949	10083
+		India				9061	3105
+		Germany				5866	2451
+		United Kingdom		5737	2384
+		Canada				3395	1558
+		...
+
+	country_respondents = df['Country'].value_counts()
+	country_uses_python = country_grp['LanguageWorkedWith'].apply(lambda x: x.str.contains('Python').sum())
+	python_df = pd.concat([country_respondents, country_uses_python], axis='columns', sort=False)
+	python_df.rename(columns={'count': 'NumRespondents', 'LanguageWorkedWith': 'NumKnowsPython'}, inplace=True)
+	#
+							NumRespondents	NumKnowsPython
+		Country		
+		United States		20949			10083
+		India				9061			3105
+		Germany				5866			2451
+		United Kingdom		5737			2384
+		Canada				3395			1558
+
+	python_df['PctKnowsPython'] = (python_df['NumKnowsPython']/python_df['NumRespondents']) * 100
+	python_df
+	#
+						NumRespondents	NumKnowsPython	PctKnowsPython
+		Country			
+		United States	20949			10083			48.131176
+		India			9061			3105			34.267741
+		Germany			5866			2451			41.783157
+		United Kingdom	5737			2384			41.554820
+		Canada			3395			1558			45.891016
+
+	python_df.sort_values(by='PctKnowsPython', ascending=False, inplace=True)
+	python_df.loc['Japan']
+	#
+		NumRespondents    391.000000
+		NumKnowsPython    182.000000
+		PctKnowsPython     46.547315
+		Name: Japan, dtype: float64
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+> routine n - cleaning data - 
+	/*
+		Notes:
+	*/
+	import pandas as pd
+	import numpy as np
+	people = {
+		'first': ['Corey', 'Jane', 'John', 'Chris', np.nan, None, 'NA'], 
+		'last': ['Schafer', 'Doe', 'Doe', 'Schafer', np.nan, np.nan, 'Missing'], 
+		'email': ['CoreyMSchafer@gmail.com', 'JaneDoe@email.com', 'JohnDoe@email.com', None, np.nan, 'Anonymous@email.com', 'NA'],
+		'age': ['33', '55', '63', '36', None, None, 'Missing']
+	}
+	df = pd.DataFrame(people)
+	df
+	#
+			first	last		email						age
+		0	Corey	Schafer		CoreyMSchafer@gmail.com		33
+		1	Jane	Doe			JaneDoe@email.com			55
+		2	John	Doe			JohnDoe@email.com			63
+		3	Chris	Schafer		None						36
+		4	NaN		NaN			NaN							None
+		5	None	NaN			Anonymous@email.com			None
+		6	NA		Missing		NA							Missing
+
+
+
+> routine n - cleaning data - dropna
+	/*
+		Notes:
+	*/
+	df.dropna()
+	#
+			first	last		email						age
+		0	Corey	Schafer		CoreyMSchafer@gmail.com		33
+		1	Jane	Doe			JaneDoe@email.com			55
+		2	John	Doe			JohnDoe@email.com			63
+		6	NA		Missing		NA							Missing
+
+	df.dropna(axis='index', how='any') # default
+	#
+			first	last		email						age
+		0	Corey	Schafer		CoreyMSchafer@gmail.com		33
+		1	Jane	Doe			JaneDoe@email.com			55
+		2	John	Doe			JohnDoe@email.com			63
+		6	NA		Missing		NA							Missing
+
+	df.dropna(axis='index', how='all')
+	#
+			first	last		email						age
+		0	Corey	Schafer		CoreyMSchafer@gmail.com		33
+		1	Jane	Doe			JaneDoe@email.com			55
+		2	John	Doe			JohnDoe@email.com			63
+		3	Chris	Schafer		None						36
+		5	None	NaN			Anonymous@email.com			None
+		6	NA		Missing		NA							Missing
+
+	df.dropna(axis='columns', how='all')
+	#
+			first	last		email						age
+		0	Corey	Schafer		CoreyMSchafer@gmail.com		33
+		1	Jane	Doe			JaneDoe@email.com			55
+		2	John	Doe			JohnDoe@email.com			63
+		3	Chris	Schafer		None						36
+		4	NaN		NaN			NaN							None
+		5	None	NaN			Anonymous@email.com			None
+		6	NA		Missing		NA							Missing
+
+	df.dropna(axis='columns', how='any')
+	#
+		0
+		1
+		2
+		3
+		4
+		5
+		6
+
+	df.dropna(axis='index', how='any', subset=['email'])
+	#
+			first	last		email						age
+		0	Corey	Schafer		CoreyMSchafer@gmail.com		33
+		1	Jane	Doe			JaneDoe@email.com			55
+		2	John	Doe			JohnDoe@email.com			63
+		5	None	NaN			Anonymous@email.com			None
+		6	NA		Missing		NA							Missing
+
+	df.dropna(axis='index', how='all', subset=['last', 'email'])
+	#
+			first	last		email						age
+		0	Corey	Schafer		CoreyMSchafer@gmail.com		33
+		1	Jane	Doe			JaneDoe@email.com			55
+		2	John	Doe			JohnDoe@email.com			63
+		3	Chris	Schafer		None						36
+		5	None	NaN			Anonymous@email.com			None
+		6	NA		Missing		NA							Missing
+
+	df = pd.DataFrame(people)
+	df.replace('NA', np.nan, inplace=True)
+	df.replace('Missing', np.nan, inplace=True)
+	df
+	#
+			first	last		email						age
+		0	Corey	Schafer		CoreyMSchafer@gmail.com		33
+		1	Jane	Doe			JaneDoe@email.com			55
+		2	John	Doe			JohnDoe@email.com			63
+		3	Chris	Schafer		None						36
+		4	NaN		NaN			NaN							None
+		5	None	NaN			Anonymous@email.com			None
+		6	NaN		NaN			NaN							NaN
+
+	df.dropna()
+	#
+			first	last		email						age
+		0	Corey	Schafer		CoreyMSchafer@gmail.com		33
+		1	Jane	Doe			JaneDoe@email.com			55
+		2	John	Doe			JohnDoe@email.com			63
+
+
+
+> routine n - cleaning data - isna()
+	/*
+		Notes:
+	*/
+	df.isna()
+	#
+			first	last	email	age
+		0	False	False	False	False
+		1	False	False	False	False
+		2	False	False	False	False
+		3	False	False	True	False
+		4	True	True	True	True
+		5	True	True	False	True
+		6	True	True	True	True
+
+
+
+> routine n - cleaning data - fillna
+	/*
+		Notes:
+	*/
+	df.fillna('MISSING')
+	#
+			first	last	email	age
+		0	Corey	Schafer	CoreyMSchafer@gmail.com	33
+		1	Jane	Doe	JaneDoe@email.com	55
+		2	John	Doe	JohnDoe@email.com	63
+		3	Chris	Schafer	MISSING	36
+		4	MISSING	MISSING	MISSING	MISSING
+		5	MISSING	MISSING	Anonymous@email.com	MISSING
+		6	MISSING	MISSING	MISSING	MISSING
+
+
+
+> routine n - cleaning data - dtypes
+	/*
+		Notes:
+	*/
+	df.dtypes
+	#
+		first    object
+		last     object
+		email    object
+		age      object
+		dtype: object
+
+	df['age'].mean()
+	#
+		TypeError: can only concatenate str (not "int") to str
+
+	df['age'] = df['age'].astype(float)
+	df['age'].mean()
+	#
+		46.75
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+> routine n - cleaning data - na_values
+	/*
+		Notes:
+	*/
+	na_vals = ['NA', 'Missing']
+	df = pd.read_csv('data/survey_results_public.csv', index_col='Respondent', na_values=na_vals)
+	schema_df = pd.read_csv('data/survey_results_schema.csv', index_col='Column')
+
+
+
+> routine n - cleaning data - unique
+	/*
+		Notes:
+	*/
+	df['YearsCode'].unique()
+	#
+		array(['4', nan, '3', '16', '13', '6', '8', '12', '2', '5', '17', '10',
+			'14', '35', '7', 'Less than 1 year', '30', '9', '26', '40', '19',
+			'15', '20', '28', '25', '1', '22', '11', '33', '50', '41', '18',
+			'34', '24', '23', '42', '27', '21', '36', '32', '39', '38', '31',
+			'37', 'More than 50 years', '29', '44', '45', '48', '46', '43',
+			'47', '49'], dtype=object)
+
+	df['YearsCode'].replace('Less than 1 year', 0, inplace=True)
+	df['YearsCode'].replace('More than 50 years', 51, inplace=True)
+	df['YearsCode'].unique()
+	#
+		array(['4', nan, '3', '16', '13', '6', '8', '12', '2', '5', '17', '10',
+			'14', '35', '7', 0, '30', '9', '26', '40', '19', '15', '20', '28',
+			'25', '1', '22', '11', '33', '50', '41', '18', '34', '24', '23',
+			'42', '27', '21', '36', '32', '39', '38', '31', '37', 51, '29',
+			'44', '45', '48', '46', '43', '47', '49'], dtype=object)
+
+	df['YearsCode'] = df['YearsCode'].astype(float)
+	df['YearsCode'].mean()
+	#
+		11.662114216834588
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+
+> routine n - date time -
+	/*
+		Notes:
+	*/
+	import pandas as pd
+	df = pd.read_csv('data/ETH_1h.csv')
+	df.head()
+	#
+			Date				Symbol	Open	High	Low		Close	Volume
+		0	2020-03-13 08-PM	ETHUSD	129.94	131.82	126.87	128.71	1940673.93
+		1	2020-03-13 07-PM	ETHUSD	119.51	132.02	117.10	129.94	7579741.09
+		2	2020-03-13 06-PM	ETHUSD	124.47	124.85	115.50	119.51	4898735.81
+		3	2020-03-13 05-PM	ETHUSD	124.08	127.42	121.63	124.47	2753450.92
+		4	2020-03-13 04-PM	ETHUSD	124.85	129.51	120.17	124.08	4461424.71
+
+
+
+> routine n - date time -
+	/*
+		Notes:
+	*/
+	df.loc[0, 'Date']
+	#
+		'2020-03-13 08-PM'
+
+	df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d %I-%p')
+	df['Date']
+	#
+		0       2020-03-13 20:00:00
+		1       2020-03-13 19:00:00
+		2       2020-03-13 18:00:00
+		3       2020-03-13 17:00:00
+		4       2020-03-13 16:00:00
+		                ...        
+		23669   2017-07-01 15:00:00
+		23670   2017-07-01 14:00:00
+		23671   2017-07-01 13:00:00
+		23672   2017-07-01 12:00:00
+		23673   2017-07-01 11:00:00
+		Name: Date, Length: 23674, dtype: datetime64[ns]
+
+	df.loc[0, 'Date'].day_name()
+	#
+		'Friday'
+
+
+> routine n - date time -
+	/*
+		Notes:
+	*/
+	d_parser = lambda x: pd.to_datetime(x, format='%Y-%m-%d %I-%p')
+	df = pd.read_csv('data/ETH_1h.csv', parse_dates=['Date'], date_parser=d_parser)
+	# has depreciation
+
+	df['Date'].dt.day_name()
+	#
+		0          Friday
+		1          Friday
+		2          Friday
+		3          Friday
+		4          Friday
+		... 
+
+	df['DayOfWee'] = df['Date'].dt.day_name()
+	df
+	#
+		Date	Symbol	Open	High	Low	Close	Volume	DayOfWee
+		0	2020-03-13 20:00:00	ETHUSD	129.94	131.82	126.87	128.71	1940673.93	Friday
+		1	2020-03-13 19:00:00	ETHUSD	119.51	132.02	117.10	129.94	7579741.09	Friday
+		2	2020-03-13 18:00:00	ETHUSD	124.47	124.85	115.50	119.51	4898735.81	Friday
+		3	2020-03-13 17:00:00	ETHUSD	124.08	127.42	121.63	124.47	2753450.92	Friday
+		4	2020-03-13 16:00:00	ETHUSD	124.85	129.51	120.17	124.08	4461424.71	Friday
+
+	df['Date'].min()
+	#
+		Timestamp('2017-07-01 11:00:00')
+
+	df['Date'].max() - df['Date'].min()
+	#
+		Timedelta('986 days 09:00:00')
+
+
+
+----------------------
+----------------------
+----------------------
+
+
+
+> routine n - reading/writing - 
+	/*
+		Notes:
+	*/
+	import pandas as pd
+	df = pd.read_csv('data/survey_results_public.csv', index_col='Respondent')
+	schema_df = pd.read_csv('data/survey_results_schema.csv', index_col='Column')
+	pd.set_option('display.max_columns', 85)
+	pd.set_option('display.max_rows', 85)
+	df.head()
+
+
+> routine n - reading/writing - to_csv
+	/*
+		Notes:
+	*/
+	filt = (df['Country'] == 'India')
+	india_df = df.loc[filt]
+	india_df.head()
+
+	india_df.to_csv('data/modified.csv')
+	#
+		check your folder fot he generated file
+
+	india_df.to_csv('data/modified.tsv', sep='\t')
+
+
+> routine n - reading/writing - to_excel
+	/*
+		Notes:
+			- install packages
+				- if you want to write in excel
+	*/
+	> pip install xlwt openpyxl xlrd
+		# xlwt - will write to older excel format
+		# openpyxl - newer excel format
+		# xlrd - to read excel
+
+	india_df.to_excel('data/modified.xlsx')
+	#
+		check generated file
+
+
+
+> routine n - reading/writing - read_excel
+	/*
+		Notes:
+	*/
+	test = pd.read_excel('data/modified.xlsx', index_col='Respondent')
+	test
+
+
+> routine n - reading/writing - to_json
+	/*
+		Notes:
+	*/
+	india_df.to_json('data/modified.json')
+	#
+		check generated file
+
+	india_df.to_json('data/modified.json', orient='records', ines=True)
+	#
+		check generated file
+
+
+
+> routine n - reading/writing - read_json
+	/*
+		Notes:
+	*/
+	test2 = pd.read_json('data/modified.json')
+	test2.head()
+
+
+
+> routine n - reading/writing - to_sql
+	/*
+		Notes:
+			- install packages
+				- if you want to write in sql
+	*/
+	> pip install SQLAlchemy
+	> pip install psycopg2-binary # for prostgres db
+
+	from sqlalchemy import create_engine
+	import psycopg2
+	engine = create_engine('postgresql://dbuser:dbpass@localhost:5432/sample_db')
+	india_df.to_sql('sample_table', engine, if_exists='replace')
+
+
+
+> routine n - reading/writing - read_sql
+	/*
+		Notes:
+	*/
+	sql_df = pd.read_sql('sample_table', engine, index_col='Respondent')
+	sql_df.head()
+
+
+
+> routine n - reading/writing - read_sql_query
+	/*
+		Notes:
+	*/
+	sql_df = pd.read_sql_query('SELECT * FROM sample_table', engine, index_col='Respondent')
+	sql_df.head()
+
+
+
+> routine n - reading/writing - read_json at url
+	/*
+		Notes:
+	*/
+	posts_df = pd.read_json('https:.../posts.json')
+	posts_df.head()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+

@@ -1,0 +1,1352 @@
+NGINX, Gunicorn, Supervisor Facts
+
+
+Setting a website in Linux
+	- your project should be in
+		/var/www/mydjangoapp
+		or
+		/var/www/html/project1
+
+	? so when you git clone, it should be here?
+
+
+
+
+
+NGINX
+	- you install nginx like
+		> sudo apt-get install -y nginx
+		or 
+		> sudo apt-get install nginx
+	- nginx will be installed/located in
+		/etc/nginx
+	- nginx logs are in
+		/var/log/nginx
+	? nginx configuration file might be in:
+		? /etc/nginx/
+		or
+		/ /etc/nginx/sites-available/
+		sudo nano /etc/nginx/sites-available/project1
+	? nginx configuration file
+		? might have .conf extension or not
+		/ some examples have extensions but some dont
+			- lets just add .conf extension to easily identify its a file rather done directory
+	- sites-available in /etc/nginx/sites-available is a directory
+	? sites-enabled in /etc/nginx/sites-enabled is a directory ?
+	- nginx has "context" in its config file that looks like a code block
+		eg
+			http { # context: Configurations here apply to the entire server.
+				...
+			}
+			server { # context: Configurations here apply to a specific virtual server.
+				...
+			}
+			location { # context: Configurations here apply to a specific URI or a group of URIs.
+				...
+			}
+	- nginx has directives
+		eg
+			variablename value
+	- nginx config file has a server context
+		- inside has listen and server_name directives
+		- listen most setups:
+			- listen 80;
+			- listen 443 ssl;
+			- listen your_domain.com;
+		- server_name most setups:
+			server_name your_domain_or_ip;
+			server_name example.com;
+			server_name localhost;
+			server_name mydjangoapp.com www.mydjangoapp.com;
+			server_name 34.201.221.141;
+			server_name chengs1.net www.chengs1.net;
+		server {
+			listen 80;
+			server_name your_domain.com;
+		}
+	- nginx configuration file has location / context inside server context
+		- include proxy_params directive seems default everytime i see it
+		- proxy_pass values mostly are:	
+			- http://unix:/home/ubuntu/customUserBlogProdInvApi01/core/app.sock;
+			- http://unix:/path/to/your/app.sock;
+			- http://unix:/path/to/your/app.sock;
+			- http://127.0.0.1:8000
+			- http://backend;
+			- http://myapp;
+		- app.sock 
+			- file itself doesn't contain the actual content of your application; it's a Unix socket used for communication between the Nginx web server and the Gunicorn application server
+		server {
+			location / {
+	            include proxy_params;
+	            proxy_pass http://myapp;
+	        }
+		}
+	- nginx configuration file for django can have context for static and media
+		eg
+			server {
+				# Define the location of static files
+				location /static/ {
+					alias /path/to/your/project/static/;
+				}
+
+				# Define the location of media files
+				location /media/ {
+					alias /path/to/your/project/media/;
+				}			
+			}
+	- nginx configuration file for 80 and 443 should have a seperate context
+		eg
+			server {
+				listen 80;
+				server_name chengs1.net www.chengs1.net;
+				# Redirect HTTP requests to HTTPS
+				return 301 https://$host$request_uri;
+			}
+			server {
+				listen 443 ssl;
+				server_name chengs1.net www.chengs1.net;
+				ssl_certificate /etc/letsencrypt/live/chengs1.net/fullchain.pem;
+				ssl_certificate_key /etc/letsencrypt/live/chengs1.net/privkey.pem;
+				# Other SSL configuration options go here
+				location / {
+					include proxy_params;
+					proxy_pass http://unix:/home/ubuntu/customUserBlogProdInvApi01/core/app.sock;
+				}
+			}		
+
+
+
+
+
+
+
+Gunicorn
+	- gunicorn is installed like
+		> pip install gunicorn
+	- gunicorn is installed when your in the python environemtn
+		> source env/bin/activate
+		> pip install gunicorn
+	? gunicorn file might eng in .py or .conf?
+	- gunicorn_config.py should be created in
+		/path/to/your/project
+	- gunicorn file has variable and value
+		- it seems you always setup the bind value here
+		eg
+			variable = value
+		eg
+			workers = 3
+			bind = "0.0.0.0:8000"
+		eg
+			bind = "unix:/var/www/mydjangoapp/mydjangoapp.sock"
+			workers = 4  # Adjust the number of workers based on your server's resources
+			chdir = "/var/www/mydjangoapp"
+			module = "mydjangoapp.wsgi:application"
+		eg
+			# Number of worker processes
+			workers = 3
+			# Bind to a Unix socket
+			bind = "unix:/path/to/your/project/myapp.sock"
+			# Django-specific settings
+			django_settings = "your_project.settings"
+			# Maximum number of requests a worker will process before restarting
+			max_requests = 1000
+			# Maximum number of seconds a worker will live
+			max_request_jitter = 120
+			# Timeout for worker processes to gracefully finish execution
+			timeout = 30
+			# Enable the Gunicorn server to daemonize itself
+			daemon = True
+	? testing/running a gunicorn file you do this?
+		gunicorn -c gunicorn_config.py your_project_name.wsgi:application
+		or
+		gunicorn -c /path/to/gunicorn_config.py
+	? explanation of gunicorn -c gunicorn_config.py your_project_name.wsgi:application
+		the command starts Gunicorn, telling it to use the configuration specified in the provided Python script (gunicorn_config.py) and to run the Django application specified by your_project.wsgi:application
+
+
+
+
+
+
+
+Supervisor
+	- there are different supervisor available in linux
+	- supervisor is a program that manages and monitors other processes to ensure they are running correctly. If a process fails or crashes, the supervisor can automatically restart it, helping to maintain the overall stability and availability of your system.
+	- default supervisor in ubuntu and kali
+		- systemd
+	- default supervisor in alpine
+		- runit
+	- we have use a package supervisor before
+		- supervisor
+		- we installed it by 
+			> sudo apt-get install supervisor
+			- but we will focus on using the default systemd for now
+	- systemd
+		- we will use systemd as its mostly default to most linux distro
+		- and its the default that manage the kernel when your system startsup
+	- systemd extension	
+		.service
+	- you create systemd service config at
+		/etc/systemd/system/
+		like
+		/etc/systemd/system/your_project_name.service
+	- systemd service file content
+		- After=network.target
+			- This indicates that the Gunicorn service should start after the network is available. It ensures that networking is up before attempting to start the service.
+		- [Install]
+			- specifies how the service should be installed, i.e., how it should be started or enabled during the system's boot process. 
+		- WantedBy=multi-user.target
+			- defines the target that the service should be associated with.
+			- WantedBy 
+				- is a directive indicating that the service is wanted by the specified target.
+			- multi-user.target 
+				- is a systemd target that represents the system in a state where multiple user sessions are available. In other words, it's a target that is reached once the system has completed the basic initialization required for multiple users to log in.
+			- this setting ensures that your service starts during the normal boot process when the system is ready for multiple users.
+			- ExecStart=/path/to/your/project/venv/bin/gunicorn -c /path/to/your/project/gunicorn_config.py your_project_name.wsgi:application
+				- This is the command to start Gunicorn within the virtual environment. You don't need to create a Gunicorn file in venv/bin.
+				- ExecStart specifies the command to start the service, and it includes the path to the Gunicorn executable within the virtual environment. It also specifies the Gunicorn configuration file and the location of your Django application.				
+		eg
+			[Unit]
+			Description=Gunicorn service for Your Project
+			After=network.target
+
+			[Service]
+			User=your_username
+			Group=your_group
+			WorkingDirectory=/path/to/your/project
+			ExecStart=/path/to/your/project/venv/bin/gunicorn -c /path/to/your/project/gunicorn_config.py your_project_name.wsgi:application
+
+			[Install]
+			WantedBy=multi-user.target
+	- Systemctl
+		- The primary tool for managing services and viewing their status in systemd is systemctl
+		- Start a service
+			> sudo systemctl start serviceName
+		- Stop a service
+			> sudo systemctl stop serviceName
+		- Restart a service
+			> sudo systemctl restart serviceName
+		- Enable a service to start on boot
+			> sudo systemctl enable serviceName
+		- Disable a service from starting on boot
+			> sudo systemctl disable serviceName
+		- Check the status of a service
+			> sudo systemctl status serviceName
+	- logging
+		- systemd also handles logging for services. You can view the logs of a service using journalctl:
+			> journalctl -u serviceName
+
+
+
+
+notable command lines
+	# Create a symbolic link to enable the site
+		> sudo ln -s /etc/nginx/sites-available/your_project_name /etc/nginx/sites-enabled
+		> sudo ln -s /etc/nginx/sites-available/django.conf /etc/nginx/sites-enabled/
+		> sudo ln django.conf /etc/nginx/sites-enabled
+		-
+		? not sure which is correct
+			? sudo ln -s /etc/nginx/sites-available/your_project_name /etc/nginx/sites-enabled/
+			or
+			> sudo ln -s /etc/nginx/sites-available/your_project_name /etc/nginx/sites-enabled
+	# Test Nginx configuration
+		> sudo nginx -t
+	# Restart Nginx
+		> sudo systemctl restart nginx
+	# Enable the service to start on boot
+		> sudo systemctl enable your_project_name
+	# Start the service
+		> sudo systemctl start your_project_name
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------
+
+certbot setup chatgpt
+https://chat.openai.com/share/ea30b434-e1e2-4cf5-9a6f-47a6ad3fb785
+https://chat.openai.com/c/f232eaa1-8ff2-4ef2-8165-f11b7d29b326
+
+
+
+
+-----------------------------------
+
+investigations
+	- nginx
+		- sites-available AND sites-enabled
+			- both /etc/nginx/sites-available/ AND /etc/nginx/sites-enabled/ are directories
+			- both directories have a default file without extension that shows you a simple syntex
+			- sites-enabled/default is -> sites-available/default
+				- link -> realFile
+			- so this means 
+				- files in sites-available are real
+				- files in sites-enabled are links
+		- symbolic link
+			- when you do this
+				- if you have an htmltest1.conf inside sites-available
+				- but no file inside sites-enabled
+				- and do this linking
+					> sudo ln -s /etc/nginx/sites-available/htmltest1.conf /etc/nginx/sites-enabled/
+				- sites-enabled/htmltest1.conf will be automatically generated
+
+
+-----------------------------------
+
+html setup 1
+
+- create your project in /var/www/html/
+	# at first, you also need to create directory www and html
+	> cd /var/www/html/
+	> sudo mkdir htmltest1
+	> chmod 755 htmltest1
+- setup your project in 
+	eg.
+		/var/www/html/htmltest1/index.html
+		/var/www/html/htmltest1/about.html
+		/var/www/html/htmltest1/contact.html
+		/var/www/html/htmltest1/img/logo.png
+		/var/www/html/htmltest1/css/style.css
+		/var/www/html/htmltest1/js/script.js
+- install nginx
+	> sudo apt-get install nginx
+- start ngxinx service
+	> sudo service nginx start
+- setup nginx configuration for htmltest1
+	eg. this Nginx configuration sets up a virtual server that listens on port 80 for requests to example.com. It serves files from the /var/www/html directory, and when the root URI is accessed, it looks for an index.html file to serve
+		http { 							# context: Configurations here apply to the entire server.
+			...
+		}
+		server { 						# context: Configurations here apply to a specific virtual server.
+			...
+			listen 80; 					# specifies that Nginx should listen on port 80. Port 80 is the default port for HTTP traffic.
+			server_name example.com; 	# This means that this virtual server will respond to requests for the domain name example.com.
+		}
+		location { 						# context: Configurations here apply to a specific URI or a group of URIs.
+			...
+		}
+	    location / { 					# This line starts the location block, which is used to define configuration for a specific URI or group of URIs. In this case, it applies to the root URI ("/")
+	        root /var/www/html; 		# specifies the base directory from which files will be served
+	        index index.html; 			# specifies the default file to serve when a directory is requested
+	        							# Nginx will look for an index.html file by default. However, if the requested URI includes a specific filename (like about.html), Nginx will serve that file if it exists in the specified root directory.
+	    }		
+	eg.
+		cd /etc/nginx/sites-available/
+		sudo touch htmltest1.conf
+		server {
+			listen 80;
+			server_name  htmltest1.com;
+
+			root /var/www/html/htmltest1;
+			index index.html;
+
+			location / {
+				# if someone requests http://www.project1.com/about.html
+				# Try to serve the requested resource as is ($uri) /var/www/html/project1/about.html
+				# If that fails, try to serve it as a directory ($uri/) /var/www/html/project1/about.html/
+				# If both attempts fail, return a 404 Not Found error (=404) 
+				try_files $uri $uri/ =404;
+			}
+
+			location ~ \.css$ {
+				add_header Content-Type text/css;
+			}
+
+			location ~ \.js$ {
+				add_header Content-Type application/javascript;
+			}
+
+			location ~* \.(jpg|jpeg|png|gif)$ {
+				add_header Content-Type image/jpeg;
+			}
+		}
+- create symbolic link
+	> sudo ln -s /etc/nginx/sites-available/htmltest1.conf /etc/nginx/sites-enabled/
+	# link htmltest1.conf will be auto created inside /etc/nginx/sites-enabled/
+- test nginx configuration before restarting nginx
+	> sudo nginx -t
+- restart nginx
+	> sudo service nginx restart
+- check nginx status
+	> sudo systemctl status nginx
+- update hosts file in /etc/
+	> nano /etc/hosts
+	eg.
+		# maps the IP address 127.0.0.1 to the hostname www.project1.com. 
+		# tells your local machine to treat www.project1.com as if it were located at 127.0.0.1 (localhost).
+		127.0.0.1   htmltest1.com
+
+
+- access website in browser
+	htmltest1.com
+
+-----------------------------------
+
+django setup 1
+
+- update linux
+	# apt is a newer of apt-get daw
+	> sudo apt update
+
+- upgrade packages
+	> sudo apt upgrade
+
+- install python, pip, environment
+	# python3-venv is a newer of virtualenv daw
+	> sudo apt install python3 python3-pip python3-venv
+
+- create project folder
+	> cd /var/www
+	> sudo mkdir djangotest01
+	> sudo chown -R $USER:$USER djangotest01
+	> ll
+	> cd djangotest01
+
+- enable environment
+	> python3 -m venv env
+	# below is how you activate environment in Linux vs Windows env\Scripts\activate with no source command
+	> source env/bin/activate
+
+x ensure no permission error when install django
+	> sudo chmod 777 /var/www/djangotest01/env/lib/python3.10/site-packages
+	> sudo chmod 777 /var/www/djangotest01/env/bin
+	# next time, we can also do below as suggested by chatgpt
+	> sudo chown -R your_username:your_username /var/www/djangotest01/env
+	# or
+	> cd /path/to/my/files
+	> chown -R $USER:$USER .
+
+- install django
+	> pip install django
+
+- create django project
+	> django-admin startproject core
+	> cd core
+	> xdg-open .
+	# to start coding in vscode
+	> code .
+
+- you can use python and not python3 if you are activate the environment
+
+- migrations
+	> python manage.py makemigrations
+	> python manage.py migrate
+
+- create super user
+	> python manage.py createsuperuser
+
+- create apps
+	> python manage.py startapp pages
+	> python manage.py startapp products
+	- optional
+	> python manage.py startapp sales
+	> python manage.py startapp purchases
+	> python manage.py startapp posts
+
+
+
+
+- structure folder
+	- /core/core
+	# why i put static inside inner core?
+	# because python manage.py collectstatic will collect each static in pages, products, admin, inner core, etc and send it to project01/core/static base on my settings.py STATIC_ROOT
+	project01/core/core/static/img/
+	project01/core/core/static/img/logo.png
+	project01/core/core/static/css/
+	project01/core/core/static/css/style.css
+	project01/core/core/static/js/
+	project01/core/core/static/js/script.js
+	project01/core/core/templates/
+	project01/core/core/templates/base.html
+	- 
+	project01/core/pages/
+	project01/core/pages/static/
+	project01/core/pages/static/pages/
+	project01/core/pages/static/pages/img/image01.jpg
+	project01/core/pages/static/pages/css/style.css
+	project01/core/pages/static/pages/js/script.js
+	project01/core/pages/templates/
+	project01/core/pages/templates/pages/
+	project01/core/pages/templates/pages/home.html
+	project01/core/pages/templates/pages/about.html
+	project01/core/pages/templates/pages/contact.html
+	project01/core/products/
+	project01/core/products/static/
+	project01/core/products/static/products/
+	project01/core/products/static/products/img/
+	project01/core/products/static/products/img/image02.jpg
+	project01/core/products/static/products/css/
+	project01/core/products/static/products/css/style.css
+	project01/core/products/static/products/js/
+	project01/core/products/static/products/js/script.js
+	project01/core/products/templates/
+	project01/core/products/templates/products/
+	project01/core/products/templates/products/home.html
+	project01/core/products/templates/products/product_detail.html
+
+
+
+-  ready content for structure
+	- base.html
+		{% load static %}
+		<!DOCTYPE html>
+		<html>
+		<head>
+
+		    <!-- Required meta tags -->
+		    <meta charset="utf-8">
+		    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		    <!-- Bootstrap CSS -->
+		    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		    
+		    <!-- Include common stylesheets -->
+		    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+		    <!-- Include specific stylesheets from child templates -->
+		    {% block styles %}
+		    {% endblock %}
+
+		    <title>{% block title %}Django Marketplace{% endblock %}</title>
+		</head>
+		<body>
+		    <header class="site-header">
+		      header here
+
+		      <ul>
+		        <li>
+		          <a href="{% url 'home' %}">home</a>
+		        </li>
+		        <li>
+		          <a href="{% url 'about-us' %}">about us</a>
+		        </li>
+		        <li>
+		          <a href="{% url 'contact-us' %}">contact us</a>
+		        </li>
+
+		        <li>
+		          <a href="{% url 'products' %}">products</a>
+		        </li>
+		        <li>
+		          <a href="{% url 'product-detail' 1 %}">product detail</a>
+		        </li>
+
+		      </ul>
+		    </header>
+
+		    <main role="main" class="container">
+		      <div class="row">
+
+		        <div class="col-md-8">
+		            {% block content %}{% endblock %}
+		        </div>
+
+		        <div class="col-md-4">
+		            sidebar here
+		        </div>
+
+
+		      </div>
+		    </main>
+
+		    <footer class="footer">
+		      <p>
+		        footer here
+		      </p>
+		    </footer>    
+
+		    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+		    <!-- Include common scripts -->
+		    <script src="{% static 'js/main.js' %}"></script>
+
+		    <!-- Include specific scripts from child templates -->
+		    {% block scripts %}
+		    {% endblock %}
+
+		</body>
+		</html>
+
+
+
+	- main.js
+		window.addEventListener('load', () => {
+		    console.log('main.js ready');
+		});
+		or
+		window.onload = () => {
+			console.log('main.js ready');
+		}
+
+
+
+
+	- pages/views.py
+		from django.shortcuts import render
+
+		def index(request):
+			return render(request, 'pages/home.html')
+
+		def about(request):
+			return render(request, 'pages/about.html')
+
+		def contact(request):
+			return render(request, 'pages/contact.html')
+
+
+	- pages/templates/pages/home.html
+		{% extends 'base.html' %}
+		{% load static %}
+
+		{% block styles %}
+		    <link rel="stylesheet" type="text/css" href="{% static 'pages/css/style.css' %}">
+		{% endblock %}
+
+		{% block content %}
+		    <h1>Home</h1>
+			<p>This is the homepage</p>
+		{% endblock %}
+		    
+		{% block scripts %}
+		    <script src="{% static 'pages/js/script.js' %}"></script>
+		{% endblock %}	
+
+
+	- pages/templates/pages/about.html
+		{% extends 'base.html' %}
+		{% load static %}
+
+		{% block styles %}
+		    <link rel="stylesheet" type="text/css" href="{% static 'pages/css/style.css' %}">
+		{% endblock %}
+
+		{% block content %}
+		    <h1>About Us</h1>
+			<p>This is the about us page</p>
+		{% endblock %}
+		    
+		{% block scripts %}
+		    <script src="{% static 'pages/js/script.js' %}"></script>
+		{% endblock %}
+
+
+	- pages/templates/pages/contact.html
+		{% extends 'base.html' %}
+		{% load static %}
+
+		{% block styles %}
+		    <link rel="stylesheet" type="text/css" href="{% static 'pages/css/style.css' %}">
+		{% endblock %}
+
+		{% block content %}
+		    <h1>Contact Us</h1>
+			<p>This is the contact us page</p>
+		{% endblock %}
+		    
+		{% block scripts %}
+		    <script src="{% static 'pages/js/script.js' %}"></script>
+		{% endblock %}
+
+
+	- pages/urls.py
+		from django.urls import path
+		from . import views
+
+		urlpatterns = [
+			path('', views.index, name='home'),
+			path('about-us', views.about, name='about-us'),
+			path('contact-us', views.contact, name='contact-us'),
+		]
+
+
+	- products/models.py
+		from django.db import models
+
+		class Product(models.Model):
+			name = models.CharField(max_length=50, unique=True, blank=False, null=False)
+			description = models.TextField(blank=True)
+
+
+
+	- products/admin.py
+		from django.contrib import admin
+		from .models import Product
+
+		admin.site.register(Product)
+
+
+
+	- products/views.py
+		from django.shortcuts import render
+		from .models import Product
+
+		def index(request):
+			context = {
+				'products': Product.objects.all()
+			}
+			return render(request, 'products/home.html', context)
+
+		def detail(request, pk):
+	    	return render(request, 'products/product_detail.html')
+
+
+	- products/templates/products/home.html
+		{% extends 'base.html' %}
+		{% load static %}
+
+		{% block styles %}
+		    <link rel="stylesheet" type="text/css" href="{% static 'products/css/style.css' %}">
+		{% endblock %}
+
+		{% block content %}
+		    <h1>Products</h1>
+			<ul>
+				{% for product in products %}
+				<li>
+					<a href="{% url 'product-detail' product.id %}">{{product.name}}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		{% endblock %}
+		    
+		{% block scripts %}
+		    <script src="{% static 'products/js/script.js' %}"></script>
+		{% endblock %}	
+
+
+	- products/templates/products/product_detail.html
+		{% extends 'base.html' %}
+		{% load static %}
+
+		{% block styles %}
+		    <link rel="stylesheet" type="text/css" href="{% static 'products/css/style.css' %}">
+		{% endblock %}
+
+		{% block content %}
+		    <p>
+		        content for products detail
+		    </p>
+		{% endblock %}
+		    
+		{% block scripts %}
+		    <script src="{% static 'products/js/script.js' %}"></script>
+		{% endblock %}	
+
+
+
+	- products/urls.py
+		from django.urls import path
+		from . import views
+
+		urlpatterns = [
+			path('', views.index, name='products'),
+			path('<int:pk>/', views.detail, name='product-detail')
+		]
+
+
+	- core/urls.py
+		from django.contrib import admin
+		from django.urls import path, include
+		from pages import views as page_views
+		from django.conf import settings
+		from django.conf.urls.static import static
+
+		urlpatterns = [
+		    path('admin/', admin.site.urls),
+		    path('products/', include('products.urls')),
+		    path('', include('pages.urls')),
+		]
+		if settings.DEBUG:
+		    # we want to expose an enpoint settings.MEDIA_URL. that is /media
+		    # and any request goes to /media should be routed to the file system at this address document_root=settings.MEDIA_ROOT
+		    # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+		    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+	- core/settings.py
+		INSTALLED_APPS = [
+			'core',  			// core should be included if templates/base.html is inside inner core folder
+			'pages',
+			'products',
+			'purchases',
+			'sales',
+			'posts',
+			...
+		]
+
+		TEMPLATES = [
+			{
+				'DIRS': [
+					BASE_DIR / 'templates'
+				]
+			}
+		]
+
+		STATIC_URL = '/static/'
+		# STATIC_ROOT = '/core/static/'
+		STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+		MEDIA_URL = '/media/'
+		MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+
+	> python manage.py makemigrations
+	> python manage.py migrate
+
+
+
+
+
+
+- run the development server
+	> python manage.py runserver
+	# By default, the development server will run on http://127.0.0.1:8000/ or http://localhost:8000/
+
+
+
+
+
+
+# at this point, you can run and check the python website without any nginx setup yet
+
+
+
+# setup nginx and gunicorn
+
+
+# prep django static files
+	# Collects the static files into STATIC_ROOT
+	> python manage.py collectstatic
+
+
+
+# update setting.py
+	ALLOWED_HOSTS = ['djangotest01.com']
+
+
+# setup nginx
+
+- install nginx if you haven't yet. This is outside python environment
+	> sudo apt-get install nginx
+
+- setup nginx configuration for djangotest01
+	eg.
+		cd /etc/nginx/sites-available/
+		sudo touch djangotest01.conf
+		sudo nano djangotest01.conf
+		server {
+			listen 80;
+			server_name  djangotest01.com;
+
+			location = /favicon.ico { access_log off; log_not_found off; }
+
+			location /static/ {
+				alias /var/www/djangotest01/core/static/;
+				# /var/www/djangotest01/core/static/ is where collectstatic dump base on your settings STATIC_ROOT
+				# With alias, the specified path is treated as a complete replacement for the location given in the location block. In this example, requests to /static/ will be internally mapped to files in /var/www/djangotest02/core/static/. For example, a request for /static/css/style.css would be mapped to the file /var/www/djangotest02/core/static/css/style.css.				
+				# With root, the specified path is appended to the original request URI. In this example, requests to /static/ will be internally mapped to files in /var/www/djangotest02/core/static/. For example, a request for /static/css/style.css would be mapped to the file /var/www/djangotest02/core/static/css/style.css. The root directive automatically appends the location path to the specified root path.
+
+			}
+
+			location /media/ {
+				alias /var/www/djangotest01/core/media/;
+			}
+
+			location / {
+				include proxy_params;
+				proxy_pass http://unix:/var/www/djangotest01/core/app.sock;
+			}
+
+	        # Define error pages
+	        # error_page 500 502 503 504 /500.html;
+	        # location = /500.html {
+	        #     root /path/to/your/project/templates/;
+	        # }			
+		}
+
+- create symbolic link
+	> sudo ln -s /etc/nginx/sites-available/djangotest01.conf /etc/nginx/sites-enabled/
+	
+- test nginx configuration before restarting nginx
+	> sudo nginx -t
+- restart nginx
+	> sudo service nginx restart
+- check nginx status
+	> sudo systemctl status nginx
+
+
+# allow nginx in firewall
+	> sudo ufw allow 'Nginx Full'
+
+
+
+
+# setup gunicorn
+
+
+- install gunicorn INSIDE PYTHON ENV!!!!
+	> pip install gunicorn
+
+
+- create gunicorn_config.py
+	> sudo touch /var/www/djangotest01/core/gunicorn_config.py
+	- code
+		workers = 3
+		bind = "unix:/var/www/djangotest01/core/app.sock"
+
+		
+- run gunicorn. I need to be in /var/www/djangotest01/core
+	# this is like equivalent to python manage.py runserver
+	# you need to run this everytime you restart your computer
+	# the command starts Gunicorn, telling it to use the configuration specified in the provided Python script (gunicorn_config.py) and to run the Django application specified by your_project.wsgi:application
+	> gunicorn -c gunicorn_config.py core.wsgi:application
+
+
+?
+- restart nginx
+	> sudo service nginx restart
+- check nginx status
+	> sudo systemctl status nginx
+
+
+
+
+# setup hosts
+
+- update hosts
+	> sudo nano /etc/hosts
+	- code
+		127.0.0.1 	djangotest01.com
+
+
+
+- visit site
+	djangotest01.com
+
+
+
+
+# at this point, you should be able to see your django website running in your local web server but you need to run gunicorn -c gunicorn_config.py core.wsgi:application everytime after system restart
+
+
+
+# setup systemd to manage Gunicorn will ensure that your Django application starts automatically on system boot and is managed as a service
+
+- check your user and group
+	> id
+
+- create a gunicorn systemd service file
+	> sudo nano /etc/systemd/system/gunicorn_djangotest02.service
+	code
+		[Unit]
+		Description=Gunicorn daemon for Django Project
+		After=network.target
+
+		[Service]
+		User=cheng
+		Group=cheng
+		WorkingDirectory=/var/www/djangotest02/core
+		ExecStart=/var/www/djangotest02/env/bin/gunicorn -c /var/www/djangotest02/core/gunicorn_config.py core.wsgi:application --error-logfile /var/log/gunicorn/error.log
+
+		[Install]
+		WantedBy=multi-user.target
+
+- reload systemd manager configuration
+	> sudo systemctl daemon-reload
+
+- start gunicorn service
+	> sudo systemctl start gunicorn_djangotest02
+
+- Enable the Service to Start on Boot
+	# this will auto create symbolic link
+ 	> sudo systemctl enable gunicorn_djangotest02
+
+- check service status
+	> sudo systemctl status gunicorn_djangotest02
+
+
+
+- to restart service
+	> sudo systemctl restart gunicorn_djangotest02
+
+- to stop service
+	> sudo systemctl stop gunicorn_djangotest02
+
+- to disable the automatic startup on boot
+	> sudo systemctl disable gunicorn_djangotest02
+
+
+# at this point, you should be able to see your django website running in your local web server even when you restart your computer
+
+
+
+# prepare to monitor error logs
+
+- check nginx error
+	> sudo cat /var/log/nginx/error.log
+
+- redirect gunicorn systemd error
+	> sudo mkdir /var/log/gunicorn
+	> sudo chown cheng:cheng /var/log/gunicorn
+	> sudo nano /etc/systemd/system/gunicorn_djangotest02.service
+	code
+		ExecStart=/var/www/djangotest02/env/bin/gunicorn -c /var/www/djangotest02/core/gunicorn_config.py core.wsgi:application --error-logfile /var/log/gunicorn/error.log
+	> sudo systemctl daemon-reload
+	> sudo systemctl restart gunicorn_djangotest02
+	> sudo cat /var/log/gunicorn/error.log
+
+- monitor log in new terminals
+	> tail -f /var/log/nginx/error.log
+	> tail -f /var/log/gunicorn/error.log
+
+
+
+# removing test involved
+	- remove django site data. gunicorn_config.py Is also here
+		> cd /var/www/
+		> rm /var/www/djangotest01
+		> sudo rm -rf /var/www/djangotest01
+		> ll
+	- remove nginx configuration
+		> cd /etc/nginx/sites-available/
+		> cd /etc/nginx/sites-enabled/
+		> rm /etc/nginx/sites-available/djangotest01.conf
+		> rm /etc/nginx/sites-enabled/djangotest01.conf
+	- update hosts file
+		> sudo nano /etc/hosts
+	- disable gunicorn_djangotest02.service 
+		> sudo systemctl stop gunicorn_djangotest01
+		> sudo systemctl disable gunicorn_djangotest01
+		> sudo systemctl status gunicorn_djangotest01
+	- restart nginx
+		> sudo systemctl restart nginx
+		> sudo systemctl status nginx
+	- clear nginx error log
+		> sudo nano /var/log/nginx/error.log
+		>  Alt+\ 
+		> Ctrl+6
+		> select all
+		> ctrl k
+	- clear gunicorn error log
+		> sudo nano /var/log/gunicorn/error.log
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------
+
+mysql setup 1
+
+- install
+	> sudo apt install mysql-server
+
+- run a security script that comes with MySQL. It will help you set a root password, remove anonymous users, disable remote root login, and more
+	> sudo mysql_secure_installation
+
+- start mysql service
+	> sudo service mysql start
+
+
+- login to mysql
+	> sudo mysql -u root -p
+	or
+	> sudo mysql
+	# StrongP@ss123
+
+# a lot of access denied error will show up if you dont setup root password properly
+> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'StrongP@ss123';
+
+- show databases
+	> SHOW databases;
+
+- show tables
+	> SHOW tables;
+
+- show current user
+	> SELECT USER();
+
+- show current database
+	> SELECT DATABASE();
+
+- create a database
+	> CREATE DATABASE testDB;
+
+- use database
+	> USE database_name
+
+- create sample database
+	CREATE DATABASE IF NOT EXISTS testDB;
+	USE testDB;
+	CREATE TABLE IF NOT EXISTS products (
+	    id INT AUTO_INCREMENT PRIMARY KEY,
+	    name VARCHAR(255) NOT NULL,
+	    description TEXT,
+	    price DECIMAL(10, 2) NOT NULL
+	);
+
+- insert data in products
+	- USE testDB
+	- INSERT INTO products VALUES('1', 'apple', 'apple is red', '10.00');
+	- INSERT INTO products VALUES(null, 'banana', 'banana is yellow', '10.00');
+	- INSERT INTO products VALUES(null, 'orange', 'orange is orange', '10.00');
+
+-
+	SELECT * FROM products
+
+- create user and grant privileges
+	> CREATE USER 'testuser'@'localhost' IDENTIFIED BY 'password';
+	> GRANT ALL PRIVILEGES ON testDB.* TO 'testuser'@'localhost';
+	# ensures that the changes made to the user privileges are immediately applied by the MySQL server
+	> FLUSH PRIVILEGES;
+
+- exit mysql shell
+	> EXIT;
+
+- test connection by logging in the newly created user
+	> mysql -u testuser -p
+
+
+
+-----------------------------------
+
+
+
+
+using mysql in django setup 1
+
+# outsite env
+> sudo apt-get update
+> sudo apt-get install pkg-config
+> sudo apt-get install libmysqlclient-dev
+
+# should be done in PYTHON ENV
+> pip install mysqlclient
+> sudo mysql
+OR
+> sudo mysql -u root -p
+# a lot of access denied error will show up if you dont setup root password properly
+> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'StrongP@ss123';
+
+> CREATE DATABASE your_database_name;
+
+# installing mysql workbench might also help for visualizing
+
+- settings.py
+	DATABASES = {
+	    'default': {
+	        'ENGINE': 'django.db.backends.mysql',
+	        'NAME': 'your_database_name',
+	        'USER': 'your_mysql_user',
+	        'PASSWORD': 'your_mysql_password',
+	        'HOST': 'localhost',
+	        'PORT': '3306',  # MySQL default port
+	    }
+	}
+
+- migrations
+	python manage.py makemigrations
+	python manage.py migrate
+
+> mysql -u root -p
+> SHOW databases;
+> use djangotestdb05;
+> SHOW tables;
+> SELECT * FROM products_product;
+
+-	
+	> python manage.py runserver
+
+# as of now your django development site is using mysql
+# double check data in tables just to be sure
+
+# let django live server use mysql
+- same files
+- restart nginx
+	> sudo systemctl restart nginx
+- restart gunicorn
+	> sudo systemctl restart gunicorn_djangotest05
+
+# as of now your django live is using mysql
+# double check data in tables just to be sure
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------
+
+postgresql setup 1
+
+
+- Update Package List:
+	> sudo apt update
+	> sudo apt upgrade
+
+- Install PostgreSQL:
+	> sudo apt install postgresql postgresql-contrib
+
+- Check Installation:
+	> systemctl status postgresql
+
+- Switch to PostgreSQL User:
+	> sudo -i -u postgres
+	# to go out
+	> exit
+
+- Access PostgreSQL Prompt:
+	> psql
+
+- see all database
+	> SELECT datname FROM pg_database;
+
+- see all tables
+	> SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';
+
+- see all postgresql users
+	> SELECT usename FROM pg_user;
+
+- Create a Database:
+	> CREATE DATABASE your_database_name;
+
+- Create a User:
+	> CREATE USER your_username WITH PASSWORD 'your_password';
+
+- Change Password:
+	> ALTER USER your_username WITH PASSWORD 'StrongP@ss123';
+
+- Grant Permissions:
+	> ALTER ROLE your_username SET client_encoding TO 'utf8';
+	> ALTER ROLE your_username SET default_transaction_isolation TO 'read committed';
+	> ALTER ROLE your_username SET timezone TO 'UTC';
+	> GRANT ALL PRIVILEGES ON DATABASE your_database_name TO your_username;
+
+- switch or use database
+	> \c your_database_name
+
+- show all tables in your table
+	> \c testdb
+	> \dt
+
+- Configuring PostgreSQL:
+- Edit PostgreSQL Configuration:
+	# Adjust PostgreSQL's configuration if needed. The main configuration file is usually found at /etc/postgresql/<version>/main/postgresql.conf.
+
+- Restart PostgreSQL:
+	> sudo service postgresql restart
+
+
+- quick connect to your database
+	> psql -h localhost -U testuser -d testdb
+
+
+- quick create db with details
+	> createdb -U your_postgres_user -W -h localhost -p 5432 your_database_name
+
+-----------------------------------
+
+
+using PostgreSQL in django setup 1
+
+# should be done in PYTHON ENV
+> pip install psycopg2-binary
+
+- settings.py
+	DATABASES = {
+	    'default': {
+	        'ENGINE': 'django.db.backends.postgresql',
+	        'NAME': 'testdb',
+	        'USER': 'testuser',
+	        'PASSWORD': 'StrongP@ss123',
+	        'HOST': 'localhost',
+	        'PORT': '5432',  # PostgreSQL default port
+	    }
+	}
+
+-
+	python manage.py makemigrations
+	python manage.py migrate
+
+-
+	python manage.py createsuperuser
+
+-
+	> python manage.py runserver
+
+# as of now your django development site is using postgresql
+# double check data in tables just to be sure
+
+# let django live server use mysql
+- same files
+- restart nginx
+	> sudo systemctl restart nginx
+- restart gunicorn
+	> sudo systemctl restart gunicorn_djangotest05
+
+# as of now your django live is using mysql
+# double check data in tables just to be sure
+
+
+
+-----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

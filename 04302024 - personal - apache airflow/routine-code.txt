@@ -1,0 +1,2273 @@
+https://www.youtube.com/watch?v=p0vZedMl93c
+https://www.youtube.com/playlist?list=PLc2EZr8W2QIAI0cS1nZGNxoLzppb7XbqM
+https://www.youtube.com/watch?v=s-r2gEr7YW4
+
+
+
+
+
+
+
+
+
+
+> neil degrasse explain style
+	- orchestration
+		- is about automating several task to achieve a purpose rather than doing them manually
+			- eg
+				- task 1: gathers data in website database and save it to aws s3 weekly
+				- task 2: use aws machine learning to predict something from data in task 1
+				- task 3: send a report to an email from task 2
+		- is the automated configuration, management, and coordination of computer systems, applications, and services
+		- helps easily manage complex tasks and workflows
+	- orchestration tool
+		- a tool or application that lets you setup or code to schedule and run several tasks that are interdependent to one another
+	- apache airflow
+		- is just an orchestration tool by airbnb and was then given to open source community for free to use
+		- gives you a UI to monitor your job or workflow
+		- can also serve as a monitoring
+	- DAG - directed acyclic graph
+		- are written in python
+		- is just a python file
+		- is just a graphical flowchart representing your automated code workflow
+		- shows how your tasks interact to each other
+		- consists of one or more tasks
+	- dependencies
+		- just means which tasks should run after which
+		- just means task2 should not run if task1 did not run
+		- several methods in creating dependencies
+			- >> bitshift operators
+				task1 >> task2 >> task3
+			- set_upstream and set_downstream
+				task1.set_upstream(task2)
+				task3.set_upstream(task2)
+			- chain function
+				chain(task1, task2, task3)
+			- taskflow api
+	- >>
+		- define the dependencies of each tasks
+	- db
+		- an internal database that will store all the tasks and metadata details of your airflow components
+	- scheduler
+		- architecture of airflow that sends your tasks to workers
+		- responsible for scheduling your workflows to run
+		- frequently pulls the database for new or modified dags and accordingly sends them to the executor
+	- executor
+		- responsible for receiving tasks from the scheduler
+			and assigning them to workers and monitoring their execution
+	- workers
+		- all tasks are submitted to workers to get excecuted
+		- are the compute layers that runs the tasks
+		- reports the status back to the executor
+	- tasks
+		- created by instantiating a specific operator with parameters
+		- check documentation for specific parameters of each operator
+	- operators
+		- each tasks is created by using an operator
+		- operators define what needs to be done in a task
+		- eg
+			- BashOperator
+				- commands where you want to run in linux cmd
+			- PythonOperator
+				- commands where you want to run in python
+	- some operator categories
+		- action operators - executes something
+			- BashOperator - executes bash commands
+			- PythonOperator - executes python code
+			- AzureDataFactoryRunPipelineOperator
+			- EmailOperator - sends an email
+			- SnowflakeOperator - runs sql against a snowflake database
+			- KubernetesPodOperator - runs docker images in k8s pods
+		- transfer Operator - moves data from one place to another
+			- s3toRedshiftOperator
+			- LocalFilesystemtoGCSOperator
+			- s3ToGCSOperator
+			- s3ToSnowflakeOperator
+			- ..
+		- sensor Operator
+			- s3keysensor
+			- sqlsensor - waits for a sql query to return a specific result
+			- filesensor - waits for files to be available in local file system
+	- webserver
+		- serves the web ui that allows users to monitor and manage workflows
+	- usage/issues webserver
+		- as of now 04302024, you can only use Apache Airflow on Linux or Docker
+		- primary issue is most of the time, running the apache airflow ui dashboard which always get stack or fail resulting to browser page not found or cannot be reach when opening http://localhost:8080
+			- routine steps to setup dashboard
+				- make sure everything is close
+					- one theory is that it can't open if your computer lacks resource or slow
+					- another one is permission of code creating files while it boots up
+				- open task manager then rest
+				- open browser then rest
+				- open docker application then rest
+				- then open visual studio code
+				- be sure all airflow folder contents are DELETE. BACKUP your dags folder and airflow.cfg if needed
+				- right click and compose up using visual studio or "docker compose -f "docker-compose.yml" up -d --build"
+				- monitor task manager
+				- monitor container logs in docker application
+				- try opening http://localhost:8080
+					- if not, you need to docker-compose down again and repeat all the process
+				- manual trigger dag
+				- monitor logs > dag_id=.... in your visual studio code for each task as airflow ui updates are very slow and delayed
+			- its time consuming when we keep on restarting everything just so that apache airflow ui dashboard runs properly		
+		- apache airflow ui dashboard graph updates are super delayed!!!, as to why its much better to check logs in your visual studio code
+	- situation using docker
+		- delete almost all contents in the airflow folder after docker-compose down solves the issue of getting stack up when trying to run docker-compose up again 
+			- except for dags and plugin folder???
+	- TELL YOUR INTERVIEWER that you were able to do these in your local machine
+		- 1st - in Ubuntu virtual box
+			- create a simple DAG using pyton code that run a bash echo command, sleeps, and then runs a python print command
+		* NOTE
+			- tell you interviewer "I could have done more test if I have more resource"power" in my computer. Docker or virtual box eats too much resource in my pc that it lags even in simple tests"
+				- will also cost a lot of money doing live as free account has limits in using resource
+		- 2nd - Docker using dockerfile and docker-compose.yml docker-compose up
+			- python print > bashoperator curl to get data > clean csv file > send email using smpt.gmail.com and attach clean csv file
+		* NOTE
+			- next test cases would be
+				- creating/managing variables using the dashboard
+				- creating/managing connections going to cloud providers (eg aws) using the dashboard
+				- check s3 for a file so we can start the process and send it to snowflake
+			- unable to continue tasks due to 
+				- primary issue of starting apache airflow where we always need to delete all files
+				- using s3 and snowflake cost money
+					- it will be insane if we keep on deleting all files to run airflow just to check a file in s3 exist and transfer it to snowflake
+
+		- 3rd
+			- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://www.youtube.com/watch?v=p0vZedMl93c
+> routine n - nnn
+	/*
+		Notes:
+			- he use linux virtual box here
+	*/
+
+
+> routine n - install
+	/*
+		Notes:
+			- by default
+				- Airflow requires a home directory, and uses ~/airflow by default, but you can set a different location if you prefer. 
+				- The AIRFLOW_HOME environment variable is used to inform Airflow of the desired location
+	*/
+	> export AIRFLOW_HOME=~/airflow
+	> AIRFLOW_VERSION=2.9.0
+	> PYTHON_VERSION="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+	> CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
+	> pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
+
+
+
+
+> routine n - run airflow UI dashboard
+	/*
+		Notes:
+	*/
+	> airflow standalone
+	Visit localhost:8080 in your browser and log in with the admin account details shown in the terminal
+
+
+
+> routine n - show all examples provided by airflow 
+	/*
+		Notes:
+	*/
+	> airflow dags list
+	#
+
+	# our samples dags are located in 
+	/home/cheng/.local/lib/python3.10/site-packages/airflow/example_dags/
+
+
+
+> routine n - lets create our sample dag and also put it together in the sample dag by airflow
+	/*
+		Notes:
+	*/
+	cd /home/cheng/.local/lib/python3.10/site-packages/airflow/example_dags
+
+
+
+> routine n - sample1
+	/*
+		Notes:
+			- task1
+				- linux cmd
+					> echo "hello"
+			- task2
+				- linux cmd
+					> sleep 5 
+			- task3
+				- python cmd
+					> print("world")
+	*/
+	# code test01.py
+		import datetime as dt
+		from airflow import DAG
+		from airflow.operators.bash_operator import BashOperator
+		from airflow.operators.python_operator import PythonOperator
+
+		def print_world():
+		    print('world')
+
+		default_args = {
+		    'owner': 'UnflodDS',
+		    'start_date': dt.datetime(2023, 6, 1),
+		    'retries': 1,
+		    'retry_delay': dt.timedelta(minutes=5),
+		}
+
+		with DAG('airflow_tutorial_v01',
+		         default_args = default_args,
+		         schedule_interval = '0 * * * *',
+		         ) as dag:
+		    print_hello = BashOperator(task_id = 'print_hello', bash_command = 'echo "hello"')
+		    sleep = BashOperator(task_id = 'sleep', bash_command = 'sleep 5')
+		    print_w = PythonOperator(task_id = 'print_world', python_callable = print_world)
+
+		print_hello >> sleep >> print_w
+
+
+
+	# terminal
+		> airflow standalone
+		Visit localhost:8080 in your browser and log in with the admin account details shown in the terminal		
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+https://www.youtube.com/playlist?list=PLc2EZr8W2QIAI0cS1nZGNxoLzppb7XbqM
+
+> routine n - nnn
+	/*
+		Notes:
+			- use Docker in their example
+			- so we are using docker in windows in this specific tutorial
+	*/
+
+
+
+> routine n - update windows subsystem for linux
+	/*
+		Notes:
+	*/
+	> wsl --update
+
+
+
+https://www.youtube.com/watch?v=N3Tdmt1SRTM&list=PLc2EZr8W2QIAI0cS1nZGNxoLzppb7XbqM&index=2&t=200s
+> routine n - nnn
+	/*
+		Notes:
+	*/
+	# dockerfile
+		FROM apache/airflow:latest
+
+		USER root
+		RUN apt-get update && apt-get -y install git && apt-get clean
+		USER airflow
+
+	# build image
+		> docker image ls
+		> docker built -t airflowtest01
+		> docker image ls
+
+	# docker-compose.yml
+		version: "3"
+		services:
+		  sleek-airflow:
+		    image: airflowtest01:latest
+		    volumes:
+		      - ./airflow:/opt/airflow 				# airflow directory will auto create during docker compose up
+		    ports:
+		      - "8080:8080"
+		    command: airflow standalone
+	
+	# docker compose and open airflow web ui
+		> docker compose up
+
+		- check Docker UI application
+		- go to containers and check the running airflow
+			- click the port that is running
+		- user is admin
+		- password check airflow/standalone_admin_password.txt
+
+		# you might need to redo this again and again while deleting the airflow folder so that airflow dashboard can boot up properly
+
+	# check airflow ui by default
+		http://localhost:8080/home
+
+	# interact with the container
+		> docker exec -it containerid sh
+		> ls
+		> more filename.txt #windows style of cat
+
+	# check container logs
+		> docker logs -f containerid
+
+	# check network
+		> docker network ls
+
+
+
+https://youtu.be/N3Tdmt1SRTM?list=PLc2EZr8W2QIAI0cS1nZGNxoLzppb7XbqM&t=434
+> routine n - create dag
+	/*
+		Notes:
+			- airflow directory
+				- note that this folder was auto created by compose up using your docker-compose.yml details volumes
+			- sample
+				- task1
+					- python command print
+				- task2
+					- python command print date
+				- task3
+					- python command request.get url response
+	*/
+	# code airflow/dags/welcome_dag.py
+		from airflow import DAG
+		from airflow.operators.python_operator import PythonOperator
+		from airflow.utils.dates import days_ago
+		from datetime import datetime
+		import requests
+
+
+		def print_welcome():
+		    print('Welcome to Airflow!')
+
+
+		def print_date():
+		    print('Today is {}'.format(datetime.today().date()))
+
+
+		def print_random_quote():
+		    response = requests.get('https://api.quotable.io/random')
+		    quote = response.json()['content']
+		    print('Quote of the day: "{}"'.format(quote))
+
+
+		dag = DAG(
+		    'welcome_dag',
+		    default_args={'start_date': days_ago(1)},
+		    schedule_interval='0 23 * * *',
+		    catchup=False
+		)
+
+		# task1
+		print_welcome_task = PythonOperator(
+		    task_id='print_welcome',
+		    python_callable=print_welcome,
+		    dag=dag
+		)
+
+		# task2
+		print_date_task = PythonOperator(
+		    task_id='print_date',
+		    python_callable=print_date,
+		    dag=dag
+		)
+
+		# task3
+		print_random_quote = PythonOperator(
+		    task_id='print_random_quote',
+		    python_callable=print_random_quote,
+		    dag=dag
+		)
+
+
+		# Set the dependencies between the tasks
+		print_welcome_task >> print_date_task >> print_random_quote
+
+
+	# check airflow ui
+		# note might take a long time before reflected
+		- trigger you dag using the ui and check the logs
+
+
+	# check network
+		> docker network ls
+
+
+
+
+
+
+https://www.youtube.com/watch?v=OuRiX1XQgyY&list=PLc2EZr8W2QIAI0cS1nZGNxoLzppb7XbqM&index=3
+> routine n - nnn
+	/*
+		Notes:
+			- task1
+				- python print hermit
+			- task2
+				- get data using bashoperator curl -o xrate.csv https://data-api.ecb.europa.eu/service/data/EXR/M.USD.EUR.SP00.A?format=csvdata
+			- task3
+				- clean csv file and save it in a directory
+			- task4
+				- send email using smpt.gmail.com and attach clean csv file
+				- note we only used local python libaries for the email, no need to use a different docker image to smtp
+				- create your google app password for smtp test again here
+					- https://myaccount.google.com/apppasswords?pli=1&rapt=AEjHL4P5Ai2aYpzSAQPZ2wBYUC4Cl1tBZE5bfBMNxn5RzB-IUX5992thRD-rMI9WW-7f1EK-x0tuMUDpwOCZ8bxlos7GhPM-HXlY3Q4rwHuaSp97ffaV95M
+				- useful notes
+					- https://medium.com/@rconteduca/email-automation-supercharge-your-productivity-with-python-airflow-a7742f8a422f
+					- https://hevodata.com/learn/airflow-emailoperator/
+	*/
+	# code airflow/dags/exchange_rate_pipeline.py
+		# Imports
+		from airflow import DAG
+		from airflow.operators.bash_operator import BashOperator
+		from airflow.operators.email_operator import EmailOperator
+		from airflow.operators.python_operator import PythonOperator
+		from datetime import datetime, timedelta
+		import os
+		import pandas as pd
+
+		import smtplib
+		import email.message
+		import email.mime.multipart
+		import email.mime.text
+
+
+		def my_def():
+		    print("hermit")
+
+
+		def clean_data():
+
+		    # Load raw data into DataFrame
+		    data = pd.read_csv('/tmp/xrate.csv', header=None)
+
+		    # Cleanse Data
+		    default_values = {
+		        int: 0,
+		        float: 0.0,
+		        str: '',
+		    }
+
+		    cleaned_data = data.fillna(value=default_values)
+
+		    # Get the current date components
+		    now = pd.Timestamp.now()
+		    year = now.year
+		    month = now.month
+		    day = now.day
+
+		    # Create the directory path if it doesn't exist
+		    data_dir = f'/opt/airflow/data/xrate_cleansed/{year}/{month}/{day}'
+		    os.makedirs(data_dir, exist_ok=True)
+
+		    # Save the cleaned data to a new file
+		    cleaned_data.to_csv(f'{data_dir}/xrate.csv', index=False)
+
+		    # Return the path of the cleaned CSV file
+		    return f'{data_dir}/xrate.csv'
+
+
+		def send_email(csv_file_path):
+		    # Create a multipart/mixed parent container.
+		    msg = email.mime.multipart.MIMEMultipart('mixed')
+		    msg['Subject'] = 'Apache Airflow Email'
+		    msg['From'] = 'jmgcheng@gmail.com'
+		    msg['To'] = 'jmgcheng@yahoo.com'
+
+		    # Create a multipart/related container.
+		    msg_related = email.mime.multipart.MIMEMultipart('related')
+		    msg.attach(msg_related)
+
+		    # Create a multipart/alternative container.
+		    msg_alternative = email.mime.multipart.MIMEMultipart('alternative')
+		    msg_related.attach(msg_alternative)
+
+		    # Add the text version.
+		    msg_text = email.mime.text.MIMEText(
+		        'This is a test email from Python that should contain csv report')
+		    msg_alternative.attach(msg_text)
+
+		    # Add the HTML version.
+		    html = f"""
+		  <html>
+		  <body>
+		  This is a test email from Python that should contain csv report<br>
+		  </body>
+		  </html>
+		  """
+		    msg_html = email.mime.text.MIMEText(html, 'html')
+		    msg_alternative.attach(msg_html)
+
+		    # Add plot as attachment
+		    # msg_attach = email.mime.image.MIMEImage(img_data, 'png')
+		    # msg_attach.add_header('Content-Disposition',
+		    #                       'attachment', filename='myplot.png')
+		    # msg.attach(msg_attach)
+
+		    # Create the attachment
+		    with open(csv_file_path, 'rb') as file:
+		        attachment = email.mime.base.MIMEBase('application', 'octet-stream')
+		        attachment.set_payload(file.read())
+		        email.encoders.encode_base64(attachment)
+		        attachment.add_header(
+		            'Content-Disposition', f'attachment; filename="{os.path.basename(csv_file_path)}"'
+		        )
+		        msg.attach(attachment)
+
+		    smtp_server = 'smtp.gmail.com'
+		    smtp_port = 587
+		    smtp_username = 'jmgcheng@gmail.com'
+		    smtp_password = 'mznf pykv wlob quqx'
+		    with smtplib.SMTP(smtp_server, smtp_port) as server:
+		        server.starttls()
+		        server.login(smtp_username, smtp_password)
+		        server.send_message(msg)
+		        server.quit()
+
+
+		# Define or Instantiate DAG
+		dag = DAG(
+		    'exchange_rate_etl',
+		    start_date=datetime(2023, 10, 1),
+		    end_date=datetime(2024, 12, 31),
+		    schedule_interval='0 22 * * *',
+		    default_args={"retries": 2, "retry_delay": timedelta(minutes=5)},
+		    catchup=False
+		)
+
+		# Define or Instantiate Tasks
+		my_task = PythonOperator(
+		    task_id='my_task',
+		    python_callable=my_def,
+		    dag=dag,
+		)
+
+		download_task = BashOperator(
+		    task_id='download_file',
+		    bash_command='curl -o xrate.csv https://data-api.ecb.europa.eu/service/data/EXR/M.USD.EUR.SP00.A?format=csvdata',
+		    cwd='/tmp',
+		    dag=dag,
+		)
+
+		clean_data_task = PythonOperator(
+		    task_id='clean_data',
+		    python_callable=clean_data,
+		    dag=dag,
+		)
+
+		send_email_task = PythonOperator(
+		    task_id='send_email',
+		    python_callable=send_email,
+		    op_kwargs={
+		        'csv_file_path': "{{ task_instance.xcom_pull(task_ids='clean_data') }}"},
+		    dag=dag,
+		)
+
+
+		# Define Task Dependencies
+		my_task >> download_task >> clean_data_task >> send_email_task
+
+
+	# dockerfile
+		FROM apache/airflow:latest
+
+		USER root
+		RUN apt-get update && apt-get -y install git && apt-get clean
+		USER airflow
+		RUN pip install pandas
+		USER root		
+
+
+	# docker-compose.yml
+		version: "3"
+		services:
+		  sleek-airflow:
+		    image: airflowtest01:latest
+		    volumes:
+		      - ./airflow:/opt/airflow
+		    ports:
+		      - "8080:8080"
+		    command: airflow standalone	
+
+
+
+	# execution/notes
+		- making sure that airflow ui dashboard is the main issue
+			- make sure everything is close
+				- one theory is that it can't open if your computer lacks resource or slow
+			- open task manager then rest
+			- open browser then rest
+			- open docker application then rest
+			- then open visual studio code
+			- be sure all airflow folder contents are DELETE. BACKUP your dags folder and airflow.cfg if needed
+			- right click and compose up using visual studio or "docker compose -f "docker-compose.yml" up -d --build"
+			- monitor task manager
+			- monitor container logs in docker application
+			- try opening http://localhost:8080
+				- if not, you need to docker-compose down again and repeat all the process
+			- manual trigger dag
+			- monitor logs > dag_id=.... in your visual studio code for each task as airflow ui updates are very slow and delayed
+
+
+
+
+
+
+
+https://www.youtube.com/watch?v=-fjAchpM4mc&list=PLc2EZr8W2QIAI0cS1nZGNxoLzppb7XbqM&index=4
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+
+
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+

@@ -1,0 +1,3178 @@
+Date: Nov 29 2021
+
+> routine n - nnn - nnn
+	/*
+		Notes:
+	*/
+
+
+
+
+
+> routine n - CLI - intall angular cli as global
+	/*
+		Notes:
+	*/
+	npm install -g @angular/cli
+
+
+
+> routine n - CLI - help
+	/*
+		Notes:
+	*/
+	ng help
+
+
+
+> routine n - CLI - check angular version
+	/*
+		Notes:
+	*/
+	ng v
+	or
+	ng --version
+
+
+
+> routine n - CLI - create new angular project
+	/*
+		Notes:
+	*/
+	ng new my-project-name
+
+
+
+> routine n - CLI - generate - component
+	/*
+		Notes:
+	*/
+	ng generate component <name>
+	or
+	ng generate component heroes
+
+
+
+> routine n - CLI - generate - service
+	/*
+		Notes:
+	*/
+	ng generate service hero
+
+
+
+> routine n - CLI - generate - interface
+	/*
+		Notes:
+	*/
+	ng generate interface <name>
+
+
+
+> routine n - CLI - generate - pipes
+	/*
+		Notes:
+	*/
+	ng generate pipe <name>
+
+
+> routine n - CLI - generate - module
+	/*
+		Notes:
+			- --flat puts the file in src/app instead of its own folder.
+			- --module=app tells the CLI to register it in the imports array of the AppModule.
+		Refs:
+			- angular.io - tutorial - tour of hero
+	*/
+	ng generate module app-routing --flat --module=app
+
+
+
+> routine n - CLI - serve angular project locally
+	/*
+		Notes:
+	*/
+	ng serve
+	or
+	ng serve --open	
+
+
+
+> routine n - CLI - build angular project
+	/*
+		Notes:
+	*/
+	 ng build --prod
+
+
+
+> routine n - bindings - interpolation
+	/*
+		Notes:
+	*/
+	// ts
+		pageTitle: string = 'Home Page';
+	// html
+		{{pageTitle}}
+
+
+
+> routine n - bindings - property binding
+	/*
+		Notes:
+	*/
+	// ts
+		itemImageUrl = '../assets/phone.png';
+	// html
+		<img [src]="itemImageUrl">
+
+
+
+> routine n - bindings - event binding
+	/*
+		Notes:
+	*/
+	// ts
+		toggleImage(){}
+	// html
+		<button (click)='toggleImage()'>
+
+
+
+> routine n - bindings - two way binding
+	/*
+		Notes:
+	*/
+	// ts
+		name: string = 'michael';
+	// html
+		{{name}}
+		<input [(ngModel)]='name'>
+
+
+
+> routine n - directives - structural - ngIf
+	/*
+		Notes:
+	*/
+	<div *ngIf="product">
+		<h3>{{ product.name }}</h3>
+		<h4>{{ product.price | currency }}</h4>
+		<p>{{ product.description }}</p>
+	</div>	
+
+
+
+> routine n - directives - structural - ngFor
+	/*
+		Notes:
+	*/
+	<ul>
+	  <li *ngFor="let item of items">{{item}}</li>
+	</ul>	
+
+
+
+> routine n - pipes - currency
+	/*
+		Notes:
+	*/
+	{{ product.price | currency }}
+
+
+
+> routine n - pipes - Applying two formats by chaining pipes
+	/*
+		Notes:
+	*/
+	{{ birthday | date | uppercase}}
+
+
+
+> routine n - pipes - custom
+	/*
+		Notes:
+		Refs:
+			- https://app.pluralsight.com/library/courses/angular-2-getting-started-update/table-of-contents
+				- https://app.pluralsight.com/course-player?clipId=21345ca1-0268-4db0-b92f-5b7720bdafd9
+	*/
+	// ts
+		import { Pipe, PipeTransform } from "@angular/core";
+		@Pipe({
+		  name: 'convertToSpaces'
+		})
+		export class ConvertToSpacesPipe implements PipeTransform {
+		  transform(value: string, character: string): string {
+		    return value.replace(character, ' ');
+		  }
+		}	
+	// module
+		import { ConvertToSpacesPipe } from '../shared/convert-to-spaces.pipe';
+		...
+		@NgModule({
+		  declarations: [
+		    ...
+		    ConvertToSpacesPipe
+		  ]
+		})
+		export class ...Module { }
+	// html
+		{{product.productCode | convertToSpaces: '-'}}
+
+
+
+> routine n - interface - types
+	/*
+		Notes:
+	*/
+	// src/app/hero.ts
+		export interface Hero {
+		  id: number;
+		  name: string;
+		}		
+	// src/app/heroes/heroes.component.ts
+		...
+		import { Hero } from '../hero';
+		...
+		export class HeroesComponent implements OnInit {
+			hero: Hero = {
+				id: 1,
+				name: 'Windstorm'
+			};
+		}
+
+
+
+> routine n - modules - basic - app.module.ts
+	/*
+		Notes:
+	*/
+	import { NgModule } from '@angular/core';
+	import { BrowserModule } from '@angular/platform-browser';
+	import { AppComponent } from './app.component';
+	@NgModule({
+	  declarations: [
+	    AppComponent
+	  ],
+	  imports: [
+	    BrowserModule
+	  ],
+	  providers: [],
+	  bootstrap: [AppComponent]
+	})
+	export class AppModule { }
+
+
+
+> routine n - modules - frequent-ngmodules
+	/*
+		Notes:
+			- BrowserModule imports CommonModule, which contributes many common directives such as ngIf and ngFor. 
+			- BrowserModule re-exports CommonModule making all of its directives available to any module that imports BrowserModule.
+		Refs:
+			- https://angular.io/guide/frequent-ngmodules
+	*/
+	NgModule				Import it from						Why you use it
+	 BrowserModule			 @angular/platform-browser			 When you want to run your application in a browser
+	 CommonModule			 @angular/common					 When you want to use NgIf, NgFor
+	 FormsModule			 @angular/forms						 When you want to build template driven forms (includes NgModel)
+	 ReactiveFormsModule	 @angular/forms						 When you want to build reactive forms
+	 RouterModule			 @angular/router					 When you want to use RouterLink, .forRoot(), and .forChild()
+	 HttpClientModule		 @angular/common/http				 When you want to communicate with a server using the HTTP protocol
+
+
+
+> routine n - component - basic - app.component.ts
+	/*
+		Notes:
+	*/
+	import { Component } from '@angular/core';
+	@Component({
+	  selector: 'app-root',
+	  templateUrl: './app.component.html',
+	  styleUrls: ['./app.component.css']
+	})
+	export class AppComponent {
+	  title = 'angular-test';
+	}
+
+
+
+> routine n - components - create manually
+	/*
+		Notes:
+	*/
+	// src/app/heroes/heroes.component.ts
+		import { Component, OnInit } from '@angular/core';
+		@Component({
+		  selector: 'app-heroes',
+		  templateUrl: './heroes.component.html',
+		  styleUrls: ['./heroes.component.css']
+		})
+		export class HeroesComponent implements OnInit {
+		  pageTitle: string = 'My Heroes';
+		  constructor() { }
+		  ngOnInit() {
+		  }
+		}
+	// src/app/heroes/heroes.component.html
+		<h2>{{pageTitle}}</h2>
+	// src/app/heroes/heroes.component.css
+		/* HeroesComponent's private CSS styles */
+		h2 {color: blue}
+
+
+
+> routine n - css - embedded
+	/*
+		Notes:
+			- Pluralsight styling angular applications
+				- https://github.com/pluralsight-styling-angular-apps/demos-v2
+	*/
+	//app-nav.components.ts
+		@Component({
+			selector: 'saa-app-nav',
+			template: `
+				<div>...</div>
+			`,
+			styles: [`
+				div {...}
+				ul {...}
+			`]
+		})
+	//app.component.ts
+		@Component({
+			selector: 'saa-app',
+			template: `
+				<header>...</header>
+				<div>
+					<saa-app-nav></saa-app-nav>
+				</div>
+			`
+		})
+
+
+
+> routine n - css - global
+	/*
+		Notes:
+			- Pluralsight styling angular applications
+				- https://github.com/pluralsight-styling-angular-apps/demos-v2
+	*/
+	//app.component.ts
+		import{ Component, ViewEncapsulation } from '@angular/core';
+		@Component({
+			...
+			encapsulation: ViewEncapsulation.None, 	// this completely turns off Angular's shadow dom emulation and simply inserts our component style unscoped into the head of the document.
+			...
+		})
+
+
+
+> routine n - css - ShadowDom
+	/*
+		Notes:
+			- Pluralsight styling angular applications
+				- https://github.com/pluralsight-styling-angular-apps/demos-v2
+	*/
+	//app.component.ts
+		import{ Component, ViewEncapsulation } from '@angular/core';
+		@Component({
+			...
+			encapsulation: ViewEncapsulation.ShadowDom, 	// inspect element to see difference
+			...
+		})
+
+
+
+> routine n - css - linking from an external file
+	/*
+		Notes:
+			- Pluralsight styling angular applications
+				- https://github.com/pluralsight-styling-angular-apps/demos-v2
+	*/
+	@Component({
+		...,
+		template: `
+			<link rel="stylesheet" href="app-nav.component.css"/>
+			<div>...</div>
+		`
+	})
+
+
+
+> routine n - css - css imports
+	/*
+		Notes:
+			- Pluralsight styling angular applications
+				- https://github.com/pluralsight-styling-angular-apps/demos-v2
+	*/
+	//app-nav.component.css
+		@import 'app-nav.component.global.css';
+		@import 'app-nav.component.list.css';
+		@import 'app-nav.component.links.css';
+		...
+
+
+
+> routine n - css - Inline Styles
+	/*
+		Notes:
+			- Pluralsight styling angular applications
+				- https://github.com/pluralsight-styling-angular-apps/demos-v2
+	*/
+	@Component({
+		...,
+		template: `
+			<div style="...">...</div>
+		`
+	})
+
+
+
+> routine n - css - styleUrls & templateUrl
+	/*
+		Notes:
+			- Pluralsight styling angular applications
+				- https://github.com/pluralsight-styling-angular-apps/demos-v2
+	*/
+	@Component({
+		selector: 'saa-app-nav',
+		templateUrl: './app-nav.component.html',
+		styleUrls: ['./app-nav.component.css']
+	})
+
+
+
+> routine n - css - :host
+	/*
+		Notes:
+			- Pluralsight styling angular applications
+				- https://github.com/pluralsight-styling-angular-apps/demos-v2
+			- :host = the component itself. these selectors allow us to target what's considered the host element of our components with the :host pseudo-class
+	*/
+	<saa-app-nav>  		<- "host"
+		<ul>...</ul>	<- "Shadow Tree"
+	</saa-app-nav>
+						// with the css scoping module, we can style this host using the :host pseudo-class
+	// app-nav.component.scss
+		// rather the using
+			div {...}
+		// you will use
+			:host {
+				...,
+				display: block; use block since our app-nav element is a custom element
+			}
+
+
+
+> routine n - css - :host-context
+	/*
+		Notes:
+			- Pluralsight styling angular applications
+				- https://github.com/pluralsight-styling-angular-apps/demos-v2
+			- :host-context = styling looking throught parent = looking up/outward. they also allow us to target the host element when it finds itself in a particular element with the :host-context pseudo-class
+	*/
+	//app-nav.component.scss
+		:host-context(.example) {...}
+	//app.component.html
+		<div class="example">
+			<saa-app-nav>...</saa-app-nav>
+		</div>
+
+
+
+> routine n - css - ::ng-deep
+	/*
+		Notes:
+			- Pluralsight styling angular applications
+				- https://github.com/pluralsight-styling-angular-apps/demos-v2
+			- ::ng-deep = styling looking through child = looking in/inward. they even allow us to pierce through the shadow bounderies to style elements within child components or slotted content using the deep combinator
+	*/
+	//app-nav.component.html
+		<div>
+			<ul>
+				<ng-content></ng-content>
+			</ul>
+		</div>
+	//app.component.html
+		<div>
+			<saa-app-nav>
+				<li><a>...</a></li>
+				<li>...</li>
+				...
+			</saa-app-nav>
+		</div>
+	//app-nav.component.scss
+		...
+		:host ul ::ng-deep a {...}
+
+
+
+> routine n - pass data - parent to child
+	/*
+		Notes:
+	*/
+	// hero-detail.component.ts - i'm part of the child
+		import { Component, Input } from '@angular/core';
+		@Component({
+		  selector: 'app-hero-detail',
+		  templateUrl: './hero-detail.component.html',
+		  styleUrls: [ './hero-detail.component.css' ]
+		})
+		export class HeroDetailComponent {
+			@Input() hero: Hero; 										// @Input means hero value came from this component's parent
+		}
+	// heroes.component.html - i'm part of the parent
+		<app-hero-detail [hero]="selectedHero"></app-hero-detail> 		// if [hero] value selectedHero is updated, child data is also updated above	
+
+
+
+> routine n - pass data - child to parent
+	/*
+		Notes:
+	*/
+	// product-alerts.component.ts 													// child ts
+		import { Output, EventEmitter } from '@angular/core';
+		...
+		export class ProductAlertsComponent {
+			...
+			@Output() notify = new EventEmitter(); 									// @Output() allows this child to emit an event to parent component when value of notify changes
+		}
+	// product-alerts.component.html 												// child html
+		<button (click)="notify.emit()">Notify Me</button> 							// click this to trigger @Output() notify above
+	// product-list.component.html 													// parent html
+		<app-product-alerts ... (notify)="onNotify()"></app-product-alerts>
+	// product-list.component.ts 													// parent ts
+		onNotify() {
+			window.alert('You will be notified when the product goes on sale');
+		}	
+
+
+
+> routine n - services - create manually - sync
+	/*
+		Notes:
+	*/
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor() { }
+		  getHeroes(): Hero[] {
+			return HEROES; 											// depends on what you return. Here its just constants
+		  }
+		}
+	// heroes.component.ts
+		import { HeroService } from '../hero.service';
+		...
+		export class HeroesComponent {
+			constructor(private heroService: HeroService) {}
+			getHeroes(): void {
+			  this.heroes = this.heroService.getHeroes();
+			}			
+		}
+
+
+
+> routine n - rxjs - Observer + Observable + Subscriber: eg. 1
+	/*
+		Notes:
+	*/
+	// observer
+		const observer = {
+			next: apple => console.log(`Apple was emitted ${apple}`),
+			error: err => console.log(`Error occured: ${err}`),
+			complete: () => console.log(`No more apples, go home`)
+		};
+	// observable
+		const appleStream = new Observable(appleObserver => {
+			appleObserver.next('Apple 1');
+			appleObserver.next('Apple 2');
+			appleObserver.complete();
+		});
+	// subscribe
+		const sub = appleStream.subscribe(observer);
+	// unsubscribe
+		- sub.unsubscribe();
+
+
+
+> routine n - rxjs - Observer + Observable + Subscriber: eg. 2
+	/*
+		Notes:
+	*/
+	const appleStream = new Observable(appleObserver => {
+		appleObserver.next('Apple 1');
+		appleObserver.next('Apple 2');
+		appleObserver.complete();
+	});
+	const sub = appleStream.subscribe(
+		apple => console.log(`Apple was emitted ${apple}`),
+		err => console.log(`Error occured: ${err}`),
+		() => console.log(`No more apples, go home`)
+	);
+	sub.unsubscribe();
+
+
+
+> routine n - rxjs - Observer + Observable + Subscriber: eg. 3
+	/*
+		Notes:
+	*/
+	import { Component, OnInit } from '@angular/core';
+	import { of, from } from 'rxjs';
+	@Component({
+		...
+	})
+	export class AppComponent implements OnInit {
+		ngOnInit() {
+			of(2, 4, 6, 8).subscribe(console.log);
+			from(20, 15, 10, 5).subscribe(
+				item => console.log(`resulting item .. ${item}`),
+				err => console.error(`error occured ${err}`),
+				() => console.log('complete')
+			);
+			of('Apple1', 'Apple2', 'Apple3').subscribe(
+				apple => console.log(`Apple was emitted ${apple}`),
+				err => console.error(`Error occured: ${err}`),
+				() => console.log(`No more apples, go home`)
+			);
+		}
+	}
+	//
+		2
+		4
+		6
+		8
+		resulting item .. 20
+		resulting item .. 15
+		resulting item .. 10
+		resulting item .. 5
+		complete
+		Apple was emitted Apple1
+		Apple was emitted Apple2
+		Apple was emitted Apple3
+		No more apples, go home
+
+
+
+> routine n - rxjs - Operator: eg 1
+	/*
+		Notes:
+	*/
+	of(2, 4, 6)
+		.pipe(
+			map(item => item * 2)
+		).subscribe(console.log);
+	//
+		4
+		8
+		12
+
+
+
+> routine n - rxjs - Operator: eg 2
+	/*
+		Notes:
+	*/
+	of(2, 4, 6)
+		.pipe(
+			map(item => item * 2),
+			map(item => item - 3)
+		).subscribe(console.log);
+	//
+		1
+		5
+		9
+
+
+
+> routine n - rxjs - Operator: eg 3
+	/*
+		Notes:
+	*/
+	of(2, 4, 6)
+		.pipe(
+			tap(item => console.log(item)),
+			map(item => item * 2),
+			tap(item => console.log(item)),
+			map(item => item - 3)
+			tap(item => console.log(item)),
+		).subscribe(console.log);
+	//
+		2
+		4
+		1
+		4
+		8
+		5
+		6
+		12
+		9
+
+
+
+> routine n - rxjs - Operator: eg 4
+	/*
+		Notes:
+	*/
+	of(2, 4, 6)
+		.pipe(
+			take(2)
+		).subscribe(console.log);
+	//
+		2
+		4
+
+
+
+> routine n - rxjs - Operator: eg 5
+	/*
+		Notes:
+	*/
+	of(2, 4, 6)
+		.pipe(
+			tap(item => console.log(item)),
+			map(item => item * 2),
+			take(2),
+			map(item => item - 3),
+			tap(item => console.log(item))
+		).subscribe(console.log);
+	//
+		2
+		1
+		4
+		5
+
+
+
+> routine n - rxjs - Operator: eg 6
+	/*
+		Notes:
+	*/
+	of(2, 4, 6)
+		.pipe(
+			map(item => item * 2),
+			tap(item => console.log(item)),
+			take(2)
+		).subscribe(console.log);
+
+
+
+> routine n - rxjs - Observer + Observable + Subscriber + Operators: eg. 1
+	/*
+		Notes:
+	*/
+	import { Component, OnInit } from '@angular/core';
+	import { of, from } from 'rxjs';
+	import { map, tap, take } from 'rxjs/operators'
+	@Component({
+		...
+	})
+	export class AppComponent implements OnInit {
+		ngOnInit() {
+			of(2, 4, 6, 8).subscribe(console.log);
+			from(20, 15, 10, 5)
+				.pipe(
+					tap(item => console.log(`emitted item .... ${item}`)),
+					map(item => item * 2),
+					map(item => item - 10),
+					map(item => {
+						if(item === 0){
+							throw new Error('zero detected');
+						}
+						return item;
+					}),
+					take(3)
+				).subscribe(
+					item => console.log(`resulting item .. ${item}`),
+					err => console.error(`error occured ${err}`),
+					() => console.log('complete')
+				);
+
+			of('Apple1', 'Apple2', 'Apple3').subscribe(
+				apple => console.log(`Apple was emitted ${apple}`),
+				err => console.error(`Error occured: ${err}`),
+				() => console.log(`No more apples, go home`)
+			);
+		}
+	}
+	//
+		2
+		4
+		6
+		8
+		emitted item .... 20
+		resulting item .. 30
+		emitted item .... 15
+		resulting item .. 20
+		emitted item .... 10
+		resulting item .. 10
+		complete
+		Apple was emitted Apple1
+		Apple was emitted Apple2
+		Apple was emitted Apple3
+		No more apples, go home
+
+
+
+> routine n - rxjs - catch and replace strategy - eg 1. service - procedural
+	/*
+		Notes:
+	*/
+	getProducts(): Observable<Product[]>{
+		return this.http.get<Product[]>(this.productstUrl)
+			.pipe(
+				catchError(err => { 								// if retrieve is unsuccessful, fall back to a locally safe set of items or return an empty set
+					console.error(err);
+					return of([{id: 1, productName: 'cart'},
+								{id: 2, productName: 'hammer'}]);
+				})
+			);
+	}	
+
+
+
+> routine n - rxjs - catch and rethrow strategry - eg 1. service - procedural
+	/*
+		Notes:
+	*/
+	getProducts(): Observable<Product[]>{
+		return this.http.get<Product[]>(this.productstUrl)
+			.pipe(
+				catchError(err => {
+					console.error(err);
+					return throwError(err);
+				})
+			);
+	}	
+
+
+
+> routine n - rxjs - declarative pattern
+	/*
+		Notes:
+	*/
+	- eg. declarative pattern
+		products$ = this.http.get<Product[]>(this.productsUrl);  // declare an observable property and assign it directly to the result of the http.get
+	- eg. declarative pattern - with error handling
+		products$ = this.http.get<Product[]>(this.productsUrl)
+			.pipe(
+				catchError(this.handleError)
+			);	
+
+
+
+> routine n - rxjs - common data retrieval pattern VS reactive
+	/*
+		Notes:
+	*/
+	// common observable pattern
+		// ts
+			products: Product[] = [];
+			constructor(private productService: ProductService){}
+			ngOnInit(){
+				this.productService.getProducts()
+					.subscribe(
+						products => this.products = products,
+						err => this.errorMessage = err
+					);
+			}
+		// html
+			<div *ngIf="products">
+				<table>
+					<tr *ngFor="let product of products">
+						<td>{{product.productName}}</td>
+						<td>{{product.productCode}}</td>
+					</tr>
+				</table>
+			</div>
+	// reactive
+		// ts
+			products$: Observable<Product[]>; 							// by convention, we add a dollar sign to the variable name to indicate that it is an observable and not a simple array
+			constructor(private productService: ProductService){}
+			ngOnInit(){
+				this.products$ = this.productService.getProducts()	 	// since the asyc pipe handles our subscription, we no longer need to subscribe in our component code
+					.pipe(
+						catchError(err => {
+							this.errorMessage = err;
+							return EMPTY;
+						})
+					);
+			}
+		// html
+			<div *ngIf="products$ | async as products"> 				// this automatically subscribes for us and handles unsubscribing
+																		// we using the "as" clause to assign each emitted item to a variable
+																			// products$ is the observable
+																			// products is the array of products emitted from that observable
+				<table>
+					<tr *ngFor="let product of products"> 					// products array is used here
+						<td>{{product.productName}}</td>
+						<td>{{product.productCode}}</td>
+					</tr>
+				</table>
+			</div>
+	// reactive - declarative
+		// ts
+			products$ = this.productService.products$;
+	// reactive - declarative - error handling
+		// ts
+			products$ = this.productService.products$
+				.pipe(
+					catchError(err => {
+						this.errorMessage = err;
+						return EMPTY;
+					})
+				);
+
+
+
+> routine n - rxjs - Mapping Returned Data
+	/*
+		Notes:
+	*/
+	products$ = this.http.get<Product[]>(this.productsUrl)
+		.pipe(
+			map(products =>  					// this map is from RxJS operator
+				products.map(product => ({ 		// this map is from array method
+					...product,
+					price: product.price * 1.5,
+					searchKey: [product.productName]
+				} as Product)) 
+				/*
+					- ({})
+						- an arrow function assumes curly braces define a function body
+						- we instead want an object literal, so we add parentheses around the curly braces
+				*/
+			),
+			tap(data => console.log('Products: ', JSON.stringify(data))),
+			catchError(this.handleError)
+		);
+
+
+
+> routine n - rxjs - Combining Streams
+	/*
+		Notes:
+	*/
+	// product-category.service.ts
+		productCategories$ = this.http.get<ProductCategory[]>(this.productCategoriesUrl)
+			.pipe(
+				tap(data => console.log('categories', JSON.stringify(data))),
+				catchError(this.handleError)
+			);	
+	// product-service.ts
+		products$ = this.http.get<Product[]>(this.productsUrl)
+			.pipe(
+				tap(data => console.log('Products: ', JSON.stringify(data))),
+				catchError(this.handleError)
+			);
+		productsWithCategory$ = combineLatest([
+			this.products$,
+			this.productCategoryService.productCategories$
+		])
+			.pipe(
+				map(([products, categories]) => 		// destruct
+					products.map(product => ({
+						...product,
+						price: product.price * 1.5,
+						category: categories.find(c => product.categoryId === c.id).name,
+						searchKey: [product.productName]
+					} as Product))
+				)
+			);
+	// product-list.component.ts
+		products$ = this.productService.productsWithCategory$
+			.pipe(
+				catchError(err => {
+					this.errorMessage = err;
+					return EMPTY;
+				})
+			);
+	// product-list.component.html
+		<div *ngIf="products$ | async as products">
+			<table>
+				<tr *ngFor="let product of products">
+					<td>{{product.productName}}</td>
+					<td>{{product.productCode}}</td>
+					<td>{{product.category}}</td>
+				</tr>
+			</table>
+		</div>
+
+
+
+> routine n - rxjs - Reacting to Actions - 3 key steps to reacting to actions
+	/*
+		Notes:
+	*/
+	- Create an action stream (Subject/BehaviorSubject)
+		selSubject = new Subject<number>();
+		// selSubject = new BehaviorSubject<number>(0);  		// BehaviorSubject works the same way as Subject but provides an initial default value passed to the constructor
+		selectedAction$ = this.selSubject.asObservable();
+	- Combine the action and data streams
+		products$ = combineLatest([
+			this.productService.products$,
+			this.selectedAction$								// by combining our data stream with our new action stream, an item is emitted every time the user selects a category
+		])
+			.pipe(...);
+	- Emit a value to the action stream when an action occurs
+		onSelected(id): void {
+			this.selSubject.next(+id); 							// since the Subject is an observer, we can call next, error, or complete on the subject instance
+																// so when the user selects a different category, we emit the selected category ID to the action stream
+		}
+
+
+
+> routine n - rxjs - Reacting to Actions
+	/*
+		Notes:
+	*/
+	// product-list.component.ts
+		private categorySelectedSubject = new BehaviorSubject<number>(0);
+		categorySelectedAction$ = this.categorySelectedSubject.asObservable();
+		products$ = combineLatest([
+			this.productService.productsWithCategory$,
+			this.categorySelectedAction$
+		])
+			.pipe(
+				map(([products, selectedCategoryId]) =>
+					products.filter(product =>
+					selectedCategoryId ? product.categoryId === selectedCategoryId : true
+				)),
+				catchError(err => {
+					this.errorMessage = err;
+					return EMPTY;
+				})
+			);
+		categories$ = this.productCategoryService.productCategories$
+			.pipe(
+				catchError(err => {
+					this.errorMessage = err;
+					return EMPTY;
+				})
+			);
+		onSelected(categoryId: string): void {
+			this.categorySelectedSubject.next(+categoryId);
+		}
+
+
+
+> routine n - rxjs - Reacting to Actions: Examples - select operation
+	/*
+		Notes:
+	*/
+	// product.service.ts
+		private productSelectedSubject = new BehaviorSubject<number>(0); 					
+		productSelectedAction$ = this.productSelectedSubject.asObservable(); 				// action stream
+		selectedProduct$ = combineLatest([ 													// combining data stream to action stream
+			this.productsWithCategory$,
+			this.productSelectedAction$
+		])
+			.pipe(
+				map(([products, selectedProductId]) =>
+					products.find(product => product.id === selectedProductId)
+				),
+				tap(product => console.log('selectedProduct', product))
+			);
+		selectedProductChanged(selectedProductId: number): void {
+			this.productSelectedSubject.next(selectedProductId);
+		}
+	// product-list-alt.component.ts
+		@Component({
+			...
+			changeDetection: ChangeDetectionStrategy.OnPush
+		})
+		export class ProductListAltComponent {
+			products$ = this.productService.productsWithCategory$
+				.pipe(
+					catchError(err => {
+						this.errorMessageSubject.next(err);
+						return EMPTY;
+					})
+				);
+			selectedProduct$ = this.productService.selectedProduct$;
+			onSelected(productId: number): void {
+				this.productService.selectedProductChanged(productId);
+			}
+		}
+	// product-list-alt.component.html
+		<div *ngIf="products$ | async as products">
+			<button
+				*ngFor='let product of products'
+				[ngClass]="{'active': product?.id === (selectedProduct$ | async)?.id}"
+				(click)='onSelected(product.id)'>
+				{{ product.productName }} ({{ product.category }})
+			</button>
+		</div>
+	// product-detail.component.ts
+		@Component({
+			...
+			changeDetection: ChangeDetectionStrategy.OnPush
+		})
+		export class ProductDetailComponent {
+			product$ = this.productService.selectedProduct$
+				.pipe(
+					catchError(err => {
+						this.errorMessageSubject.next(err);
+						return EMPTY;
+					})
+				);
+		}
+	// product-detail.component.html
+		<div *ngIf="product$ | async as product"></div>
+
+
+
+> routine n - rxjs - Reacting to Actions: Examples - add operation
+	/*
+		Notes:
+	*/
+	// product.service.ts
+		private productInsertedSubject = new Subject<Product>();
+		productInsertedAction$ = this.productInsertedSubject.asObservable();
+		productsWithAdd$ = merge( 		// we use the merge creation function to merge our data stream and our action stream
+			this.productsWithCategory$,
+			this.productInsertedAction$
+		)
+			.pipe(
+				scan((acc: Product[], value: Product) => [...acc, value])
+			);
+		addProduct(newProduct?: Product) {
+			newProduct = newProduct || this.fakeProduct();
+			this.productInsertedSubject.next(newProduct);
+		}
+		private fakeProduct() {
+			return {
+				id: 42,
+				productName: 'Another One',
+				productCode: 'TBX-0042',
+				description: 'Our new product',
+				price: 8.9,
+				categoryId: 3,
+				category: 'Toolbox',
+				quantityInStock: 30
+			};
+		}
+	// product-list.component.ts
+		private categorySelectedSubject = new BehaviorSubject<number>(0);
+		categorySelectedAction$ = this.categorySelectedSubject.asObservable();
+		products$ = combineLatest([
+			this.productService.productsWithAdd$,
+			this.categorySelectedAction$
+		])
+			.pipe(
+				map(([products, selectedCategoryId]) =>
+					products.filter(product =>
+					selectedCategoryId ? product.categoryId === selectedCategoryId : true
+				)),
+				catchError(err => {
+					this.errorMessageSubject.next(err);
+					return EMPTY;
+				})
+			);
+		onAdd(): void {
+			this.productService.addProduct();
+		}
+
+
+
+> routine n - rxjs - Caching Observables
+	/*
+		Notes:
+	*/
+	eg. 1 - declarative caching patter
+		products$ = this.http.get<Product[]>(this.productsUrl)
+			.pipe(
+				shareReplay(1), 					// this caches and shared the resulting observable
+													// 1 here is not a boolean but a certain value. But i did not understand her explaination
+														// we might need to go to angular documentation to get the specific value for specific purposes
+				catchError(this.handleError)
+			);
+	eg. 2 
+		productCategories$ = this.http.get<ProductCategory[]>(this.productCategoriesUrl)
+			.pipe(
+				tap(data => console.log('categories', JSON.stringify(data))),
+				shareReplay(1),
+				catchError(this.handleError)
+			);	
+
+
+
+> routine n - rxjs - 11 - High order Mapping Operators
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=4ffd444f-1104-450c-aa08-9daea8e2ff83
+			- better to rewatch module videos for her Marble Diagram to easily understand
+	*/
+
+
+
+> routine n - rxjs - 12 - Combining All the Streams
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=232b032c-915f-495f-b1ef-39c4748aede5
+			- this is so that to combine or lessen your async pipes
+			- rewatch
+	*/
+
+
+
+> routine n - services - create manually - sync
+	/*
+		Notes:
+	*/
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor() { }
+		  getHeroes(): Hero[] {
+			return HEROES; 											// depends on what you return. Here its just constants
+		  }
+		}
+	// heroes.component.ts
+		import { HeroService } from '../hero.service';
+		...
+		export class HeroesComponent {
+			constructor(private heroService: HeroService) {}
+			getHeroes(): void {
+			  this.heroes = this.heroService.getHeroes();
+			}			
+		}
+
+
+
+> routine n - services - observable - convert service to Observable data AND subscribe - async
+	/*
+		Notes:
+	*/
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { Observable, of } from 'rxjs';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+			getHeroes(): Observable<Hero[]> {
+			  const heroes = of(HEROES); 							// of method is from rxjs. Its like await of promise
+			  return heroes;
+			}
+		}
+	// heroes.component.ts
+		import { HeroService } from '../hero.service';
+		...
+		export class HeroesComponent {
+			constructor(private heroService: HeroService) {}
+			getHeroes(): void {
+			  this.heroService.getHeroes()
+			      .subscribe(heroes => this.heroes = heroes);  		// callback inside .subscribe triggers if of method finish in service
+			}
+		}
+
+
+
+> routine n - services - observable - optional observable object next, error, complete
+	/*
+		Notes:
+	*/
+	// heroes.component.ts
+		import { HeroService } from '../hero.service';
+		...
+		export class HeroesComponent {
+			constructor(private heroService: HeroService) {}
+			getHeroes(): void {
+			  this.heroService.getHeroes()
+			      .subscribe({										// callback inside .subscribe triggers if of method finish in service
+			      	next: heroes => this.heroes = heroes, 			// next, error, complete. These object are optional
+			      	error: err => this.errorMessage = err 			// occurs if there is error
+			      });
+			}
+		}
+
+
+
+> routine n - http - sync
+	/*
+		Notes:
+	*/
+	// app.module.ts
+		import { HttpClientModule } from '@angular/common/http';
+		...
+		@NgModule({
+		  imports: [
+		    ...
+		    HttpClientModule,
+		    ...
+		  ],
+		  ...
+		})
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor(private http: HttpClient) {}
+		  getHeroes(): Hero[] {
+			return this.http.get(this.heroesUrl);
+		  }
+		}
+	// heroes.component.ts
+		import { HeroService } from '../hero.service';
+		...
+		export class HeroesComponent {
+			constructor(private heroService: HeroService) {}
+			getHeroes(): void {
+			  this.heroes = this.heroService.getHeroes();
+			}			
+		}
+
+
+
+> routine n - http - observable
+	/*
+		Notes:
+	*/
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor(private http: HttpClient) {}
+		  getHeroes(): Observable<Hero[]> {
+		    return this.http.get<Hero[]>(this.heroesUrl)
+		  }
+		}
+
+
+
+> routine n - http - pipe - tap
+	/*
+		Notes:
+	*/
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor(private http: HttpClient) {}
+		  getHeroes(): Observable<Hero[]> {
+		    return this.http.get<Hero[]>(this.heroesUrl)
+			    .pipe(
+			      tap(_ => this.log('fetched heroes'))
+			    );
+		  }
+		}
+
+
+
+> routine n - http - pipe - catchError
+	/*
+		Notes:
+	*/
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor(private http: HttpClient) {}
+		  getHeroes(): Observable<Hero[]> {
+		    return this.http.get<Hero[]>(this.heroesUrl)
+			    .pipe(
+			      tap(_ => this.log('fetched heroes')),
+		      	  catchError(this.handleError<Hero[]>('getHeroes', []))
+			    );
+		  }
+		}
+
+
+
+> routine n - http - get by id
+	/*
+		Notes:
+	*/
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor(private http: HttpClient) {}
+		  getHero(id: number): Observable<Hero> {
+		    const url = `${this.heroesUrl}/${id}`;
+		    return this.http.get<Hero>(url)
+			    .pipe(
+			      tap(_ => this.log(`fetched hero id=${id}`)),
+			      catchError(this.handleError<Hero>(`getHero id=${id}`))
+			    );
+		  }
+		}
+	// src/app/hero-detail/hero-detail.component.ts
+		getHero(): void {
+		const id = parseInt(this.route.snapshot.paramMap.get('id')!, 10);
+		this.heroService.getHero(id)
+		  .subscribe(hero => this.hero = hero);
+		}
+
+
+
+> routine n - http - update
+	/*
+		Notes:
+	*/
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  	constructor(private http: HttpClient) {}
+			httpOptions = {
+				headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+			};		
+			updateHero(hero: Hero): Observable<any> {
+				return this.http.put(this.heroesUrl, hero, this.httpOptions)
+					.pipe(
+						tap(_ => this.log(`updated hero id=${hero.id}`)),
+						catchError(this.handleError<any>('updateHero'))
+					);
+			}
+		}
+	// src/app/hero-detail/hero-detail.component.ts
+		save(): void {
+		  this.heroService.updateHero(this.hero)
+		    .subscribe(() => this.goBack());
+		}
+
+
+
+> routine n - http - add new
+	/*
+		Notes:
+	*/
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  	constructor(private http: HttpClient) {}
+			httpOptions = {
+				headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+			};		
+			addHero(hero: Hero): Observable<Hero> {
+			  return this.http.post<Hero>(this.heroesUrl, hero, this.httpOptions)
+				  .pipe(
+				    tap((newHero: Hero) => this.log(`added hero w/ id=${newHero.id}`)),
+				    catchError(this.handleError<Hero>('addHero'))
+				  );
+			}
+		}
+	// src/app/heroes/heroes.component.ts
+		add(name: string): void {
+		  name = name.trim();
+		  if (!name) { return; }
+		  this.heroService.addHero({ name } as Hero)
+		    .subscribe(hero => {
+		      this.heroes.push(hero);
+		    });
+		}
+
+
+
+> routine n - http - delete by id
+	/*
+		Notes:
+	*/
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  	constructor(private http: HttpClient) {}
+			httpOptions = {
+				headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+			};		
+			deleteHero(hero: Hero | number): Observable<Hero> {
+			  const id = typeof hero === 'number' ? hero : hero.id;
+			  const url = `${this.heroesUrl}/${id}`;
+			  return this.http.delete<Hero>(url, this.httpOptions)
+				  .pipe(
+				    tap(_ => this.log(`deleted hero id=${id}`)),
+				    catchError(this.handleError<Hero>('deleteHero'))
+				  );
+			}
+		}
+	// src/app/heroes/heroes.component.ts
+		delete(hero: Hero): void {
+		  this.heroes = this.heroes.filter(h => h !== hero);
+		  this.heroService.deleteHero(hero).subscribe();
+		}
+
+
+
+> routine n - http - search by name
+	/*
+		Notes:
+			- recheck angular.io tour of heroes for implementation
+	*/
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  	constructor(private http: HttpClient) {}
+			searchHeroes(term: string): Observable<Hero[]> {
+				if (!term.trim()) {
+					// if not search term, return empty hero array.
+					return of([]);
+				}
+				return this.http.get<Hero[]>(`${this.heroesUrl}/?name=${term}`)
+					.pipe(
+						tap(x => x.length ?
+						this.log(`found heroes matching "${term}"`) :
+						this.log(`no heroes matching "${term}"`)),
+						catchError(this.handleError<Hero[]>('searchHeroes', []))
+					);
+			}
+		}
+
+
+
+> routine n - routing - basic
+	/*
+		Notes:
+	*/
+	// app.module.ts
+		import { RouterModule } from "@angular/router";
+		@NgModule({
+		  imports: [
+		    RouterModule.forRoot([
+		      { path: 'products/:productId', component: ProductDetailsComponent },
+		    ])
+		  ]
+		  })
+	// product-list.component.html
+		<a [routerLink]="['/products', product.id]"> {{ product.name }} </a>	
+
+
+
+> routine n - routing - extract router param
+	/*
+		Notes:
+	*/
+	// product-details.component.ts
+		import { ActivatedRoute } from '@angular/router';
+		export class ProductDetailsComponent implements OnInit {
+			product;
+			constructor(private route: ActivatedRoute){}
+			ngOnInit() {
+				const routeParams = this.route.snapshot.paramMap;
+				const productIdFromRoute = Number(routeParams.get('productId'));
+				this.product = products.find(product => product.id === productIdFromRoute);
+			}
+		}
+	// product-details.component.html
+		<div *ngIf="product">
+			<h3>{{ product.name }}</h3>
+			<h4>{{ product.price | currency }}</h4>
+			<p>{{ product.description }}</p>
+		</div>	
+
+
+
+> routine n - routing - router-outlet and routerlink
+	/*
+		Notes:
+	*/
+	<a routerLink="/heroes">Heroes</a>
+	<router-outlet></router-outlet>	
+
+
+
+> routine n - routing - location
+	/*
+		Notes:
+	*/
+	// hero-detail.component.ts
+		import { Location } from '@angular/common';
+		@Component({
+		  selector: 'app-hero-detail',
+		  templateUrl: './hero-detail.component.html',
+		  styleUrls: [ './hero-detail.component.css' ]
+		})
+		export class HeroDetailComponent {
+		  constructor(
+		    private location: Location
+		  ) {}
+		  goBack(): void {
+		    this.location.back();
+		  }
+		}
+	// hero-detail.component.html
+		<button (click)="goBack()">go back</button>
+
+
+
+> routine n - routing - basics
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=6f738f08-6c53-40b7-bbef-4a06bff1fc6b
+	*/
+	// base path
+		<base href="/">
+	// app.module.ts
+		@NgModule({
+			imports: [
+				RouterModule.forRoot([ 				// forRoot should be use one time only, forChild for feature routes
+					{path: 'welcome', component: WelcomeComponent},
+					{path: '', redirectTo: 'welcome', pathMatch: 'full' },
+					{path: '**', component: PageNotFoundCompnent},
+													/*
+														- path should have no leading slash
+														- ** for default
+														- order matters
+															- imported module with routes also go first
+													*/
+				])
+			]
+		})
+	// html - RouterOutlet directive
+		<router-outlet></router-outlet>
+	// html - to activate
+		<a [routerLink]="['/welcome']">Home</a> 	
+													/*
+														- 1st element is the root URL segment
+														- other elements are route parameters or additional URL segments
+													*/
+
+
+
+> routine n - routing - routing features
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=62c4e398-a7ec-481e-aa57-014f6975867c
+			- naming
+				> use a common root path name for related feature routes
+					> this will make it easy to group routes or use lazy loading
+					- products
+					- products/:id
+					- products/id/edit
+	*/
+	// feature module
+		@NgModule({
+			imports: [
+				RouterModule.forChild([ 				
+					{path: 'products', component: ProductListComponent}
+				])
+			]
+		})
+	// ts
+		this.router.navigate(['/welcome']);
+													/*
+														- 1st element is the root URL segment
+														- other elements are route parameters or additional URL segments
+													*/
+	// ts - other syntax
+		this.router.navigate(['/welcome']);  		// standard syntax
+		this.router.navigate(/welcome); 			// shortcut syntax
+		this.router.navigateByUrl('/welcome'); 		// complete url path. Mostly not used
+	// app-routing.module.ts - routing module
+		- https://app.pluralsight.com/course-player?clipId=9e7de267-7630-4b42-b22d-cc68ed8aef28	
+			- better organization
+			- easier to find
+			- seperation of concerns
+
+
+
+> routine n - routing - route parameters
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=edc5fb4e-7358-4aea-92d2-e327587fd771
+			- optional parameters
+				- use optional parameter if it
+					- really is optional
+					- complex
+					- requires multiple values. Eg. search component passes search criteria to the list component to filter data
+					- parameters are not retained when navigating to other components
+			- query parameters
+				- use query parameter to
+					- pass optional or complex information to a route when you want that information optionally retained accross routes
+						- eg. list component passes its current user selections to the detail component which passes them back
+	*/
+	// configure
+		{path: 'products/:id', component: ProductDetailComponent}
+		{path: 'products/:id/edit', component: ProductDetailComponent}
+	// html
+		<a [routerLink]="['/products', product.id]">{{name}}</a>
+		<a [routerLink]="['/products', product.id, 'edit']">Edit</a>
+		<a [routerLink]="['/products', 0, 'edit']">Add Product</a>
+	// ts
+		this.router.navigate(['/products', this.product.id]);
+	// ts - read parameter - snapshot
+		this.route.snapshot.paramMap.get('id');
+	// ts - read parameter - observable
+		this.route.paramMap.subscribe(
+			params => {
+				const id = params.get('id');
+			}
+		);
+		/*
+			- the observable keeps a watch on the parameters and recieves a notification every time the parameters change
+		*/
+	// optional parameters - configure
+		{path: 'products', component: ProductDetailComponent}  // no need to configure
+	// optional parameters - html
+		<a [routerLink]="['/products', {start: startDate, end: endDate}">...</a>
+	// optional parameters - ts
+		this.router.navigate(['/products', {start: startDate, end: endDate}]);
+	// optional parameters - read
+		this.route.snapshot.paramMap.get('start');
+	// query parameters - configure
+		{path: 'products', component: ProductDetailComponent}  // no need to configure
+	// query parameters - html
+		<a 	[routerLink]="['/products']"
+			[queryParams]="{filterBy: 'x', showImage: true}">...</a>
+	// query parameters preserve - html
+		<a 	[routerLink]="['/products']"
+			queryParamsHandling="preserve" 						// preserve query in url when back button is clicked
+		>Back</>
+	// query parameters - ts
+		this.router.navigate(['/products', {
+								queryParams: {filterBy: 'x', showImage: true}
+		}]);
+	// query parameters - read
+		this.route.snapshot.queryParamMap.get('filterBy') || '';
+
+
+
+> routine n - routing - prefetching data using route resolvers
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=8016d363-6d31-46ff-ae4f-810f2552afd3
+			- download the data for our component before routing to that component with route resolvers
+			- benefits of prefetching data
+				- prevents display of a partial page
+				- reuses code
+				- improves flow when an error occurs
+			- required route parameter
+				- are great when a route requires a small amount of data in order to display its content
+					- eg. id to display a detail or edit page
+			- optional route parameter
+				- are useful when we need to pass optinal, complex, or multifaceted data from one route to another
+					- eg. to pass search criteria to a list page that filters by that criteria
+			- query route parameter
+				- allows us to retain small amounts of data between routes
+				- a search or list page can retain its selections when navigating to its detail page and back again
+			- route resolver
+				- the router can call a resolver service that can prefetch dynamic data for a component
+			- resolver - flow
+				- https://app.pluralsight.com/course-player?clipId=6827cb33-e69d-435f-94bb-eaa1e3123b43
+				- not using resolver VS using resolver
+					- not using - the component class gets the data after its initialized
+					- using - the resolver sevice gets the data so the template is not displayed until it has the data it needs
+						- note that i think this will look like the app hang while loading the data before transfering to other page
+						- you need to put a loader gif when doing this
+	*/
+	// routes data property - module
+		@NgModule(
+			imports: [
+				RouterModule.forChild([
+					{
+						path: 'products',
+						component: ProductListComponent,
+						data: {pageTitle: 'Product List'}, // routes data property
+					}
+				])
+			]
+		);
+	// routes data property - ts
+		this.pageTitle = this.route.snapshot.data['pageTitle'];
+	// resolver - service
+		import {Injectable} from '@angular/core';
+		import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular/router';
+		import {Observable} from 'rxjs';
+		import {Product} from './product';
+		import {ProductService} from './product.service';
+		@Injectable({
+			providedIn: 'root'
+		})
+		export class ProductResolver implements Resolve<Product> {
+			constructor(private productService: ProductService){}
+			resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):Observable<Product>{
+				const id = +route.paramMap.get('id');
+				return this.productService.getProduct(id);
+			}
+		}
+	// resolver - module
+		{
+			path: 'products/:id',
+			component: ProductDetailComponent,
+			resolve: {resolvedData: ProductResolver}
+		}
+		{
+			path: 'products/:id/edit',
+			component: ProductDetailComponent,
+			resolve: {resolvedData: ProductResolver,
+						categories: CategoryResolver}
+		}
+	// resolver - ts - snapshot - if the route never change while on the page
+		const resolvedData: ProductResolved = this.route.snapshot.data['resolvedData'];
+		this.errorMessage = resolvedData.error;
+		this.onProductRetrieved(resolvedData.produt);
+		onProductRetrieved(product: Product): void {...}
+	// resolver - ts - observable - if the route could change 
+		this.route.data.subscribe(data => {
+			const resolvedData: ProductResolved = data['resolvedData'];
+			this.errorMessage = resolvedData.error;
+			this.onProductRetriedved(resolvedData.product);
+		});
+
+
+
+> routine n - routing - child routes
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=a8edce27-802d-44d9-bd08-7b97e6df1984
+			- using child routes, we define a route hierarchy to better organize, encapsulate, and navigate through our application
+			- its make it easier to lazy load routes, improving the startup performance of the application
+	*/
+	// module
+		{
+			path: 'products/:id/edit',
+			component: ProductEditComponent,
+			resolve: {product: ProductResolver}, 								// resolver might not be needed in child routes
+			children: [
+				{path: '', redirectTo: 'info', pathMatch: 'full'},
+				{path: 'info', component: ProductEditInfoComponent},  			// url for this is products/:id/edit/info
+				{path: 'tags', component: ProductEditTagsComponent}
+			]
+		}
+	// html - child
+		<router-outlet></router-outlet>
+	// html - activate
+		<a [routerLink]="'/products', product.id, 'edit', 'info'">Info</a> 		// absolute path - using absolute path ties the route activation to the current route hierarchy
+		<a [routerLink]="['info']">Info</a> 									// relative path - better option. does not begin with a slash and is relative to the current url segment. If the ancestor route segments ever change, this path is unaffected
+	// ts 
+		this.router.navigate(['/products', this.product.id, 'edit', 'info']); 	// absolute
+		this.router.navigate(['info'], {relativeTo: this.route}); 				// relative
+	// read - product data service
+		this.productService.getProduct(id).subscribe(product => this.product = product);
+	// read - child route resolver
+		this.product = this.route.snapshot.data['product'];
+	// read - parent route resolver
+		this.product = this.route.parent.snapshot.data['product'];
+	// ts - read - snapshot
+		this.product = this.route.snapshot.data['product'];
+	// ts - read - observable
+		this.route.data.subscribe(data => this.product = data['product']);
+		this.route.parent.data.subscribe(data => {this.product = data['resolveData'].product});
+	// ts @ViewChild
+		- https://app.pluralsight.com/course-player?clipId=174d12b0-1444-4dc3-a2f6-c52a2c613c11
+			- recheck this for explanation
+			- this is like when you edit a form and browse to other tab then the error edit is still there
+		export class ProductEditInfoComponent implements OnInit {
+			@ViewChild(NgForm, {static: false}) productForm: NgForm;
+			ngOnInit(): void {
+				this.route.parent.data.subscribe(data => {
+					if(this.productForm){
+						this.productForm.reset();
+					}
+					this.product = data['resolvedData'].product;
+				});
+			}
+		}
+	// html @ViewChild
+		<form novalidate #productForm="ngForm">
+		</form>
+
+
+
+> routine n - routing - grouping and componentless routes
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=f29f0437-5df2-412c-8d6a-85a44dfc98ae
+			- this module talks about grouping child routes under a componentless parent route
+	*/
+	// module
+		RouterModule.forChild([
+			{
+				path: 'products', 				
+												/*
+													- this 1st layer object has no component property hence its a componentless parent route. 
+													- The child component below now will appear in a parent <outlet>. https://app.pluralsight.com/course-player?clipId=ed835294-e72f-4c38-987f-0049b188fea0
+												*/
+				children: [
+					{
+						path: '',
+						component: ProductDetailComponent
+					}
+					{
+						path: ':id',
+						component: ProductDetailComponent,
+						resolve: {product: ProductResolver}
+					},
+					{
+						path: ':id/edit',
+						component: ProductEditComponent,
+						resolve: {product: ProductResolver},
+						children: [...]
+					}
+				]
+			}
+		]);
+	//
+
+
+
+> routine n - routing - styling, animating, and watching routes
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=65fb8706-d2e0-4f24-8fae-96c33252f9f6
+	*/
+	// html
+		<a [routerLink]="['info']" routerLinkActive="active">Basic Information</a>
+	// html - exact path match determining active route
+		<li routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">...</li>
+		<a 	[routerLink]="['/products']"
+			routerLinkActive="active"
+			[routerLinkActiveOptions]="{excat:true}" 	// only apply this here because /products is the only one here that could match multiple route paths
+		>Product List</a>
+	// animating
+		- import BrowserAnimationsModule
+			// module
+				import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+				@NgModule({
+					imports:[
+						BrowserAnimationsModule
+					]
+				});
+		- define the animation
+			// app.animation.ts
+				- https://app.pluralsight.com/course-player?clipId=0177d9bd-ab39-4eae-b53c-475db232f9f2
+				import { trigger, animate, transition, style, group, query } from '@angular/animations';
+				export const slideInAnimation = trigger('slideInAnimation', [
+				  // Transition between any two states
+				  transition('* <=> *', [
+				    // Events to apply
+				    // Defined style and animation function to apply
+				    // Config object with optional set to true to handle when element not yet added to the DOM
+				    query(':enter, :leave', style({ position: 'fixed', width: '100%', zIndex: 2 }), { optional: true }),
+				    // group block executes in parallel
+				    group([
+				      query(':enter', [
+				        style({ transform: 'translateX(100%)' }),
+				        animate('0.5s ease-out', style({ transform: 'translateX(0%)' }))
+				      ], { optional: true }),
+				      query(':leave', [
+				        style({ transform: 'translateX(0%)' }),
+				        animate('0.5s ease-out', style({ transform: 'translateX(-100%)' }))
+				      ], { optional: true })
+				    ])
+				  ])
+				]);
+		- register the animation
+			// ts
+				import {slideInAnimation} from './app.animation';
+				@Component({
+					selector: 'pm-root',
+					templateUrl: './app.component.html',
+					styleUrls: ['./app.component.css'],
+					animations: [slideInAnimation]
+				})
+		- trigger the animation on the router outlet
+			// html
+				[@slideInAnimation]="o.isActivated ? o.activatedRoute : ''"
+				<router-outlet #o="outlet"></router-outlet>
+	// watching routing events - module - enable router tracing
+		imports: [
+			RouterModule.forRoot([
+				{path: 'welcome', component: WelcomeComponent},
+				...
+			]), {enableTracing:true} 		// now you can check the log in console when browsing the route
+		]
+	// reacting to routing events - for display spinner, log actions, execute logic
+		// app.component.ts
+			import {Router, Event, NavigationStart, NavigationEnd, NavigationError, NavigationCancel} from '@angular/router';
+			@Component({...})
+			export class AppComponent {
+				loading = true;
+			}
+			constructor( 	private authService: AuthService,
+							private router: Router) {
+				router.events.subscribe((routerEvent: Event) => {
+					this.checkRouterEvent(routerEvent);
+				});
+			}
+			checkRouterEvent(routerEvent: Event):void {
+				if(routerEvent instanceof NavigationStart){
+					this.loading = true;
+				}
+				if( routerEvent instanceof NavigationEnd ||
+					routerEvent instanceof NavigationCancel ||
+					routerEvent instanceof NavigationError) {
+						this.loading = false;
+				}
+			}
+		// app.component.html
+			<span class="fa fa-spinner spinner" *ngIf="loading"></span>
+
+
+
+> routine n - routing - secondary routes: named router outlet
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=44239a54-221d-487f-b3dc-4c7fb85f11f2
+	*/
+	// html
+		<router-outlet></router-outlet>
+		<router-outlet name='popup'></router-outlet>
+	// module
+		RouterModule.forChild([
+			{
+				path: 'messages',
+				component: MessageComponent,
+				outlet: 'popup'
+			}
+		])
+	// html - activate
+		<a [routerLink]="[{outlets:{popup:['messages']}}]">Messages</a>
+		// localhost:4200/products(popup:messages)
+	// ts - activate
+		this.router.navigate([{outlets:{popup:['messages']}}]);
+	// html - clear
+		<a [routerLink]="[{outlets:{popup:['null']}}]">Messages</a>
+	// ts - clear
+		this.router.navigate([{outlets:{popup:['null']}}]);	
+
+
+
+> routine n - routing - route guards
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=3509bf59-043d-4c7d-b24c-cc9d390345f7
+	*/
+	// service
+		// much better to generate this using cli
+		// ng g g user/auth
+		import {Injectable} from '@angular/core';
+		import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree} from '@angular/router';
+		import {Observable} from 'rxjs';
+		@Injectable({
+			providedIn: 'root'
+		})
+		export class AuthGuard implements CanActivate {
+			constructor(private authService: AuthService,
+						private router: Router) {}
+			canActivate(
+				next: ActivatedRouteSnapshot,
+				state: RouterStateShanpshot
+			): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+				return this.checkLoggedIn();
+			}
+			checkLoggedIn(): boolean {
+				if(this.authService.isLoggedIn){
+					return true;
+				}
+				this.router.navigate(['/login']);
+				return false;
+			}
+		}
+	// modules
+		{
+			path: 'products',
+			canActivate: [AuthGuard]
+		}
+
+
+
+> routine n - routing - lazy loading
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=fe76fd87-a71c-4f68-84bf-852eee38428d
+			- https://app.pluralsight.com/course-player?clipId=812e164e-e645-4702-b3ab-38611e4147fb
+	*/
+	// note
+		- before we can lazy load
+			- use a feature module
+			- group routes under a single parent
+			- dont import feature module
+				- feature module not imported in another module
+		- 3 preload strategies
+			- no preloading
+			- preload all
+			- custom
+			* note, better to review this module in pluralsight if intermediate
+	// module
+		import {RouterModule, PreloadAllModules} from '@angular/router';
+		RouterModule.forRoot([
+			{
+				path: 'products',
+				loadChildren: () => import(./products/product.module) 		
+										.then(m => m.ProductModule)			
+															            /*
+															              - import
+															                - the imports expression and returns a promise
+															              - .then
+															                - when the request of import is complete, the promise is resolved
+															                - and we specify the angular module to load from that file              
+															              - loadChildren
+															                - this property tells the router to fetch the bundle containing this module 
+															                  - only when the user navigates to a products route
+															                  - it compiles this module, then merge the route configuration defined in this module with the application route configuration
+															                  - lastly it activates the requested component and display that components template              
+															            */
+			}
+			], {preloadingStrategy: PreloadAllModules})
+
+
+
+> routine n - form - html - normal VS template driven VS reactive
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=64f6261b-3572-435b-a954-ecee4ab0610d
+	*/
+	// normal
+		<form>
+			<div>
+				<label for="firstNameId">First Name</label>
+				<input id="firstNameId" type="text" 
+						placeholder="First Name (required)"
+						required
+						minlength="3" />
+			</div>
+			<button type="submit">Save</button>
+		</form>
+	// template driven
+		<form (ngSubmit)="save()">
+			<div>
+				<label for="firstNameId">First Name</label>
+				<input id="firstNameId" type="text" 
+						placeholder="First Name (required)"
+						required
+						minlength="3" 
+						[(ngModel)]="customer.firstName"
+						name="firstName"
+						#firstNameVar="ngModel"
+						[ngClass]="{'is-invalid': firstNameVar.touched && !firstNameVar.valid }" />
+				<span *ngIf="firstNameVar.errors">
+					Please enter your first name.
+				</span>
+			</div>
+			<button type="submit">Save</button>
+		</form>
+	// reactive form
+		<form (ngSubmit)="save()" [formGroup]="signupForm">
+			<div>
+				<label for="firstNameId">First Name</label>
+				<input id="firstNameId" type="text" 
+						placeholder="First Name (required)"
+						formControlName="firstName"
+						[ngClass]="{'is-invalid': formError.firstName }" />
+				<span *ngIf="formError.firstName">
+					{{formError.firstName}}
+				</span>
+			</div>
+			<button type="submit">Save</button>
+		</form>
+
+
+
+> routine n - form - reactive form - access form model properties
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=c7531e80-acc2-4635-ad7b-85a8b85220c0
+	*/
+	customerForm.control.firstName.valid
+	// or
+	customerForm.get('firstName').valid
+
+
+
+> routine n - form - reactive form - FormGroup style
+	/*
+		Notes:
+			- 
+	*/
+	this.customerForm = new FormGroup({
+		firstName: new FormControl(),
+		lastName: new FormControl(),
+		email: new FormControl(),
+		sendCatalog: new FormControl(true)
+	});
+
+
+
+> routine n - form - reactive form - FormBuilder style
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=98a89025-2ac1-4ed7-b564-76ddfe0c7d03
+	*/
+	//
+		this.customerForm = this.fb.group({
+			firstName: '',
+			sendCatalog: true
+		});
+	//
+		this.customerForm = this.fb.group({
+			firstName: {value: 'n/a', disabled: true},
+			sendCatalog: {value: true, disabled: false}
+		});
+	//
+		this.customerForm = this.fb.group({
+			firstName: [''],
+			sendCatalog: [true]
+		});
+
+
+
+> routine n - form - reactive form - validation rules
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=98a89025-2ac1-4ed7-b564-76ddfe0c7d03
+	*/
+	//
+		this.customerForm = this.fb.group({
+			firstName: ['', Validators.required],
+			sendCatalog: true
+		});
+	//
+		this.customerForm = this.fb.group({
+			firstName: ['', Validators.required, Validators.minLength(3)],
+			sendCatalog: true
+		});
+	//
+		emailGroup: this.fb.group({
+			email: ['', [Validators.required, Validators.email]],
+			confirmEmail: ['', Validators.required],
+		}, { validator: emailMatcher }),
+	//
+		rating: [null, ratingRange(1, 5)],
+
+
+
+> routine n - form - reactive form - set validation rules runtime
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=98a89025-2ac1-4ed7-b564-76ddfe0c7d03
+	*/
+	//
+		myControl.setValidators(Validators.required);
+	//
+		myControl.setValidators([Validators.required, Validators.maxLength(30)]);
+	//
+		myControl.clearValidators();
+	//
+		myControl.updateValueAndValidity();
+
+
+
+> routine n - form - reactive form - custom validator
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=98a89025-2ac1-4ed7-b564-76ddfe0c7d03https://app.pluralsight.com/course-player?clipId=2005a2e1-5871-4488-a50b-9a061e16faaf
+	*/
+	function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
+		const emailControl = c.get('email');
+		const confirmControl = c.get('confirmEmail');
+		if (emailControl.pristine || confirmControl.pristine) {
+			return null;
+		}
+		if (emailControl.value === confirmControl.value) {
+			return null;
+		}
+		return { match: true };
+	}
+
+
+
+> routine n - form - reactive form - custom validator with arguments
+	/*
+		Notes:
+	*/
+	function ratingRange(min: number, max: number): ValidatorFn {
+		return (c: AbstractControl): { [key: string]: boolean } | null => {
+			if (c.value !== null && (isNaN(c.value) || c.value < min || c.value > max)) {
+				return { range: true };
+			}
+			return null;
+		};
+	}
+
+
+
+> routine n - form - reactive form - Observable Property
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=16ac3f2a-6207-4fef-869b-c8396606640c
+	*/
+	this.myFormControl.valueChanges.subscribe(value => console.log(value));
+
+
+
+> routine n - form - reactive form - Reactive transformations
+	/*
+		Notes:
+			- https://app.pluralsight.com/course-player?clipId=16ac3f2a-6207-4fef-869b-c8396606640c
+	*/
+	this.myFormControl.valueChanges.pipe(
+		debounceTime(1000)
+	).subscribe(
+		value => console.log(value)
+	);
+
+
+
+> routine n - form - template driven form
+	/*
+		Notes:
+	*/
+	// src/app/app.module.ts
+		import { NgModule } from '@angular/core';
+		import { BrowserModule } from '@angular/platform-browser';
+		import { CommonModule } from '@angular/common';
+		import { FormsModule } from '@angular/forms';
+		import { AppComponent } from './app.component';
+		import { HeroFormComponent } from './hero-form/hero-form.component';
+		@NgModule({
+		  imports: [
+		    BrowserModule,
+		    CommonModule,
+		    FormsModule
+		  ],
+		  declarations: [
+		    AppComponent,
+		    HeroFormComponent
+		  ],
+		  bootstrap: [ AppComponent ]
+		})
+		export class AppModule { }
+	// src/style.css
+		/* Application-wide Styles */
+		@import url('https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css');
+		.ng-valid[required], .ng-valid.required  {
+		  border-left: 5px solid #42A948; /* green */
+		}
+		.ng-invalid:not(form)  {
+		  border-left: 5px solid #a94442; /* red */
+		}
+	// src/app/hero.ts - used as class here, NOT interface
+		export class Hero {
+		  constructor(
+		    public id: number,
+		    public name: string,
+		    public power: string,
+		    public alterEgo?: string
+		  ) {  }
+		}	
+	// src/app/hero-form/hero-form.component.ts
+		import { Component } from '@angular/core';
+		import { Hero } from '../hero';                                                   							// This is not an interface in this example. Just a class with constructor
+		@Component({
+		  selector: 'app-hero-form',
+		  templateUrl: './hero-form.component.html',
+		  styleUrls: ['./hero-form.component.css']
+		})
+		export class HeroFormComponent {
+		  powers = ['Really Smart', 'Super Flexible', 'Super Hot', 'Weather Changer'];
+		  model = new Hero(18, 'Dr IQ', this.powers[0], 'Chuck Overstreet');              							// The following code creates a new hero instance, so that the initial form can show an example hero.
+		  submitted = false;
+		  onSubmit() { this.submitted = true; }
+		  newHero() { this.model = new Hero(42, '', ''); }
+		}	
+	// src/app/hero-form/hero-form.component.html
+		<div class="container">
+		  <div [hidden]="submitted">
+		    <h1>Hero Form</h1>
+		    <form (ngSubmit)="onSubmit()" #heroForm="ngForm">                                                         <!-- # is a template variable so heroForm can be reference below https://angular.io/guide/template-reference-variables -->
+		      <div class="form-group">
+		        <label for="name">Name</label>
+		        <input type="text" class="form-control" id="name"
+		               required
+		               [(ngModel)]="model.name" name="name"
+		               #name="ngModel">                                                                               <!-- its ngModel default. https://angular.io/guide/forms -->
+		        <div [hidden]="name.valid || name.pristine"
+		             class="alert alert-danger">                                                                      <!-- now you can use name.valid or name.pristine because of #name="ngModel" -->
+		          Name is required
+		        </div>
+		      </div>
+		      <div class="form-group">
+		        <label for="alterEgo">Alter Ego</label>
+		        <input type="text" class="form-control" id="alterEgo"
+		               [(ngModel)]="model.alterEgo" name="alterEgo">
+		      </div>
+		      <div class="form-group">
+		        <label for="power">Hero Power</label>
+		        <select class="form-control" id="power"
+		                required
+		                [(ngModel)]="model.power" name="power"
+		                #power="ngModel">
+		          <option *ngFor="let pow of powers" [value]="pow">{{pow}}</option>
+		        </select>
+		        <div [hidden]="power.valid || power.pristine" class="alert alert-danger">
+		          Power is required
+		        </div>
+		      </div>
+		      <button type="submit" class="btn btn-success" [disabled]="!heroForm.form.valid">Submit</button>         <!-- !heroForm.form.valid works because of #heroForm="ngForm" setup above -->
+		      <button type="button" class="btn btn-default" (click)="newHero(); heroForm.reset()">New Hero</button>
+		    </form>
+		  </div>
+		  <div [hidden]="!submitted">
+		    <h2>You submitted the following:</h2>
+		    <div class="row">
+		      <div class="col-xs-3">Name</div>
+		      <div class="col-xs-9">{{ model.name }}</div>
+		    </div>
+		    <div class="row">
+		      <div class="col-xs-3">Alter Ego</div>
+		      <div class="col-xs-9">{{ model.alterEgo }}</div>
+		    </div>
+		    <div class="row">
+		      <div class="col-xs-3">Power</div>
+		      <div class="col-xs-9">{{ model.power }}</div>
+		    </div>
+		    <br>
+		    <button class="btn btn-primary" (click)="submitted=false">Edit</button>
+		  </div>
+		</div>	
+	// component.ts
+		<app-hero-form></app-hero-form>
+
+
+
+> routine n - form - template driven form - validation
+	/*
+		Notes:
+	*/
+	<input type="text" id="name" name="name" class="form-control"
+	      required minlength="4" appForbiddenName="bob"
+	      [(ngModel)]="hero.name" #name="ngModel">
+	<div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert">
+	  <div *ngIf="name.errors?.['required']">
+	    Name is required.
+	  </div>
+	  <div *ngIf="name.errors?.['minlength']">
+	    Name must be at least 4 characters long.
+	  </div>
+	  <div *ngIf="name.errors?.['forbiddenName']">
+	    Name cannot be Bob.
+	  </div>
+	</div>
+
+
+
+> routine n - form - reactive form - basic
+	/*
+		Notes:
+	*/
+	// src/app/app.module.ts
+		import { NgModule } from '@angular/core';
+		import { BrowserModule } from '@angular/platform-browser';
+		import { AppComponent } from './app.component';
+		import { ReactiveFormsModule } from '@angular/forms';
+		import { NameEditorComponent } from './name-editor/name-editor.component';
+		@NgModule({
+		  declarations: [
+		    AppComponent,
+		    NameEditorComponent
+		  ],
+		  imports: [
+		    BrowserModule,
+		    ReactiveFormsModule
+		  ],
+		  bootstrap: [AppComponent]
+		})
+		export class AppModule { }
+	// src/app/name-editor/name-editor.component.ts
+		import { Component, OnInit } from '@angular/core';
+		import { FormControl } from '@angular/forms';
+		@Component({
+		  selector: 'app-name-editor',
+		  templateUrl: './name-editor.component.html',
+		  styleUrls: ['./name-editor.component.css']
+		})
+		export class NameEditorComponent implements OnInit {
+		  constructor() { }
+		  ngOnInit(): void { }
+		  name = new FormControl('');
+		  updateName() { this.name.setValue('Nancy'); }
+		}
+	// src/app/name-editor/name-editor.component.html
+		<label for="name">Name: </label>
+		<input id="name" type="text" [formControl]="name">
+		<button (click)="updateName()">Update Name</button>
+		<p>Value: {{ name.value }}</p>
+
+
+
+> routine n - form - reactive form - group form controls and nesting
+	/*
+		Notes:
+	*/
+	// src/app/app.module.ts
+		import { NgModule } from '@angular/core';
+		import { BrowserModule } from '@angular/platform-browser';
+		import { AppComponent } from './app.component';
+		import { ReactiveFormsModule } from '@angular/forms';
+		import { NameEditorComponent } from './name-editor/name-editor.component';
+		import { ProfileEditorComponent } from './profile-editor/profile-editor.component';
+		@NgModule({
+		  declarations: [
+		    AppComponent,
+		    NameEditorComponent,
+		    ProfileEditorComponent
+		  ],
+		  imports: [
+		    BrowserModule,
+		    ReactiveFormsModule
+		  ],
+		  providers: [],
+		  bootstrap: [AppComponent]
+		})
+		export class AppModule { }
+	// src/app/app.component.html
+		<app-profile-editor></app-profile-editor>
+	// src/app/profile-editor/profile-editor.component.ts
+		import { Component } from '@angular/core';
+		import { FormGroup, FormControl } from '@angular/forms';
+		@Component({
+		  selector: 'app-profile-editor',
+		  templateUrl: './profile-editor.component.html',
+		  styleUrls: ['./profile-editor.component.css']
+		})
+		export class ProfileEditorComponent {
+		  profileForm = new FormGroup({
+		    firstName: new FormControl(''),
+		    lastName: new FormControl(''),
+		    address: new FormGroup({
+		      street: new FormControl(''),
+		      city: new FormControl(''),
+		      state: new FormControl(''),
+		      zip: new FormControl('')
+		    })
+		  });
+		  onSubmit() {
+		    // TODO: Use EventEmitter with form value
+		    console.warn(this.profileForm.value);
+		  }
+		  updateProfile() {
+		    this.profileForm.patchValue({
+		      firstName: 'Nancy',
+		      address: {
+		        street: '123 Drew Street'
+		      }
+		    });
+		  }
+		}
+	// src/app/profile-editor/profile-editor.component.html
+		<form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+			<label for="first-name">First Name: </label>
+			<input id="first-name" type="text" formControlName="firstName">
+			<label for="last-name">Last Name: </label>
+			<input id="last-name" type="text" formControlName="lastName">
+			<div formGroupName="address">
+			  <h2>Address</h2>
+			  <label for="street">Street: </label>
+			  <input id="street" type="text" formControlName="street">
+			  <label for="city">City: </label>
+			  <input id="city" type="text" formControlName="city">
+			  <label for="state">State: </label>
+			  <input id="state" type="text" formControlName="state">
+			  <label for="zip">Zip Code: </label>
+			  <input id="zip" type="text" formControlName="zip">
+			</div>
+			<button (click)="updateProfile()">Update Profile</button>
+			<p>Complete the form to enable button.</p>
+			<button type="submit" [disabled]="!profileForm.valid">Submit</button> <!--  You aren't performing any validation yet, so the button is always enabled -->
+		</form>
+
+
+
+> routine n - form - reactive form - validation
+	/*
+		Notes:
+	*/
+	// hero-form-reactive.component.ts
+		ngOnInit(): void {
+		  this.heroForm = new FormGroup({
+		    name: new FormControl(this.hero.name, [
+		      Validators.required,
+		      Validators.minLength(4),
+		      forbiddenNameValidator(/bob/i) 								// <-- Here's how you pass in the custom validator.
+		    ]),
+		    alterEgo: new FormControl(this.hero.alterEgo),
+		    power: new FormControl(this.hero.power, Validators.required)
+		  });
+		}
+		get name() { return this.heroForm.get('name'); }
+		get power() { return this.heroForm.get('power'); }
+	// reactive/hero-form-reactive.component.html
+		<input type="text" id="name" class="form-control" formControlName="name" required>
+		<div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
+		  <div *ngIf="name.errors?.['required']">
+		    Name is required.
+		  </div>
+		  <div *ngIf="name.errors?.['minlength']">
+		    Name must be at least 4 characters long.
+		  </div>
+		  <div *ngIf="name.errors?.['forbiddenName']">
+		    Name cannot be Bob.
+		  </div>
+		</div>
+
+
+
+> routine n - form - reactive form - Defining custom validators
+	/*
+		Notes:
+			- deferred
+		Refs:
+			- https://angular.io/guide/form-validation#defining-custom-validators
+	*/
+
+
+
+> routine n - form - form builder
+	/*
+		Notes:
+			- form builder is used to make reactive form style much leaner
+				- https://app.pluralsight.com/course-player?clipId=61888ccd-9e61-4f7d-8c86-26523a82f915
+	*/
+	// cart.component.ts
+		import { FormBuilder } from '@angular/forms';
+		export class CartComponent {
+		  items = this.cartService.getItems();
+		  constructor( ..., private formBuilder: FormBuilder, ) {}
+		  checkoutForm = this.formBuilder.group({
+		    name: '',
+		    address: ''
+		  });
+		  onSubmit(): void {
+		    this.items = this.cartService.clearCart();
+		    console.warn('Your order has been submitted', this.checkoutForm.value);
+		    this.checkoutForm.reset();
+		  }
+		}
+	// cart.component.html
+		<form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()>
+		  <div>
+		    <label for="name">
+		      Name
+		    </label>
+		    <input id="name" type="text" formControlName="name">
+		  </div>
+		  <div>
+		    <label for="address">
+		      Address
+		    </label>
+		    <input id="address" type="text" formControlName="address">
+		  </div>	
+		  <button class="button" type="submit">Purchase</button>
+		</form>	
+
+
+
+> routine n - form - form builder - Using the FormBuilder service to generate controls
+	/*
+		Notes:
+		Refs:
+			- https://angular.io/guide/reactive-forms#using-the-formbuilder-service-to-generate-controls
+	*/
+	// ts
+		import { Component } from '@angular/core';
+		import { FormBuilder } from '@angular/forms';
+		@Component({
+		  selector: 'app-profile-editor',
+		  templateUrl: './profile-editor.component.html',
+		  styleUrls: ['./profile-editor.component.css']
+		})
+		export class ProfileEditorComponent {
+		  profileForm = this.fb.group({
+		    firstName: [''],
+		    lastName: [''],
+		    address: this.fb.group({
+		      street: [''],
+		      city: [''],
+		      state: [''],
+		      zip: ['']
+		    }),
+		  });
+		  constructor(private fb: FormBuilder) { }
+		}
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - simple product list
+	> desc
+		> notes
+		    - doing/understanding routines above make us trace this code faster
+		> installations
+		> other tech
+		> reference
+			- pluralsight
+				- https://app.pluralsight.com/library/courses/angular-2-getting-started-update/table-of-contents
+				- https://stackblitz.com/github/DeborahK/Angular-GettingStarted/tree/master/APM-Start
+				- https://stackblitz.com/github/DeborahK/Angular-GettingStarted/tree/master/APM-Final
+			- our repo with comments
+				- https://github.com/jmgcheng/angular-2-getting-started-pluralsight
+	> situation
+		> simple product list
+			> details are in json only
+				> src/api/products/products.json
+	> steps - master branch
+		> stepn - 
+			- cmd to desktop
+				cd desktop
+			- create dir
+				mkdir pluralsight-angular-2-getting-started
+			- cd pluralsight-angular-2-getting-started
+				cd pluralsight-angular-2-getting-started
+			- clone repo
+				git clone https://github.com/jmgcheng/angular-2-getting-started-pluralsight
+			- cd angular-2-getting-started-pluralsight
+				cd angular-2-getting-started-pluralsight
+			- npm install
+				npm install
+			- run
+				- npm start
+				> wait for browser to open http://localhost:4200/
+			- check http://localhost:4200/
+				http://localhost:4200/
+			- check/review these files in order
+				* check all my comments in code to review
+					- package.json
+					- src/app/app.module.ts
+					- src/app/app.component.ts
+					- src/index.html
+					- src/app/home/welcome.component.ts
+					- src/app/products/product.module.ts
+					- src/app/shared/convert-to-space.pipe.ts
+					- src/app/products/product-details.guard.ts
+					- src/app/products/product-list.component.ts
+					- src/app/products/product-list.component.html
+					- src/app/products/products.ts
+					- src/app/products/product-detail.component.ts
+					- src/app/products/product-detail.component.html
+					- src/app/shared/shared.module.ts
+					- src/app/products/product.service.ts
+					- src/api/products/products.json
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+> routine n - angular routing - simple product list
+	> desc
+		> notes
+		    - doing/understanding routines above make us trace this code faster
+		> installations
+		> other tech
+		> reference
+			- pluralsight
+				- https://app.pluralsight.com/library/courses/angular-routing/table-of-contents
+				- https://github.com/DeborahK/Angular-Routing
+			- our repo with comments
+				- https://github.com/jmgcheng/angular-routing-pluralsight.git
+	> situation
+		> simple product list
+		> comments here are more about routing
+	> steps - master branch
+		> stepn - 
+			- cmd to desktop
+				cd desktop
+			- create dir
+				mkdir pluralsight-angular-routing
+			- cd pluralsight-angular-routing
+				cd pluralsight-angular-routing
+			- clone repo
+				git clone https://github.com/jmgcheng/angular-routing-pluralsight.git
+			- cd angular-routing-pluralsight
+				cd angular-routing-pluralsight
+			- npm install
+				npm install
+			- run
+				- npm start
+				> wait for browser to open http://localhost:4200/
+			- check http://localhost:4200/
+				http://localhost:4200/
+			- check/review these files in order
+				* check all my comments in code to review
+					- package.json
+					- src/app/app.module.ts
+					- src/app/user/user.module.ts
+					- src/app/messages/message.module.ts
+					- src/app/shared/shared.module.ts
+					- src/app/app-routing.module.ts
+					- src/app/products/product.module.ts
+					- src/app/products/product-resolver.service.ts
+					- src/app/products/product-detail.component.ts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+> routine n - angular forms - a simple angular form
+	> desc
+		> notes
+		    - doing/understanding routines above make us trace this code faster
+		> installations
+		> other tech
+		> reference
+			- pluralsight
+				- https://app.pluralsight.com/library/courses/angular-forms/table-of-contents
+				- github
+					- he did not share any github link for this, just files in the download exercise in pluralsight
+			- our repo with comments
+				- https://github.com/jmgcheng/angular-forms-pluralsight.git
+	> situation
+		> simple angular form
+		> comments here are more about the angular form
+			> but not much as we already know a lot of these if we do the first routines above
+	> steps - master branch
+		> stepn - 
+			- cmd to desktop
+				cd desktop
+			- create dir
+				mkdir pluralsight-angular-forms
+			- cd pluralsight-angular-forms
+				cd pluralsight-angular-forms
+			- clone repo
+				git clone https://github.com/jmgcheng/angular-forms-pluralsight.git
+			- cd angular-forms-pluralsight
+				cd angular-forms-pluralsight
+			- npm install
+				npm install
+			- run
+				- ng serve -o
+				> wait for browser to open http://localhost:4200/
+			- check http://localhost:4200/
+				http://localhost:4200/
+			- check/review these files in order
+				* check all my comments in code to review
+					- package.json
+					- src/app/app.module.ts
+					- src/app/user-settings-form/user-settings-form.component.ts
+					- src/app/user-settings-form/user-settings-form.component.html
+					- src/app/data/data.service.ts
+					- src/app/data/user-settings.ts
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+> routine n - Angular Reactive Forms - a simple angular Reactive form until module 08
+	> desc
+		> notes
+		    - doing/understanding routines above make us trace this code faster
+		> installations
+		> other tech
+		> reference
+			- pluralsight
+				- https://app.pluralsight.com/library/courses/angular-2-reactive-forms/table-of-contents
+				- github
+					- step files in the download exercise in pluralsight
+					- https://github.com/DeborahK/Angular-ReactiveForms
+			- our repo with comments
+				- https://github.com/jmgcheng/angular-2-reactive-forms-pluralsight
+	> situation
+		> simple angular form
+		> comments here are more about the angular form
+			> but not much as we already know a lot of these if we do the first routines above
+	> steps - master branch - template driven
+		> stepn - 
+			- cmd to desktop
+				cd desktop
+			- create dir
+				mkdir pluralsight-angular-2-reactive-forms
+			- cd pluralsight-angular-forms
+				cd pluralsight-angular-2-reactive-forms
+			- clone repo
+				git clone https://github.com/jmgcheng/angular-2-reactive-forms-pluralsight.git
+			- cd angular-2-reactive-forms-pluralsight
+				cd angular-2-reactive-forms-pluralsight
+			- npm install
+				npm install
+			- run
+				- ng serve -o
+				> wait for browser to open http://localhost:4200/
+			- check http://localhost:4200/
+				http://localhost:4200/
+			- check/review these files in order
+				* check all my comments in code to review
+					- package.json
+					- src/app/app.module.ts
+					- src/app/customers/customer.ts
+					- src/app/customers/customer.component.ts
+					- src/app/customers/customer.component.html
+	> steps - reactive-form
+		> stepn - 
+			- checkout reactive-form
+				- git checkout reactive-form
+			- check/review these files in order
+				* check all my comments in code to review
+					- same files
+	> steps - reactive-form-validation
+		> stepn - 
+			- checkout reactive-form-validation
+				- git checkout reactive-form-validation
+			- check/review these files in order
+				* check all my comments in code to review
+					- same files
+	> steps - reactive-form-reacting-to-changes
+		> stepn - 
+			- checkout reactive-form-reacting-to-changes
+				- git checkout reactive-form-reacting-to-changes
+			- check/review these files in order
+				* check all my comments in code to review
+					- same files
+	> steps - reactive-form-dynamic-duplicate-input-elements
+		> stepn - 
+			- checkout reactive-form-dynamic-duplicate-input-elements
+				- git checkout reactive-form-dynamic-duplicate-input-elements
+			- check/review these files in order
+				* check all my comments in code to review
+					- same files
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+> routine n - Angular Reactive Forms - a angular Reactive form with CRUD
+	> desc
+		> notes
+		    - doing/understanding routines above make us trace this code faster
+		> installations
+		> other tech
+		> reference
+			- pluralsight
+				- https://app.pluralsight.com/library/courses/angular-2-reactive-forms/table-of-contents
+				- github
+					- step files in the download exercise in pluralsight
+					- https://github.com/DeborahK/Angular-ReactiveForms
+			- our repo with comments
+				- https://github.com/jmgcheng/angular-2-reactive-forms-apm-crud-pluralsight
+	> situation
+		> simple angular form
+		> comments here are more about the angular form
+			> but not much as we already know a lot of these if we do the first routines above
+	> steps - master branch - template driven
+		> stepn - 
+			- cmd to desktop
+				cd desktop
+			- create dir
+				mkdir pluralsight-angular-2-reactive-forms-apm-crud
+			- cd pluralsight-angular-2-reactive-forms-apm-crud
+				cd pluralsight-angular-2-reactive-forms-apm-crud
+			- clone repo
+				git clone https://github.com/jmgcheng/angular-2-reactive-forms-apm-crud-pluralsight.git
+			- cd angular-2-reactive-forms-apm-crud-pluralsight
+				cd angular-2-reactive-forms-apm-crud-pluralsight
+			- npm install
+				npm install
+			- run
+				- ng serve -o
+				> wait for browser to open http://localhost:4200/
+			- check http://localhost:4200/
+				http://localhost:4200/
+			- check/review these files in order
+				* check all my comments in code to review
+					- package.json
+					- src/app/products/product.module.ts
+					- src/app/products/product-data.ts
+					- src/app/products/product.service.ts
+					- src/app/products/product.ts
+					- src/app/shared/generic-validator.ts
+					- src/app/products/product-edit.component.ts
+					- src/app/products/product-edit.component.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+actual speed create blog site
+
+actual css application
+
+actual ngrx application
+
+actual oauth application
+
+actual angular material application

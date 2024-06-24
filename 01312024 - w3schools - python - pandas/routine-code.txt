@@ -1,0 +1,3333 @@
+https://www.w3schools.com/python/
+
+
+
+
+> neil degrasse explain style
+	- you need the python panda library if you want to manipulate data easily
+	- picture this in your head
+		> get data using panda or crawl > transform some data using panda > save the data to somewhere using a panda
+		- as you can see, panda is very important
+	- some examples of how you can load a data by
+		- df = pd.DataFrame(aDictionary)
+		- df = pd.read_excel('c://path-to-an-excel-file.xslx')
+		- df = pd.json_normalize(aJson)
+		- df = pd.read_sql_query(f'SELECT * FROM {table}', mssql_conn)
+		- df = and many more
+	- an examples of manipulating data
+		- df['FullName'] = df['FirstName'] + ' ' + df['LastName']
+	- an example of saving the data
+		- engine = sqlalchemy.create_engine(connection_string)
+		- df.to_sql(name='tableName', con=engine, index=False, if_exists='replace')
+	- you can use jupyter to practice a lot of data manipulation of your df to easily master panda library
+	- TELL YOUR INTERVIEWER that you were able to do these in your local machine using pandas
+		- tasks(n) - small ETL projects
+			- read data in excel, transform some data using panda dataframe, save data in mysql or mssql using df.to_sql
+			- read json data in, normalize json data, save data in mysql or mssql using df.to_sql
+			- read json data in, transform json data, save data in mysql or mssql using df.to_sql
+			- extract data in mssql, save data to postgresql using df.to_sql
+			- task reference
+				- youtube
+					- https://www.youtube.com/watch?v=98P9miPwttE&pp=ygURc2ltcGxlIGV0bCBweXRob24%3D
+					- https://www.youtube.com/watch?v=uqRRjcsUGgk&pp=ygURc2ltcGxlIGV0bCBweXRob24%3D
+					- https://www.youtube.com/watch?v=dfouoh9QdUw&t=560s&pp=ygURc2ltcGxlIGV0bCBweXRob24%3D
+					- https://www.youtube.com/watch?v=dfouoh9QdUw
+				- exercise
+					- C:\Users\Kael\Documents\Visual Studio Code\Python Pracs\etl01
+
+
+
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+			- Pandas is a Python library used for working with data sets.
+			- It has functions for analyzing, cleaning, exploring, and manipulating data.
+			- The name "Pandas" has a reference to both "Panel Data", and "Python Data Analysis"
+			- Pandas allows us to analyze big data and make conclusions based on statistical theories.
+			- Pandas can clean messy data sets, and make them readable and relevant.
+			- Relevant data is very important in data science.			
+			- Data Science
+				- is a branch of computer science where we study how to store, use and analyze data for deriving information from it.
+	*/
+
+
+
+> routine n - installation
+	/*
+		Notes:
+	*/
+	> pip install pandas
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	mydataset = {
+	  'cars': ["BMW", "Volvo", "Ford"],
+	  'passings': [3, 7, 2]
+	}
+
+	myvar = pd.DataFrame(mydataset)
+
+	print(myvar)	
+	#
+		    cars  passings
+		0    BMW         3
+		1  Volvo         7
+		2   Ford         2
+
+
+
+> routine n - Series
+	/*
+		Notes:
+			- A Pandas Series is like a column in a table.
+			- It is a one-dimensional array holding data of any type.
+	*/
+	import pandas as pd
+
+	a = [1, 7, 2]
+
+	myvar = pd.Series(a)
+
+	print(myvar)	
+	#
+		0    1
+		1    7
+		2    2
+		dtype: int64
+
+	print(myvar[0])
+	#
+		1
+
+
+
+> routine n - Create Labels
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	a = [1, 7, 2]
+
+	myvar = pd.Series(a, index = ["x", "y", "z"])
+
+	print(myvar)
+	#
+		x    1
+		y    7
+		z    2
+		dtype: int64
+
+	print(myvar["y"])
+	#
+		7
+
+
+
+> routine n - Key/Value Objects as Series
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	calories = {"day1": 420, "day2": 380, "day3": 390}
+
+	myvar = pd.Series(calories)
+
+	print(myvar)
+	#
+		day1    420
+		day2    380
+		day3    390
+		dtype: int64
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	calories = {"day1": 420, "day2": 380, "day3": 390}
+
+	myvar = pd.Series(calories, index = ["day1", "day2"])
+
+	print(myvar)
+	#
+		day1    420
+		day2    380
+		dtype: int64	
+
+
+
+> routine n - DataFrames
+	/*
+		Notes:
+			- Data sets in Pandas are usually multi-dimensional tables, called DataFrames.
+			- Series is like a column, a DataFrame is the whole table.		
+			- Pandas DataFrame is a 2 dimensional data structure, like a 2 dimensional array, or a table with rows and columns
+	*/
+	import pandas as pd
+
+	data = {
+	  "calories": [420, 380, 390],
+	  "duration": [50, 40, 45]
+	}
+
+	myvar = pd.DataFrame(data)
+
+	print(myvar)
+	#
+		   calories  duration
+		0       420        50
+		1       380        40
+		2       390        45	
+
+
+
+> routine n - Locate Row
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	data = {
+	  "calories": [420, 380, 390],
+	  "duration": [50, 40, 45]
+	}
+
+	#load data into a DataFrame object:
+	df = pd.DataFrame(data)
+
+	print(df.loc[0])
+	#
+		calories    420
+		duration     50
+		Name: 0, dtype: int64
+
+	print(df.loc[[0, 1]])
+	#
+		     calories  duration
+		  0       420        50
+		  1       380        40	
+
+
+
+> routine n - Named Indexes
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	data = {
+	  "calories": [420, 380, 390],
+	  "duration": [50, 40, 45]
+	}
+
+	df = pd.DataFrame(data, index = ["day1", "day2", "day3"])
+
+	print(df) 
+	#
+		      calories  duration
+		day1       420        50
+		day2       380        40
+		day3       390        45	
+
+
+
+> routine n - Locate Named Indexes
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	data = {
+	  "calories": [420, 380, 390],
+	  "duration": [50, 40, 45]
+	}
+
+	df = pd.DataFrame(data, index = ["day1", "day2", "day3"])
+
+	print(df.loc["day2"])
+	#
+		calories    380
+		duration     40
+		Name: day2, dtype: int64
+
+
+
+> routine n - Read CSV Files
+	/*
+		Notes:
+			- A simple way to store big data sets is to use CSV files (comma separated files).
+			- CSV files contains plain text and is a well know format that can be read by everyone including Pandas.		
+	*/
+	- data.csv
+		Duration,Pulse,Maxpulse,Calories
+		60,110,130,409.1
+		60,117,145,479.0
+		60,103,135,340.0
+		45,109,175,282.4
+		45,117,148,406.0	
+		...
+
+	- main.py
+		import pandas as pd
+
+		df = pd.read_csv('data.csv')
+
+		print(df)
+		#
+			       Duration  Pulse  Maxpulse  Calories
+			  0          60    110       130     409.1
+			  1          60    117       145     479.0
+			  2          60    103       135     340.0
+			  3          45    109       175     282.4
+			  4          45    117       148     406.0
+			  ..        ...    ...       ...       ...
+			  164        60    105       140     290.8
+			  165        60    110       145     300.4
+			  166        60    115       145     310.2
+			  167        75    120       150     320.4
+			  168        75    125       150     330.4
+			  
+			  [169 rows x 4 columns]
+
+
+
+> routine n - to_string
+	/*
+		Notes:
+			- to_string() to print the entire DataFrame.
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	print(df.to_string())
+	#
+		     Duration  Pulse  Maxpulse  Calories
+		0          60    110       130     409.1
+		1          60    117       145     479.0
+		2          60    103       135     340.0
+		3          45    109       175     282.4	
+		...
+
+
+
+> routine n - max_rows
+	/*
+		Notes:
+			- In my system the number is 60, which means that if the DataFrame contains more than 60 rows, the print(df) statement will return only the headers and the first and last 5 rows.
+	*/
+	import pandas as pd
+
+	print(pd.options.display.max_rows)
+	#
+		60
+
+
+
+> routine n - Increase the maximum number of rows to display
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	pd.options.display.max_rows = 9999
+
+	df = pd.read_csv('data.csv')
+
+	print(df)
+	#
+		     Duration  Pulse  Maxpulse  Calories
+		0          60    110       130     409.1
+		1          60    117       145     479.0
+		2          60    103       135     340.0
+		3          45    109       175     282.4
+		4          45    117       148     406.0
+		5          60    102       127     300.5	
+		...
+
+
+
+> routine n - Pandas Read JSON
+	/*
+		Notes:
+			- Big data sets are often stored, or extracted as JSON.
+			- JSON is plain text, but has the format of an object, and is well known in the world of programming, including Pandas.		
+	*/
+	- data.json
+		{
+		  "Duration":{
+		    "0":60,
+		    "1":60,
+		    ...
+		    "167":75,
+		    "168":75
+		  },
+		  "Pulse":{
+		    "0":110,
+		    "1":117,
+		    ...
+		    "167":120,
+		    "168":125
+		  },
+		  "Maxpulse":{
+		    "0":130,
+		    "1":145,
+		    ...
+		    "167":150,
+		    "168":150
+		  },
+		  "Calories":{
+		    "0":409.1,
+		    "1":479.0,
+		    ...
+		    "167":320.4,
+		    "168":330.4
+		  }
+		} 
+
+	- main.py
+		import pandas as pd
+
+		df = pd.read_json('data.json')
+
+		print(df.to_string())
+		#
+			     Duration  Pulse  Maxpulse  Calories
+			0          60    110       130     409.1
+			1          60    117       145     479.0
+			2          60    103       135     340.0
+			3          45    109       175     282.4
+			4          45    117       148     406.0
+			...		
+
+
+
+> routine n - Dictionary as JSON
+	/*
+		Notes:
+			JSON = Python Dictionary
+			JSON objects have the same format as Python dictionaries.
+	*/
+	import pandas as pd
+
+	data = {
+	  "Duration":{
+	    "0":60,
+	    "1":60,
+	    "2":60,
+	    "3":45,
+	    "4":45,
+	    "5":60
+	  },
+	  ...
+	  "Calories":{
+	    "0":409.1,
+	    "1":479.0,
+	    "2":340.0,
+	    "3":282.4,
+	    "4":406.0,
+	    "5":300.5
+	  }
+	}
+
+	df = pd.DataFrame(data)
+
+	print(df) 	
+	#
+		   Duration  Pulse  Maxpulse  Calories
+		0        60    110       130     409.1
+		1        60    117       145     479.0
+		2        60    103       135     340.0
+		3        45    109       175     282.4
+		4        45    117       148     406.0
+		5        60    102       127     300.5
+
+
+
+> routine n - head
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	print(df.head(10))
+	#
+		   Duration  Pulse  Maxpulse  Calories
+		0        60    110       130     409.1
+		1        60    117       145     479.0
+		2        60    103       135     340.0
+		3        45    109       175     282.4
+		4        45    117       148     406.0
+		5        60    102       127     300.5
+		6        60    110       136     374.0
+		7        45    104       134     253.3
+		8        30    109       133     195.1
+		9        60     98       124     269.0	
+
+
+
+> routine n - tail
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	print(df.tail())
+	#
+		     Duration  Pulse  Maxpulse  Calories
+		164        60    105       140     290.8
+		165        60    110       145     300.4
+		166        60    115       145     310.2
+		167        75    120       150     320.4
+		168        75    125       150     330.4	
+
+
+
+> routine n - info
+	/*
+		Notes:
+			- gives you more information about the data set
+			- The info() method also tells us how many Non-Null values there are present in each column, and in our data set it seems like there are 164 of 169 Non-Null values in the "Calories" column.
+			- Which means that there are 5 rows with no value at all, in the "Calories" column, for whatever reason.
+			- Empty values, or Null values, can be bad when analyzing data, and you should consider removing rows with empty values. This is a step towards what is called cleaning data, and you will learn more about that in the next chapters.			
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	print(df.info())
+	#
+		<class 'pandas.core.frame.DataFrame'>
+		RangeIndex: 169 entries, 0 to 168
+		Data columns (total 4 columns):
+		 #   Column    Non-Null Count  Dtype  
+		---  ------    --------------  -----  
+		 0   Duration  169 non-null    int64  
+		 1   Pulse     169 non-null    int64  
+		 2   Maxpulse  169 non-null    int64  
+		 3   Calories  164 non-null    float64
+		dtypes: float64(1), int64(3)
+		memory usage: 5.4 KB
+		None
+
+
+
+> routine n - Data Cleaning
+	/*
+		Notes:
+			- Data cleaning means fixing bad data in your data set.
+			- Bad data could be:
+				- Empty cells
+				- Data in wrong format
+				- Wrong data
+				- Duplicates
+	*/
+
+
+> routine n - dropna
+	/*
+		Notes:
+			- One way to deal with empty cells is to remove rows that contain empty cells.
+			- This is usually OK, since data sets can be very big, and removing a few rows will not have a big impact on the result.		
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	new_df = df.dropna()
+
+	print(new_df.to_string())
+	#
+		  Duration          Date  Pulse  Maxpulse  Calories
+		0         60  '2020/12/01'    110       130     409.1
+		1         60  '2020/12/02'    117       145     479.0
+		...
+		15        60  '2020/12/15'     98       123     275.0
+		16        60  '2020/12/16'     98       120     215.2
+		17        60  '2020/12/17'    100       120     300.0
+		19        60  '2020/12/19'    103       123     323.0
+		...
+		21        60  '2020/12/21'    108       131     364.2
+		23        60  '2020/12/23'    130       101     300.0
+		...
+		27        60  '2020/12/27'     92       118     241.0
+		29        60  '2020/12/29'    100       132     280.0
+		...
+		# Notice in the result that some rows have been removed (row 18, 22 and 28).
+		# These rows had cells with empty values.
+
+
+
+> routine n - inplace 
+	/*
+		Notes:
+			If you want to change the original DataFrame, use the inplace = True argument
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	df.dropna(inplace = True)
+
+	print(df.to_string())	
+
+
+
+> routine n - fillna - Another way of dealing with empty cells
+	/*
+		Notes:
+			- insert a new value instead.
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	df.fillna(130, inplace = True)
+
+	print(df.to_string())
+	#
+		    Duration          Date  Pulse  Maxpulse  Calories
+		0         60  '2020/12/01'    110       130     409.1
+		...
+		17        60  '2020/12/17'    100       120     300.0
+		18        45  '2020/12/18'     90       112     130.0
+		...
+		21        60  '2020/12/21'    108       131     364.2
+		22        45           130    100       119     282.0
+		23        60  '2020/12/23'    130       101     300.0
+		...
+		27        60  '2020/12/27'     92       118     241.0
+		28        60  '2020/12/28'    103       132     130.0
+		29        60  '2020/12/29'    100       132     280.0
+		...
+
+
+
+> routine n - Replace Only For Specified Columns
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	df["Calories"].fillna(130, inplace = True)
+
+	print(df.to_string())
+	#
+		    Duration          Date  Pulse  Maxpulse  Calories
+		0         60  '2020/12/01'    110       130     409.1
+		1         60  '2020/12/02'    117       145     479.0
+		2         60  '2020/12/03'    103       135     340.0
+		3         45  '2020/12/04'    109       175     282.4
+		4         45  '2020/12/05'    117       148     406.0
+		5         60  '2020/12/06'    102       127     300.0
+		6         60  '2020/12/07'    110       136     374.0
+		7        450  '2020/12/08'    104       134     253.3
+		8         30  '2020/12/09'    109       133     195.1
+		9         60  '2020/12/10'     98       124     269.0
+		10        60  '2020/12/11'    103       147     329.3
+		11        60  '2020/12/12'    100       120     250.7
+		12        60  '2020/12/12'    100       120     250.7
+		13        60  '2020/12/13'    106       128     345.3
+		14        60  '2020/12/14'    104       132     379.3
+		15        60  '2020/12/15'     98       123     275.0
+		16        60  '2020/12/16'     98       120     215.2
+		17        60  '2020/12/17'    100       120     300.0
+		18        45  '2020/12/18'     90       112     130.0
+		19        60  '2020/12/19'    103       123     323.0
+		20        45  '2020/12/20'     97       125     243.0
+		21        60  '2020/12/21'    108       131     364.2
+		22        45           NaN    100       119     282.0
+		23        60  '2020/12/23'    130       101     300.0
+		24        45  '2020/12/24'    105       132     246.0
+		25        60  '2020/12/25'    102       126     334.5
+		26        60    2020/12/26    100       120     250.0
+		27        60  '2020/12/27'     92       118     241.0
+		28        60  '2020/12/28'    103       132     130.0
+		29        60  '2020/12/29'    100       132     280.0
+		30        60  '2020/12/30'    102       129     380.3
+		31        60  '2020/12/31'     92       115     243.0	
+
+
+
+> routine n - Replace Using Mean, Median, or Mode
+	/*
+		Notes:
+			- A common way to replace empty cells, is to calculate the mean, median or mode value of the column
+	*/
+
+
+
+> routine n - mean
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	x = df["Calories"].mean()
+
+	df["Calories"].fillna(x, inplace = True)
+
+	print(df.to_string())
+	# As you can see in row 18 and 28, the empty values from "Calories" was replaced with the mean: 304.68	
+		    Duration          Date  Pulse  Maxpulse  Calories
+		0         60  '2020/12/01'    110       130    409.10
+		1         60  '2020/12/02'    117       145    479.00
+		2         60  '2020/12/03'    103       135    340.00
+		3         45  '2020/12/04'    109       175    282.40
+		4         45  '2020/12/05'    117       148    406.00
+		5         60  '2020/12/06'    102       127    300.00
+		6         60  '2020/12/07'    110       136    374.00
+		7        450  '2020/12/08'    104       134    253.30
+		8         30  '2020/12/09'    109       133    195.10
+		9         60  '2020/12/10'     98       124    269.00
+		10        60  '2020/12/11'    103       147    329.30
+		11        60  '2020/12/12'    100       120    250.70
+		12        60  '2020/12/12'    100       120    250.70
+		13        60  '2020/12/13'    106       128    345.30
+		14        60  '2020/12/14'    104       132    379.30
+		15        60  '2020/12/15'     98       123    275.00
+		16        60  '2020/12/16'     98       120    215.20
+		17        60  '2020/12/17'    100       120    300.00
+		18        45  '2020/12/18'     90       112    304.68
+		19        60  '2020/12/19'    103       123    323.00
+		20        45  '2020/12/20'     97       125    243.00
+		21        60  '2020/12/21'    108       131    364.20
+		22        45           NaN    100       119    282.00
+		23        60  '2020/12/23'    130       101    300.00
+		24        45  '2020/12/24'    105       132    246.00
+		25        60  '2020/12/25'    102       126    334.50
+		26        60    2020/12/26    100       120    250.00
+		27        60  '2020/12/27'     92       118    241.00
+		28        60  '2020/12/28'    103       132    304.68
+		29        60  '2020/12/29'    100       132    280.00
+		30        60  '2020/12/30'    102       129    380.30
+		31        60  '2020/12/31'     92       115    243.00
+
+
+
+> routine n - median
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	x = df["Calories"].median()
+
+	df["Calories"].fillna(x, inplace = True)
+
+	print(df.to_string())
+	#As you can see in row 18 and 28, the empty values from "Calories" was replaced with the median: 291.2
+		    Duration          Date  Pulse  Maxpulse  Calories
+		0         60  '2020/12/01'    110       130     409.1
+		1         60  '2020/12/02'    117       145     479.0
+		2         60  '2020/12/03'    103       135     340.0
+		3         45  '2020/12/04'    109       175     282.4
+		4         45  '2020/12/05'    117       148     406.0
+		5         60  '2020/12/06'    102       127     300.0
+		6         60  '2020/12/07'    110       136     374.0
+		7        450  '2020/12/08'    104       134     253.3
+		8         30  '2020/12/09'    109       133     195.1
+		9         60  '2020/12/10'     98       124     269.0
+		10        60  '2020/12/11'    103       147     329.3
+		11        60  '2020/12/12'    100       120     250.7
+		12        60  '2020/12/12'    100       120     250.7
+		13        60  '2020/12/13'    106       128     345.3
+		14        60  '2020/12/14'    104       132     379.3
+		15        60  '2020/12/15'     98       123     275.0
+		16        60  '2020/12/16'     98       120     215.2
+		17        60  '2020/12/17'    100       120     300.0
+		18        45  '2020/12/18'     90       112     291.2
+		19        60  '2020/12/19'    103       123     323.0
+		20        45  '2020/12/20'     97       125     243.0
+		21        60  '2020/12/21'    108       131     364.2
+		22        45           NaN    100       119     282.0
+		23        60  '2020/12/23'    130       101     300.0
+		24        45  '2020/12/24'    105       132     246.0
+		25        60  '2020/12/25'    102       126     334.5
+		26        60    2020/12/26    100       120     250.0
+		27        60  '2020/12/27'     92       118     241.0
+		28        60  '2020/12/28'    103       132     291.2
+		29        60  '2020/12/29'    100       132     280.0
+		30        60  '2020/12/30'    102       129     380.3
+		31        60  '2020/12/31'     92       115     243.0
+
+
+
+> routine n - mode
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	x = df["Calories"].mode()[0]
+
+	df["Calories"].fillna(x, inplace = True)
+
+	print(df.to_string())
+	#As you can see in row 18 and 28, the empty value from "Calories" was replaced with the mode: 300.0	
+		    Duration          Date  Pulse  Maxpulse  Calories
+		0         60  '2020/12/01'    110       130     409.1
+		1         60  '2020/12/02'    117       145     479.0
+		2         60  '2020/12/03'    103       135     340.0
+		3         45  '2020/12/04'    109       175     282.4
+		4         45  '2020/12/05'    117       148     406.0
+		5         60  '2020/12/06'    102       127     300.0
+		6         60  '2020/12/07'    110       136     374.0
+		7        450  '2020/12/08'    104       134     253.3
+		8         30  '2020/12/09'    109       133     195.1
+		9         60  '2020/12/10'     98       124     269.0
+		10        60  '2020/12/11'    103       147     329.3
+		11        60  '2020/12/12'    100       120     250.7
+		12        60  '2020/12/12'    100       120     250.7
+		13        60  '2020/12/13'    106       128     345.3
+		14        60  '2020/12/14'    104       132     379.3
+		15        60  '2020/12/15'     98       123     275.0
+		16        60  '2020/12/16'     98       120     215.2
+		17        60  '2020/12/17'    100       120     300.0
+		18        45  '2020/12/18'     90       112     300.0
+		19        60  '2020/12/19'    103       123     323.0
+		20        45  '2020/12/20'     97       125     243.0
+		21        60  '2020/12/21'    108       131     364.2
+		22        45           NaN    100       119     282.0
+		23        60  '2020/12/23'    130       101     300.0
+		24        45  '2020/12/24'    105       132     246.0
+		25        60  '2020/12/25'    102       126     334.5
+		26        60    2020/12/26    100       120     250.0
+		27        60  '2020/12/27'     92       118     241.0
+		28        60  '2020/12/28'    103       132     300.0
+		29        60  '2020/12/29'    100       132     280.0
+		30        60  '2020/12/30'    102       129     380.3
+		31        60  '2020/12/31'     92       115     243.0
+
+
+
+> routine n - Cleaning Data of Wrong Format
+	/*
+		Notes:
+			- To fix it: 
+				- remove the rows
+				- convert all cells in the columns into the same format
+	*/
+	      Duration          Date  Pulse  Maxpulse  Calories
+	  0         60  '2020/12/01'    110       130     409.1
+	  1         60  '2020/12/02'    117       145     479.0
+	  2         60  '2020/12/03'    103       135     340.0
+	  3         45  '2020/12/04'    109       175     282.4
+	  4         45  '2020/12/05'    117       148     406.0
+	  5         60  '2020/12/06'    102       127     300.0
+	  6         60  '2020/12/07'    110       136     374.0
+	  7        450  '2020/12/08'    104       134     253.3
+	  8         30  '2020/12/09'    109       133     195.1
+	  9         60  '2020/12/10'     98       124     269.0
+	  10        60  '2020/12/11'    103       147     329.3
+	  11        60  '2020/12/12'    100       120     250.7
+	  12        60  '2020/12/12'    100       120     250.7
+	  13        60  '2020/12/13'    106       128     345.3
+	  14        60  '2020/12/14'    104       132     379.3
+	  15        60  '2020/12/15'     98       123     275.0
+	  16        60  '2020/12/16'     98       120     215.2
+	  17        60  '2020/12/17'    100       120     300.0
+	  18        45  '2020/12/18'     90       112       NaN
+	  19        60  '2020/12/19'    103       123     323.0
+	  20        45  '2020/12/20'     97       125     243.0
+	  21        60  '2020/12/21'    108       131     364.2
+	  22        45           NaN    100       119     282.0
+	  23        60  '2020/12/23'    130       101     300.0
+	  24        45  '2020/12/24'    105       132     246.0
+	  25        60  '2020/12/25'    102       126     334.5
+	  26        60      20201226    100       120     250.0
+	  27        60  '2020/12/27'     92       118     241.0
+	  28        60  '2020/12/28'    103       132       NaN
+	  29        60  '2020/12/29'    100       132     280.0
+	  30        60  '2020/12/30'    102       129     380.3
+	  31        60  '2020/12/31'     92       115     243.0	
+
+
+
+> routine n - to_datetime
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	df['Date'] = pd.to_datetime(df['Date'])
+
+	print(df.to_string())
+	#
+		    Duration       Date  Pulse  Maxpulse  Calories
+		...
+		21        60 2020-12-21    108       131     364.2
+		22        45        NaT    100       119     282.0
+		23        60 2020-12-23    130       101     300.0
+		24        45 2020-12-24    105       132     246.0
+		25        60 2020-12-25    102       126     334.5
+		26        60 2020-12-26    100       120     250.0
+		27        60 2020-12-27     92       118     241.0
+		...
+
+
+
+> routine n - dropna
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	df['Date'] = pd.to_datetime(df['Date'])
+
+	df.dropna(subset=['Date'], inplace = True)
+
+	print(df.to_string())
+	#
+		    Duration       Date  Pulse  Maxpulse  Calories
+		...
+		17        60 2020-12-17    100       120     300.0
+		18        45 2020-12-18     90       112       NaN
+		19        60 2020-12-19    103       123     323.0
+		20        45 2020-12-20     97       125     243.0
+		21        60 2020-12-21    108       131     364.2
+		23        60 2020-12-23    130       101     300.0
+		24        45 2020-12-24    105       132     246.0
+		25        60 2020-12-25    102       126     334.5
+		26        60 2020-12-26    100       120     250.0	
+
+
+
+> routine n - Wrong Data
+	/*
+		Notes:
+			- "Wrong data" does not have to be "empty cells" or "wrong format", it can just be wrong, like if someone registered "199" instead of "1.99".
+			- Sometimes you can spot wrong data by looking at the data set, because you have an expectation of what it should be.
+			- If you take a look at our data set, you can see that in row 7, the duration is 450, but for all the other rows the duration is between 30 and 60.
+			- It doesn't have to be wrong, but taking in consideration that this is the data set of someone's workout sessions, we conclude with the fact that this person did not work out in 450 minutes.			
+	*/
+	      Duration          Date  Pulse  Maxpulse  Calories
+	  0         60  '2020/12/01'    110       130     409.1
+	  1         60  '2020/12/02'    117       145     479.0
+	  2         60  '2020/12/03'    103       135     340.0
+	  3         45  '2020/12/04'    109       175     282.4
+	  4         45  '2020/12/05'    117       148     406.0
+	  5         60  '2020/12/06'    102       127     300.0
+	  6         60  '2020/12/07'    110       136     374.0
+	  7        450  '2020/12/08'    104       134     253.3
+	  8         30  '2020/12/09'    109       133     195.1
+	  9         60  '2020/12/10'     98       124     269.0
+	  10        60  '2020/12/11'    103       147     329.3
+	  11        60  '2020/12/12'    100       120     250.7
+	  12        60  '2020/12/12'    100       120     250.7
+	  13        60  '2020/12/13'    106       128     345.3
+	  14        60  '2020/12/14'    104       132     379.3
+	  15        60  '2020/12/15'     98       123     275.0
+	  16        60  '2020/12/16'     98       120     215.2
+	  17        60  '2020/12/17'    100       120     300.0
+	  18        45  '2020/12/18'     90       112       NaN
+	  19        60  '2020/12/19'    103       123     323.0
+	  20        45  '2020/12/20'     97       125     243.0
+	  21        60  '2020/12/21'    108       131     364.2
+	  22        45           NaN    100       119     282.0
+	  23        60  '2020/12/23'    130       101     300.0
+	  24        45  '2020/12/24'    105       132     246.0
+	  25        60  '2020/12/25'    102       126     334.5
+	  26        60      20201226    100       120     250.0
+	  27        60  '2020/12/27'     92       118     241.0
+	  28        60  '2020/12/28'    103       132       NaN
+	  29        60  '2020/12/29'    100       132     280.0
+	  30        60  '2020/12/30'    102       129     380.3
+	  31        60  '2020/12/31'     92       115     243.0	
+
+
+
+> routine n - Replacing Values
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	df.loc[7,'Duration'] = 45
+
+	print(df.to_string())
+	#
+		    Duration          Date  Pulse  Maxpulse  Calories
+		...
+		6         60  '2020/12/07'    110       136     374.0
+		7         45  '2020/12/08'    104       134     253.3
+		8         30  '2020/12/09'    109       133     195.1
+		9         60  '2020/12/10'     98       124     269.0
+		10        60  '2020/12/11'    103       147     329.3	
+		...
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	for x in df.index:
+	  if df.loc[x, "Duration"] > 120:
+	    df.loc[x, "Duration"] = 120
+
+	print(df.to_string())
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+	for x in df.index:
+	  if df.loc[x, "Duration"] > 120:
+	    df.drop(x, inplace = True)	
+
+
+
+> routine n - duplicated
+	/*
+		Notes:
+			- To discover duplicates, we can use the duplicated() method.
+	*/
+	      Duration          Date  Pulse  Maxpulse  Calories
+	  0         60  '2020/12/01'    110       130     409.1
+	  1         60  '2020/12/02'    117       145     479.0
+	  2         60  '2020/12/03'    103       135     340.0
+	  3         45  '2020/12/04'    109       175     282.4
+	  4         45  '2020/12/05'    117       148     406.0
+	  5         60  '2020/12/06'    102       127     300.0
+	  6         60  '2020/12/07'    110       136     374.0
+	  7        450  '2020/12/08'    104       134     253.3
+	  8         30  '2020/12/09'    109       133     195.1
+	  9         60  '2020/12/10'     98       124     269.0
+	  10        60  '2020/12/11'    103       147     329.3
+	  11        60  '2020/12/12'    100       120     250.7
+	  12        60  '2020/12/12'    100       120     250.7
+	  13        60  '2020/12/13'    106       128     345.3
+	  14        60  '2020/12/14'    104       132     379.3
+	  15        60  '2020/12/15'     98       123     275.0
+	  16        60  '2020/12/16'     98       120     215.2
+	  17        60  '2020/12/17'    100       120     300.0
+	  18        45  '2020/12/18'     90       112       NaN
+	  19        60  '2020/12/19'    103       123     323.0
+	  20        45  '2020/12/20'     97       125     243.0
+	  21        60  '2020/12/21'    108       131     364.2
+	  22        45           NaN    100       119     282.0
+	  23        60  '2020/12/23'    130       101     300.0
+	  24        45  '2020/12/24'    105       132     246.0
+	  25        60  '2020/12/25'    102       126     334.5
+	  26        60      20201226    100       120     250.0
+	  27        60  '2020/12/27'     92       118     241.0
+	  28        60  '2020/12/28'    103       132       NaN
+	  29        60  '2020/12/29'    100       132     280.0
+	  30        60  '2020/12/30'    102       129     380.3
+	  31        60  '2020/12/31'     92       115     243.0	
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	print(df.duplicated())
+	#
+		...
+		11    False
+		12     True
+		13    False
+		14    False
+		...
+
+
+
+> routine n - Data Correlations
+	/*
+		Notes:
+	*/
+	- data.csv
+		Duration,Pulse,Maxpulse,Calories
+		60,110,130,409.1
+		60,117,145,479.0
+		60,103,135,340.0
+		45,109,175,282.4
+		45,117,148,406.0
+		60,102,127,300.0
+		60,110,136,374.0
+
+
+
+> routine n - corr
+	/*
+		Notes:
+			- corr() method is a table with a lot of numbers that represents how well the relationship is between two columns.
+			- The number varies from -1 to 1.
+			- 1 means that there is a 1 to 1 relationship (a perfect correlation), and for this data set, each time a value went up in the first column, the other one went up as well.
+			- 0.9 is also a good relationship, and if you increase one value, the other will probably increase as well.
+			- -0.9 would be just as good relationship as 0.9, but if you increase one value, the other will probably go down.
+			- 0.2 means NOT a good relationship, meaning that if one value goes up does not mean that the other will.		
+			- 
+			- Perfect Correlation:
+				- We can see that "Duration" and "Duration" got the number 1.000000, which makes sense, each column always has a perfect relationship with itself.
+			- Good Correlation:
+				- "Duration" and "Calories" got a 0.922721 correlation, which is a very good correlation, and we can predict that the longer you work out, the more calories you burn, and the other way around: if you burned a lot of calories, you probably had a long work out.
+			- Bad Correlation:
+				- "Duration" and "Maxpulse" got a 0.009403 correlation, which is a very bad correlation, meaning that we can not predict the max pulse by just looking at the duration of the work out, and vice versa.			
+	*/
+	import pandas as pd
+
+	df = pd.read_csv('data.csv')
+
+	print(df.corr())
+	#
+		          Duration     Pulse  Maxpulse  Calories
+		Duration  1.000000 -0.059452 -0.250033  0.344341
+		Pulse    -0.059452  1.000000  0.269672  0.481791
+		Maxpulse -0.250033  0.269672  1.000000  0.335392
+		Calories  0.344341  0.481791  0.335392  1.000000	
+
+
+
+> routine n - Plotting
+	/*
+		Notes:
+			- Pandas uses the plot() method to create diagrams.
+			- We can use Pyplot, a submodule of the Matplotlib library to visualize the diagram on the screen.
+	*/
+	# better to check website
+		https://www.w3schools.com/python/pandas/pandas_plotting.asp
+		
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+

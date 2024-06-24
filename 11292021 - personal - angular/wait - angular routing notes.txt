@@ -1,0 +1,530 @@
+https://app.pluralsight.com/library/courses/angular-routing/table-of-contents
+
+
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+
+- how router see route
+	- URL is change > match path + Process redirect > Process Guards > Resolve Data (resolver) > Activate Component(s) > Display Template(s)
+
+- RouterModule directives
+	- RouterLink directive 
+		- ties a clickable HTML element to a rout path
+		- the the user clicks the element, the route is activated and the associated components template is displayed
+	- RouterLinkActive directive
+		- associates a style with the active router link
+	- RouterOutlet directive
+		- defines where to display the template
+
+- RouterModule.forRoot VS RouterModule.forChild
+	- forRoot
+		- registers the router service
+		- used once for the application
+		- in app.module.ts OR transfer to app-routing.module.ts
+	- forChild
+		- does not register the router service
+		- used in feature modules
+
+- app.modules.ts
+	- we define the primary application routes in the route app module
+
+- RouterModule redirectTo
+	- redirects will not chain, only the first redirect will trigger
+
+- 2 ways Angular router can compose local URLS for routing
+	- html5
+		- default
+		- more natural
+		- requires url rewriting
+	- hash-based
+		- must be set with {useHash: true}
+		- does not requires url rewriting
+		- consider this daw if you can video 22:10
+
+- every angular application has at least one Angular module by convention call AppModule app.module.ts
+
+- route path naming strategies
+	- to make the routes easier to manage and potentially group or lazy load, consider giving each related feature route a similar route path name
+		- product list
+			- products
+		- product detail
+			- products/:id
+		- product edit
+			- products/:id/edit
+
+- activating a route with code
+	- this.router.navigate(['/welcome']); 		// standard syntax
+		- the first element in the array is the root URL segment
+			- all other elements are values for the route parameters or additional URL segments
+	- this.router.navigate('/welcome'); 		// shortcut syntax
+	- this.router.navigateByUrl('/welcome'); 	// complete url path
+		- useful when you want to ensure that every existing parameter or secondary route in the url is removed
+			- useful when logging out
+
+- matching routes
+	- code app.module.ts
+		...
+		RouterModule.forRoot([ 			<- these are process last after the Features Module
+			{path: 'welcome'},
+			{path: ''},
+			{path: '**'},
+		]),
+		ProductModule
+		UserModule,
+		MessageModule
+		- the order that is generated from this configuration
+			- products
+			- login
+			- welcome
+			- ''
+			- **
+
+
+- app-routing.module.ts
+	- why seperate routes into their own routing module?
+		- seperating our route configuration into its own module provides better organization
+			- the routes are then easier to find and review or edit as needed
+		- provides a seperation of concerns
+	- move our application routes into their own routing module
+
+
+- export RouterModule in app-routing.module.ts
+	- by exporting RoutderModule, when the AppModule imports AppRoutingModule, the components declared in AppModule will have access to the router directives
+		- video 34:41
+	- consider seperating the routes out of the root app module into their own routing module.
+		- video 36:20
+		- this keeps the module code more organized, makes the routes easier to find and edit, and provides for seperation of concerns
+		- simple build a new angular module and move the routes to that module
+			- just take care to watch the order of the feature and routing modules in the app module imports array
+
+
+- reading route parameters
+	- snapshot
+		- const id = this.route.snapshot.paramMap.get('id');
+		- to read the parameters only once
+	- observable
+		- this.route.paramMap.subscribe( params => const id = params.get('id'); )
+		- to watch for parameter changes in the url
+
+- optional route parameters
+	- [routerLink] = "['/products', {name: productName, code: productCode, ...}]"
+	- this.router.navigate(['/products'], {name: productName, ...});
+	- read
+		- same as reading required route parameters
+		- this.route.snapshot.paramMap.get('name')
+	- optional route parameters make it easier to pass optional or more complex information as part of the route
+	- this optional information is not part of the configuartion
+		- this means that it is not involved in matching route paths for navigation
+		- if we add more optional parameters overtime, we don't affect the application routing 
+	- optional parameters are define in the link parameters array as set of key and value pairs
+	- are the ideal choice when conveying arbitrary or complex information during navigation
+	- are route specific and scope to the particular URL segment
+	- they are not retained when navigating to other components
+
+
+
+- query route parameters
+	- <a [routerLink]="..." [queryParams]="{filterBy: 'er', ...}"></a>
+		- at the next page
+			- <button [routerLink]="['/products']" queryParamsHandling="preserve" > Back </button>			
+	- this.router.navigate(['/products'], { queryParams: { filterBy: 'er', ... } });
+	- read
+		- this.route.snapshot.queryParamMap.get('filterBy');
+	- retaines the user settings when navigating to other components and return those settings when the user navigates back to the previous component
+	- use query parameters to pass optional or complex information 
+		- unlike optional parameters, they can be retained across routing path
+	- they look like classic query parameters with a question mark at the beginning
+	- are not part of the route configuration and are not involved with matching route paths
+	- unlike optional parameters, query parameters are not scope to the route so care must be taken to ensure there are no key name collisions
+	- 
+
+
+- optional and query route parameters
+	- does not need any setup in module
+	- you can implement and read it straight in html and ts
+
+
+- routes data property
+	- code
+		RouterModule.forChild([
+			{
+				path: ...,
+				component: ...,
+				data: { pageTitle: 'Product List' }
+			}
+			...
+		])
+	- read
+		- this.route.snapshot.data['pageTitle'];
+	- a route definition has a data property
+	- use it to provide any arbitrary data to a route
+	- data defined in the data property cannot change throughout the lifetime of the application
+
+
+- route resolvers
+	- we prefetch data for our components using route resolvers
+
+
+- flow without a route resolver
+	> on product list page > user clicks an item > activates component route passing id > component is activated and template is partially displays with no data > component ngOnInit method request the data from backend > data arrives from the server > the remainder of the page is populated
+- flow with a route resolver
+	> on product list page > user clicks an item > activates component route passing id > router executes the route resolver which request the item from the back end server > data arrives from the server > component is activated and template is displayed with data 
+
+
+- using a route resolver
+	- 1. build a route resolver service
+	- 2. add resolve to the route configuration
+	- 3. read the data from ActivatedRoute
+
+- route resolver service
+	- route: ActivatedRouteSnapshopt
+		- contains information about the currently activated route
+		- we used this snapshop earlier to retrieve route and query parameters
+	- state: RouterStateSnapshot
+		- represents the state of the applications router at a moment in time
+		- is a tree of activated route snapshots
+
+
+- child routes
+	- using child routes, we define a route hierarchy to better organize, encapsulate, and navigate through our application
+	- it makes it easier to lazy load routes improving the startup performance of the application
+	-  
+
+- uses of child routes
+	- tabbed pages
+	- master/detail layouts
+	- embedded templates
+	- feature modules
+	- lazy loading
+
+- configuring child routes
+	- code
+		{
+			path: 'products/:id/edit',
+			component: ...,
+			resolve: ...,
+			children: [
+				{
+					path: '', redirectTo: 'info', pathMatch: 'full',
+					path: 'info', component: ProductEditInfoComponent, // products/:id/edit/info
+					...
+				}
+			]
+		}
+
+- primary router outlet vs child router outlet
+	- code
+		<router-outlet></router-outlet>
+	- its just the same. Just put the child directive inside the primary. Angluar will know
+
+
+- activating child routes
+	- html
+		- absolute path
+			<a [routerLink]="['/products', product.id, 'edit', 'info']">Info</a>
+		- relative path	
+			<a [routerLink]="['info']">Info</a>
+	- component
+		- absolute path
+			- this.router.navigate(['/products', this.product.id, 'edit', 'info'])
+		- relative path
+			- this.router.navigate(['info'], { relativeTo: this.route })
+
+
+- obtaining data for a child route
+	- product data service
+		- code
+			this.productService.getProduct(id).subscribe(product => this.product = product);
+	- child route resolver
+		- code
+			this.product = this.route.snapshot.data['product'];
+	- parent route resolver
+		- code
+			this.product = this.route.parent.snapshot.data['product'];
+
+
+- @ViewChild
+	- we use the @ViewChild decorator to obtain a reference to the template form
+		- we can then use that reference to reset the form every time we get new data
+		- video 01:22:30
+
+
+- Component-less routes
+	- we may want to organize routes such as feature routes under a single parent route without defining another outlet
+	- we group child routes under a componentless parent route
+	- why should we group routes under a componentless route
+		- better organization
+		- share resolvers and guards
+		- lazy loading
+		- 
+
+- RouterModule.forChild([{ ..., children: [...], ... }])
+	- children: [...]
+		- can be use to setup ordinary child routes
+		    RouterModule.forChild([
+		      { 
+		      	path: 'products', 
+		      	component: ProductListComponent 
+		      },
+		      {
+		        path: 'products/:id',
+		        component: ProductDetailComponent,
+		        resolve: { resolvedData: ProductResolver }
+		      },
+		      {
+		        path: 'products/:id/edit',
+		        component: ProductEditComponent,
+		        resolve: { resolvedData: ProductResolver },
+		        children: [
+		          { path: '', redirectTo: 'info', pathMatch: 'full' },
+		          { path: 'info', component: ProductEditInfoComponent },
+		          { path: 'tags', component: ProductEditTagsComponent }
+		        ]
+		      }
+		    ])
+		- OR grouping component-less routes
+		    RouterModule.forChild([
+		      {
+		        path: 'products',			// now the parent route has now component, hence it's called a component-less route
+		        children: [
+		          {
+		            path: '',
+		            component: ProductListComponent,
+		          },
+		          {
+		            path: ':id',
+		            component: ProductDetailComponent,
+		            resolve: { resolvedData: ProductResolver }
+		          },
+		          {
+		            path: ':id/edit',
+		            component: ProductEditComponent,
+		            resolve: { resolvedData: ProductResolver },
+		            children: [
+		              { path: '', redirectTo: 'info', pathMatch: 'full' },
+		              { path: 'info', component: ProductEditInfoComponent },
+		              { path: 'tags', component: ProductEditTagsComponent }
+		            ]
+		          }
+		        ]
+		      }
+		    ])
+
+
+- active the selected route
+	- code
+		<a [routerLink]="['info']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Products</a>
+		<a [routerLink]="['info']" routerLinkActive="active">Add Product</a>
+	- nothing more to add, just add them in every link
+	- angular auto decides what where to put an active class base on your routes
+	- [routerLinkActiveOptions]="{ exact: true }"
+		- to require an exact path match, add routerLinkActiveOptions to the same element as the routerLinkActive directive 
+		- since path [routerLink]="['/products']" and [routerLink]="['/products', 0, 'edit']" has the same products
+		- so that both of them will not be active
+
+
+
+- animating route transitions steps
+	- 1. import BrowserAnimationsModule
+		- code app.module.ts
+			import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+			@NgModule({
+				imports: [
+					BrowserAnimationsModule,
+				]
+			})
+	- 2. define the desired animations
+		- code app.animation.ts
+	- 3. register the animation with a component
+		- code app.component.ts
+			import { slideInAnimation } from './app.animation';
+			@Component({
+			  ...
+			  animations: [slideInAnimation]
+			})
+	- 4. trigger the animation from the router outlet
+		- code app.component.html
+			<div class="container"
+			      [@slideInAnimation]="o.isActivated ? o.activatedRoute : ''"
+			>
+			  <router-outlet #o="outlet"></router-outlet>
+			</div>
+		- add a template reference variable to our router outlet element so we can reference it in our template
+
+
+- routing events
+	- any time the user navigates in the application, the router generates routing events that we can use to monitor, troubleshoot, or perform logic
+	- NavigationStart
+		- triggered when navigation begins
+	- RoutesRecognized
+		- triggered when the router has found a valid path in the configuration that matches the parsed url
+	- NavigationEnd
+		- triggered when navigation ends successfully
+	- NavigationCancel
+		- triggered when navigation is canceled such as via routing guard or redirect
+	- NavigationError
+		- triggered when navigation fails
+
+- watching routing events - { enableTracing: true } - for tracing
+	- we can see these events occur if we enable tracing
+	- can be use for code debugging
+	- code
+		- RouterModule.forRoot([
+			{path...}
+		], { enableTracing: true } )
+	- check console log when going to different pages
+	- checking the console will help you later on what event you want to capture to trigger your spinner loader
+
+
+- adding a spinner animation when angular still using a resolver
+	- code app.component.ts
+		import { Router, Event, NavigationEnd, NavigationError, NavigationCancel, NavigationStart } from '@angular/router';
+		@Component({...})
+		export class AppComponent {
+		  ...
+		  loading = true;
+		  constructor(private authService: AuthService, private router: Router) {
+		    router.events.subscribe((routerEvent: Event) => {
+		      this.checkRouterEvent(routerEvent);
+		    });
+		  }
+		  checkRouterEvent(routerEvent: Event): void {
+		    if (routerEvent instanceof NavigationStart) {
+		      this.loading = true;
+		    }
+
+		    if (routerEvent instanceof NavigationEnd ||
+		      routerEvent instanceof NavigationCancel ||
+		      routerEvent instanceof NavigationError) {
+		        this.loading = false;
+		    }
+		  }
+		}
+	- code app.component.html
+		<span class="fa fa-spinner spinner" *ngIf="loading"></span>
+
+- Secondary Routes
+	- multiple routes displayed at the same time and at the same level of the hierarchy are referred to as peed, sibling, auxilary, or secondary routes
+	- secondary routes means in a page there are multiple outlets just like google analytics dashboard
+	- code
+		<router-outlet></router-outlet> // primary
+		<router-outlet name="popup"></router-outlet> // secondary
+		<router-outlet name="details"></router-outlet> // secondary
+		<router-outlet name="andso"></router-outlet> // secondary
+	- code app.component.html
+		...
+		<a class="nav-link" [routerLink]="[{ outlets: { popup: ['messages'] } }]">Show Messages</a>
+		...
+		<div class="container">
+		  <div class="row">
+		    <div class="col-md-10"      
+		        [@slideInAnimation]="o.isActivated ? o.activatedRoute : ''"
+		    >
+		      <router-outlet #o="outlet"></router-outlet>
+		    </div>
+		    <div class="col-md-2">
+		      <router-outlet name="popup"></router-outlet>
+		    </div>
+		  </div>
+		</div>	
+	- code message.module.ts
+		import { RouterModule } from '@angular/router';
+		@NgModule({
+		  imports: [
+		    RouterModule.forChild([
+		      {
+		        path: 'messages',
+		        component: MessageComponent,
+		        outlet: 'popup'
+		      }
+		    ])
+		  ],
+		  ...
+		})
+
+- activating secondary routes
+	- template
+		<a [routerLink]="[{ outlets: { popup: ['messages'] } }]">Messages</a>
+		or
+		<a [routerLink]="['/products', product.id, 'edit',
+			{ outlets: { popup: ['messages'] } }]">Messages</a>
+	- ts
+		this.router.navigate([{ outlets: { popup: ['messages'] } }]);
+		or
+		this.router.navigate(['/products', product.id, 'edit'
+			{ outlets: { popup: ['messages'] } }]);
+		or
+		this.router.navigate([{ outlets: {
+			primary: ['/products', product.id, 'edit'],
+			popup: ['summary', product.id]
+		}}]);
+		or
+		this.router.navigateByUrl('/products/5/edit(popup:summary/5)');
+
+- hide secondary routes
+	- ts
+		this.router.navigate([{ outlets: { popup: null } }]);
+
+- types of guards
+	- canActivate
+		- guard navigation to a route
+	- canActivateChild
+		- guard navigation to a chile route
+	- canDeactivate
+		- guard navigation away from a route
+	- canLoad
+		- prevent async routing
+	- resolve
+		- prefetch data before activating a route
+
+
+- guard processing
+	- canActivate > canActivateChild > canDeactivate > canLoad > resolve
+
+
+- building a route guard
+	- a route guard is often built as an angular service
+
+
+
+- lazy loading
+	- lazy loading is also know as asyc routing
+	- which loads feature modules on request
+
+- lazy loading requirements
+	- use a feature module
+	- routes grouped under a single parent
+	- feature module must not be imported in any other angular module
+		- remove the imports in app.module.ts
+
+- preload strategies
+	- no preloading
+	- preload all
+	- custom
+
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+
+
+
+
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+
+
+- Feature Module
+	- an angular module created with the express purpose of organizing the components for a specific application feature area, such as products or users
+	- using feature modules allows us to keep our code more organized
+	- makes it possible to lazy load all of the results for a particular feature area
+
+
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+
+- OnInit
+	- the OnInit lifecycle hook is executed when the component is initialized
+	- its a great place to perform operations such as getting the data needed for the component	

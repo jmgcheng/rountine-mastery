@@ -1,0 +1,6 @@
+
+143 EZ-Prompt-Website
+https://ezprompt.net/
+
+145 Popular-Bash-Aliases
+https://www.digitalocean.com/community/questions/what-are-your-favorite-bash-aliases

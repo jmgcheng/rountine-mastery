@@ -1,0 +1,3110 @@
+
+
+
+> neil degrasse explain style
+	- just remember that you start with your normal applications files
+	- do these below if you want to "dockerize" your project:
+		- install docker application
+		- create a Dockerfile file with no extension in your project folder
+		- inside the Dockerfile will have a bunch of commands of
+			- FROM what environment:os is needed
+			- COPY yourCurrentFiles toTheImageContainerNewPathFolder
+			- run a CMD command like node app.js simulating you are trying to run your application in a terminal
+			- ..... and other commands to optimize the build such as
+				- FROM
+				- WORKDIR
+				- COPY
+				- ADD
+				- RUN
+				- ENV
+				- EXPOSE
+				- USER
+				- CMD
+				- ENTRYPOINT
+	- you need to know the difference between image, container, and registry
+		- image is 
+			- a result of you running docker build
+			- it has the OS and environment that your application needs to run
+			- files of your application
+			- 3rd party files (node_modules or libraries) of your application
+			- environment variables for your application
+		- container is
+			- just a process
+			- when you "docker run" your image, it will create a "container" process
+			- you can run a container and interact with it by "docker run -it imageName"
+		- registry is
+			- the dockerhub
+			- its the github for your files
+	- issues
+		- docker compose
+			- when doing docker compose for mysql only, it seems version of the yml file and image are important or else it would not run
+			- this i think will also happen in other applications and will cause production delay just to find the right version number
+			- i tried image name with no version like "image: mysql" and notice it keeps on restarting in docker and it keeps on kicking me out if i try to exec -it in it
+			- note that some images starts very slow, you need to check in their logs using docker app so it will be easier
+			- much better to run docker-compose up --build in vs code. NO DETTATCH MODE
+				- this is so that we can clearly see the logs in the vs code, all containers logs mixed, in a cronological order
+		- volumes
+			- it might be a good idea to always delete volumes when rebuilding an image in Dockerfile or compose
+				- not deleting cause issues in rebuild in versioning
+				- it seems it has the same issue when using kubernetes where yaml volume also needs to be deleted
+			- maybe it would be better to have a script to auto delete a volume everytime you want to start?
+	- TELL YOUR INTERVIEWER that you were able to do these in your local machine
+		- 1st
+			- create a simple javascript file that can console log
+			- build an image using our created Dockerfile where it use node:alpine and our simple javascript application
+			- run a container using that simple image
+			- push and pull that image at the registry(dockerhub)
+			- all using a command line
+		- 2nd
+			- create and test a lot of image building to fully understand and optimize image build
+			- practice tagging images
+			- done a lot of container run, stop in detached mode testing with different ports
+				- eg docker run -d -p 3000ofMyComputerPort:3000portOfContainer react-app
+			- interact with the containers using linux shell
+			- check logs of specific containers
+			- prune unused image and containers
+			- create volume for 
+				- persisting data
+				- copy data from host(my computer) to container and vice versa
+				- update data in volume while container is running
+			- sharing source code with a container so you an see your changes after refresh RATHER than rebuilding your image again
+		- 3rd
+			- able to setup docker compose using a yml file to setup 3 containers that communicates to each other in a single command "compose up"
+				- able to setup "services" inside the yml file
+				- the "services" were frontend, backend/api, and database
+				- database 
+					- is a simple mongo db image with a migration of few movie data
+				- backend/api
+					- runs a shell to make sure database boots up first before starting backend/api
+					- backend just spits out a simple json string of movie list
+				- frontend
+					- a simple react application that check the backend port to get its data and show the movie list in the webpage
+			- docker compose 
+				- IS NOT docker swarm
+				- IS NOT kubernetes
+		- 4th
+			- we have no sample yet on live server because
+				- money
+				- 
+		- 5th
+			
+
+
+
+
+
+
+
+
+
+
+
+> routine n - check version
+	/*
+		Notes:
+	*/
+	> docker version
+
+
+
+> routine n - info
+	/*
+		Notes:
+			- how to dockerize your application
+				- you just add a Dockerfile in your project with the correct syntax
+			- Dockerfile
+				- is a plain text file that includes instructions that docker uses to package this application into image.
+					- this image contains everything 
+					- so we create a dockerfile and give it to docker to package our application into an image
+					- once we have an image, we tell docker to start a container using that image
+			- image
+				- cut-down os
+				- a runtime environment (eg node, python)
+				- application files
+				- 3rd party libraries
+				- environment variables
+			- container
+				- its just a process 
+				- its a special process because it has its own file system which is provided by the image
+				- the image is loaded by the container
+			- registry
+				- you push your image there
+				- its like a github
+	*/
+
+
+
+> routine n - --help - docker command manual
+	> docker logs --help
+	> docker image --help
+
+
+
+> routine n - quick test
+	/*
+		Notes:
+			- just imagine we have here a simple app in node and we would run it like node app.js
+	*/
+	> mkdir dockertest02
+	> cd dockertest02
+	> sudo touch app.js
+		code
+			console.log('hello docker')
+	> sudo touch Dockerfile
+		code
+			FROM node:alpine
+			COPY . /app
+			WORKDIR /app
+			CMD ["node", "app.js"]
+
+	# build the image / package our application
+	# -t for tag, but hello-docker here is not a tag name but repo name
+	# . is current folder we are in
+	> docker build -t hello-docker .
+
+	# list all images in this computer
+	> docker images
+	or
+	> docker image ls
+
+	# now you can run this image in any computer that has docker
+	# it doesn't matter where directory you are at this point
+	# "run" creates a new container out of this image
+	> docker run hello-docker
+
+	# get or pull a docker image in dockerhub
+	> docker pull dockerAccountName/hello-docker
+	> docker image ls
+	> docker run dockerAccountName/hello-docker
+
+
+
+> routine n - list running processes / running containers 
+	/*
+		Notes:
+	*/
+	> docker ps
+
+
+
+> routine n - list containers even the stop ones
+	/*
+		Notes:
+	*/
+	> docker ps -a
+
+
+
+> routine n - run a container and interact with it
+	/*
+		Notes:
+	*/
+	# so ubuntu here in as image and your are starting a new container by using run and your trying it interact with it
+	> docker run -it ubuntu
+
+
+
+> routine n - stop using container
+	/*
+		Notes:
+	*/
+	> exit
+
+
+
+> routine n - start a stop container
+	/*
+		Notes:
+	*/
+	> docker start -i 2f7containerID
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+> routine n - linux command review - get ubuntu in docker
+	/*
+		Notes:
+	*/
+	> docker pull ubuntu
+	or
+	# if you have this image locally, docker will try to run it, otherwise its going to pull an image behind the scene and then start container
+	> docker run ubuntu
+
+	> docker run -it ubuntu
+
+
+
+> routine n - linux command review - 
+	/*
+		Notes:
+	*/
+	> pwd
+	> ls
+	> ll
+	> whoami
+
+
+
+> routine n - linux command review - package managers
+	/*
+		Notes:
+			- npm - node
+			- pip - python
+			- yarn -
+			- NuGet - 
+			- apt - ubuntu
+	*/
+	# old
+	> apt-get
+
+	# newer
+	> apt
+
+
+
+> routine n - linux command review - list all package in apt database
+	/*
+		Notes:
+	*/
+	> apt list
+
+
+
+> routine n - linux command review - update package database
+	/*
+		Notes:
+	*/
+	> apt update 
+
+
+
+> routine n - linux command review - install nano
+	/*
+		Notes:
+	*/
+	> apt install nano
+	> apt install less
+
+
+
+> routine n - linux command review - uninstall
+	/*
+		Notes:
+	*/
+	> apt remove nano
+
+
+
+> routine n - linux command review - >
+	/*
+		Notes:
+	*/
+	> ls -l /etc > files.txt
+	> cat files.txt
+
+
+
+> routine n - linux command review - grep
+	/*
+		Notes:
+	*/
+	> grep hello file1.txt
+	# -i means not case sensitive
+	> grep -i hello file1.txt
+	> grep -i root /etc/passwd
+	> grep -i hello file*
+	# r means recursive to check all files in directory
+	> grep -ir hello .
+
+
+
+> routine n - linux command review - find
+	/*
+		Notes:
+	*/
+	> find /etc
+	# search for directories only
+	> find -type d
+	# search for files that starts with f
+	> find -type f -name "f*"
+	# case not sensitive
+	> find -type f -iname "f*"
+	# find all python files in / and write it in python-files.txt
+	> find / -type f -name "*.py" > python-files.txt
+
+
+
+> routine n - linux command review - chaining command
+	/*
+		Notes:
+	*/
+	# will execute every command even if one of them fail
+	> mkdir test ; cd test ; echo done
+
+	# stop execute if previous command failed
+	> mkdir test && cd test && echo done
+
+	# run 1st command or the other
+	> mkdir test || echo "directory exist"
+
+	# 
+	> ls /bin | less 
+
+
+
+> routine n - linux command review - environment variables
+	/*
+		Notes:
+	*/
+	# see all environment variables in this machine
+	> printenv
+
+	# check value
+	> printenv PATH
+	OR
+	> echo $PATH
+
+	# define variable
+	> cd ~
+	> ls -a
+	# >> means append at the bottom of the contents while > replace the whole content of the file
+	> echo DB_USER=mosh >> .bashrc
+	> tail .bashrc
+	# reload 
+	> source .bashrc
+	> echo $DB_USER
+
+
+
+> routine n - linux command review - - check processes running
+	/*
+		Notes:
+	*/
+	> ps
+
+
+
+> routine n - linux command review - create a sleep process and kill it
+	/*
+		Notes:
+			&
+				- means put the process in the background
+	*/
+	> docker sleep 100 &
+	# check for the id
+	> docker ps
+	> docker kill pid
+	> docker ps
+
+
+
+> routine n - linux command review - manage user
+	/*
+		Notes:
+	*/
+	# create a user
+	> useradd -m john
+	> cat /etc/passwd
+
+	# setting bash for the user rather than sh
+	# -s is for setting shell
+	# useful for alpine where you only have the default one
+	> usermod -s /bin/bash john
+	> cat /etc/passwd
+	# execute a bash session inside a docker continer
+	> docker exec -it 2f7containerID bash
+	> exit
+	> docker exec -it -u john 2f7containerID bash
+
+	# removing a user
+	> userdel john
+
+
+	# useradd vs adduser
+	- useradd
+		- original api
+	- adduser
+		- more interactive
+		- use useradd under the hood
+
+	# create user using adduser
+	> adduser bob
+
+
+
+> routine n - linux command review - managing groups
+	/*
+		Notes:
+	*/
+	# check all groups avaiable
+	> cat /etc/group
+
+	# add new group
+	> groupadd developers
+	> cat /etc/group
+
+	# add john to the group
+	> usermod
+	> usermod -G developers john
+	> cat /etc/passwd | grep john
+	> grep john /etc/passwd
+
+	# list groups of a user
+	> groups username
+	> groups john
+
+
+
+> routine n - linux command review - file permissions
+	/*
+		Notes:
+	*/
+	> cd ~
+	> echo echo hello > deploy.sh
+	> cat deploy.sh
+	> ls -l
+	> chmod u+x deploy.sh
+	> ls -l
+	# idk why you need ./ where you are already in the same directory
+	# it seems you need ./ when running a bash script
+	> ./deploy.sh
+
+	> chmod o+x deploy.sh
+	> ls -l
+	> chmod og+x deploy.sh
+	> chmod og+x+r-w deploy.sh deploy01.sh *.sh
+	> ls -l
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+> routine n - building images - 
+	/*
+		Notes:
+			- image
+				- includes everything an application needs to run
+				- cut down os
+				- 3rd party libraries
+				- application files
+				- environment variables
+			- container
+				- once you have an image, you can start a container from it
+				- like a virtual machine
+				- provides an isolated environment
+				- can be stopped and restart
+				- is just a process
+					- is a special process because because it has its own file system provided by the image
+	*/
+
+
+
+> routine n - building images - check running container
+	/*
+		Notes:
+	*/
+	> docker ps
+
+
+> routine n - building images - check all containers including stop ones
+	/*
+		Notes:
+	*/
+	> docker ps -a
+
+
+
+> routine n - building images - start a new container from the same image
+	/*
+		Notes:
+			- each container has its own write layer
+			- what is write in a container is invinsible to other container
+				- but there is a way to share data between containers that will be discuss later
+	*/
+	> docker run -it nameoftheimage
+	> docker run -it ubuntu
+
+
+
+> routine n - building images - start a stop existing container
+	/*
+		Notes:
+	*/
+	> docker start -i 2f7containerID	
+
+
+
+> routine n - building images - dockerize his sample react app
+	/*
+		Notes:
+			- get the contents of 04-building-images-03-section4-react-app.zip
+				- for that to run in a normal setup you need to
+					- install node
+					- npm install
+					- npm start
+	*/
+
+
+
+> routine n - building images - Dockerfile
+	/*
+		Notes:
+			- Dockerfile
+				- contains instructions for building an image
+				- FROM
+					- specifying the base image
+				- WORKDIR
+					- specifying working directory
+				- COPY
+				- ADD
+				- RUN
+				- ENV
+				- EXPOSE
+				- USER
+				- CMD
+				- ENTRYPOINT
+	*/
+
+
+
+> routine n - building images - 
+	/*
+		Notes:
+			- docs.docker.com/samples
+				- check this for sample dockerfile for different tech stacks
+			- RUN vs CMD
+				- RUN
+					- is a build time instruction
+					- executed at the time building the image
+				- CMD
+					- is a run time instruction
+					- executed when starting a container
+		WARNING:
+			- it seems dapat e sure nimo ga dagan imong web application before nimo e build as an image otherwise di japon mu dagan
+	*/
+	- Dockerfile
+		code
+			FROM node:14.16.0-alpine3.13
+			# lets create a different user to be safe rather that using root
+			RUN addgroup app && adduser -S -G app app
+			USER app
+			WORKDIR /app
+			# we copy package json first so that npm install cache can be reused for image rebuild
+			# we also make sure app is the owner of these json files
+			COPY --chown=app:app package*.json .
+			RUN npm install
+			# data folder is for testing volume later
+			RUN mkdir data
+			# this comes after npm install because you keep on changing your code as to why next below layers needs to always be rebuild
+			COPY --chown=app:app . .
+			# just a test ENV variable
+			ENV API_URL=http://api.myapp.com/
+			EXPOSE 3000
+			CMD ["npm", "start"]
+
+	- .dockerignore
+		code
+			node_modules/
+
+
+	- terminal	
+		# build new image
+		# . means docker can file docker in current folder
+		> docker build -t react-app .
+		# check the images
+		> docker image ls
+		# run a container with this image
+		# alpine linux doesn't come with bash, thats why we will use shell, the original shell program
+		# this is how you interact with the program, using shell
+		> docker run -it react-app sh
+		# make sure the owner of the files is the user you create and not root, otherwise you will have errors later
+		> ls -lh
+		> node --version
+		> printenv
+		> echo $API_URL
+		> whoami
+		> 
+		# this is how you run he said to do "docker run react-app npm start" but mine run using "docker run -p 3000:3000 react-app npm start"
+		> docker run -p 3000:3000 react-app npm start
+
+
+
+> routine n - building images - removing images
+	/*
+		Notes:
+	*/
+	> docker ps -a
+	> docker container prune
+	> docker images
+	> docker image prune
+	> docker image rm repoOrImageID
+
+
+
+> routine n - building images - tagging image
+	/*
+		Notes:
+	*/
+	> docker images
+	> docker build -t react-app:1 .
+
+	# tag an image after building
+	> docker image tag react-app:latest react-app:1
+
+
+
+> routine n - building images - sharing images
+	/*
+		Notes:
+	*/
+	- go to hub.docker.com
+	- create repository
+		- jmgcheng/react-app
+
+	# publish your image
+	> docker image tag b06imageId jmgcheng/react-app:2
+	> docker images
+	> docker login
+	> docker push jmgcheng/react-app:2
+
+	# get image
+	> docker pull jmgcheng/react-app:2
+
+	# saving an image but not going to docker hub
+	# like from computer to your other computer locally
+	> docker image save -o react-app.tar react-app:3
+	> docker image load -i react-app.tar
+
+	# pull image
+	> 
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+> routine n - working with containers - -d run container in the background
+	/*
+		Notes:
+			- this will auto excecute CMD ["npm", "start"] in docker file
+	*/
+	# -d is detached mode
+	# -p is port, 1st value is your host, 2nd value is port inside container
+	> docker run -d -p 3000:3000 react-app
+
+
+
+> routine n - working with containers - --name giving a name to your container
+	/*
+		Notes:
+			- listening to port 3000 inside and outputing at 3001
+	*/
+	> docker run -d -p 3001:3000 --name pinkstart react-app
+
+
+
+> routine n - working with containers - check the logs of a running container and follow it
+	/*
+		Notes:
+			- -f
+				- follow
+	*/
+	> docker logs -f containerID
+
+
+
+> routine n - working with containers - -p - publishing ports
+	/*
+		Notes:
+	*/
+	> docker run -d -p 3002:3000 --name seahorn react-app
+	- visit http://localhost:3002/
+
+
+
+> routine n - working with containers - execute a command in a running container
+	/*
+		Notes:
+	*/
+	> docker exec nameofcontainer command
+	> docker exec pinkstart ls
+
+	# open shell for session
+	> docker exec -it pinkstart sh
+	> exit
+
+
+
+> routine n - working with containers - stopping and starting container
+	/*
+		Notes:
+			- run VS start
+				- run
+					- start a new container
+				- start
+					- start a stop container
+	*/
+	# stopping container 
+	> docker stop containername
+	> docker stop pinkstart
+
+	# start container again
+	> docker start pinkstart
+
+
+
+> routine n - working with containers - removing containers
+	/*
+		Notes:
+	*/
+	> docker container rm name
+	> docker container rm pinkstart
+	OR
+	> docker rm pinkstart
+
+
+
+> routine n - working with containers - prune - remove all stop container
+	/*
+		Notes:
+	*/
+	> docker container prune
+
+
+
+> routine n - working with containers - volume - persisting data - containers file system
+	/*
+		Notes:
+			- each container has its own file system that is invinsible to other containers
+			- volume
+				- volumes is a storage outside containers
+				- it can be a directory on the host or somewhere in the cloud
+	*/
+	> docker volume --help
+	- create volume
+	> docker volume create volumeName
+	> docker volume create app-data
+
+	# inspect volume
+	# below will show you a json type structure in terminal. Better to check in Docker GUI what it looks inside
+	> docker volume inspect app-data
+
+
+> routine n - working with containers - start a container and give it a volume that you created
+	/*
+		Notes:
+			- RUN mkdir data
+				- in your Dockerfile, it should have already created a data folder for the user so it has permission later
+	*/
+	> docker run -d -p 5000:3000 -v volumeName:/fileSystemOfTheContainer imageName
+	> docker run -d -p 5000:3000 -v volumeName:/fileSystemOfTheContainer --name nameToBeCreated imageName
+	> docker run -d -p 5000:3000 -v app-data:/app/data --name redstart react-app
+	> docker exec -it redstart sh
+	> cd data
+	> echo hello > data.txt
+	> ls
+	> exit
+	# force remove this running container
+	> docker rm -f redstart
+	# create new container that will use existing volume
+	> docker run -d -p 6000:3000 -v app-data:/app/data --name yellowstart react-app
+	> docker exec -it yellowstart sh
+	> cd data
+	# check that the data before in other container still exist
+	> cat data.txt
+
+
+
+> routine n - working with containers - copy files between host and container and vice versa
+	/*
+		Notes:
+	*/
+	# container to host
+	> docker ps
+	> docker exec -it yellowstart sh
+	> echo hello > log.txt
+	> exit
+	# . current directory in the host, "host" which is "Docker Pracs\dockertest03"
+	> cd C:\Users\Kael\Documents\Visual Studio Code\Docker Pracs\dockertest03
+	> docker cp yellowstart:/app/log.txt .
+	- check the file in C:\Users\Kael\Documents\Visual Studio Code\Docker Pracs\dockertest03
+
+
+	# host to container 
+	> cd C:\Users\Kael\Documents\Visual Studio Code\Docker Pracs\dockertest03
+	> echo warcraft > secret.txt
+	> docker cp secret.txt yellowstart:/app
+	> docker exec -it yellowstart sh
+	> ls
+
+
+
+> routine n - working with containers - sharing source code with a container
+	/*
+		Notes:
+			- you do this so you can see your changes after refresh VS building a new image
+			- this will take very long time
+				- thats why you need docker log -f to see if it finally done/finish setting up
+	*/
+	> cd C:\Users\Kael\Documents\Visual Studio Code\Docker Pracs\dockertest03
+	> docker run -d -p 7000:3000 -v $(pwd):/app --name applestart react-app
+	> docker logs -f applestart
+	OR add "" if path has space
+	> docker run -d -p 7001:3000 -v "%cd%":/app --name applestart react-app
+	> docker logs -f applestart
+	OR there is some issue in the webpack and you need to add -e WATCHPACK_POLLING=true and refresh to see the update
+	> docker run -d -p 7001:3000 -v %cd%:/app --name redsalamander -e WATCHPACK_POLLING=true react-app
+	> docker run -d -p 7002:3000 -v "%cd%":/app --name greensalamander -e WATCHPACK_POLLING=true react-app
+	> docker logs -f greensalamander
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+> routine n - running multi container - check docker compose version
+	/*
+		Notes:
+			- docker compose was installed together with docker
+	*/
+	> docker-compose --version
+
+
+
+> routine n - running multi container - 
+	/*
+		Notes:
+	*/
+	# get all image id
+	> docker image ls -q
+
+
+
+> routine n - running multi container - docker-compose up
+	/*
+		Notes:
+			- if you already have docker-compose.yml setup, this is how you run it
+	*/
+	> docker-compose up
+
+
+> routine n - running multi container - json VS yml
+	/*
+		Notes:
+	*/
+	- json
+		{
+			"name": "The Ultimate Docker Course",
+			"price": 149,
+			"is_published": true,
+			"tags": ["software", "devops"],
+			"author": {
+				"first_name": "Mosh",
+				"last_name": "Hamedani"
+			}
+		}
+
+
+	- yml
+		---
+		name: The Ultimate Docker Course
+		price: 149
+		is_published: true
+		tags:
+		  - software
+		  - devops
+		author:
+		  first_name: Mosh
+		  last_name: Hamedani
+
+
+
+> routine n - running multi container - creating compose file
+	/*
+		Notes:
+			- changes not reflected when updating code in container
+				- we were able to see changes in backend where it was using plain nodejs and applying -L in its nodemon call
+				- for frontent react, WATCHPACK_POLLING=true is not working anymore in command line at package.json or as an environement in Dockerfile
+					- much better to do updates outside the container and just build it in image when done updating
+					- noted urls
+						- https://www.google.com/search?client=opera&q=react+app+not+updating+inside+docker+container&sourceid=opera&ie=UTF-8&oe=UTF-8
+						- https://stackoverflow.com/questions/70488471/docker-with-create-react-app-is-not-updating-changes
+						- https://stackoverflow.com/questions/71297042/react-hot-reload-doesnt-work-in-docker-container
+						- https://stackoverflow.com/questions/70095225/how-can-i-make-my-docker-container-update-on-changes-to-my-source-files
+	*/
+	- backend/docker-entrypoint.sh
+		# all commands below are run in backend service
+		code 
+			#!/bin/sh
+
+			echo "Waiting for MongoDB to start..."
+			# ./wait-for 06-running-multi-container-applications-12-migrating-the-database.mp4
+			./wait-for db:27017 
+
+			echo "Migrating the databse..."
+			npm run db:up 
+
+			echo "Starting the server..."
+			npm start 		
+
+	- backend/Dockerfile
+		code
+			FROM node:14.16.0-alpine3.13
+
+			RUN addgroup app && adduser -S -G app app
+			USER app
+
+			WORKDIR /app
+			COPY package*.json ./
+			RUN npm install
+			COPY . . 
+
+			EXPOSE 3001 
+
+			CMD ["npm", "start"]	
+	- backend/package.json
+		...
+		"start": "nodemon -L --ignore './tests' index.js",
+		...
+
+	- docker-compose.yml
+		code
+			# Specifies the Docker Compose file format version. You need to match your compose file format to your docker engine version
+			version: "3.8"
+
+			services:
+			  # names inside services are arbitrary, meaning its up to you on how you name it
+  			  # each service should have their own Dockerfile that we can call here
+			  frontend:
+			  	# ensures that the backend service is started before the frontend service
+			    depends_on: 
+			      - backend
+			    # location of the Dockerfile for building the frontend service
+			    build: ./frontend
+			    # Maps port 3000 from the host to port 3000 in the container
+			    ports:
+			      - 3000:3000
+
+			  backend: 
+			  	# ensures that the db service is started before the backend service
+			    depends_on: 
+			      - db
+			    # location of the Dockerfile for building the backend service
+			    build: ./backend
+			    # Maps port 3001 from the host to port 3001 in the container
+			    ports: 
+			      - 3001:3001
+			    # Sets the environment variable DB_URL with the value mongodb://db/vidly
+			    environment: 
+			      # DB_URL is just a variable name
+			      # mongodb is a mongo db connection string, these connection strings always starts with mongodb://
+			      # db is the name of the host. In our case here we have 3 host and those are db, backend, and  frontend. We put db here
+			      # vidly is the database name
+			      # other examples
+			      		# expressjs	
+			      			const mongodbUrl = "mongodb://localhost:27017/";
+			      		# w3school connect to atlat
+			      			mongosh "mongodb+srv://cluster0.ex4ht.mongodb.net/myFirstDatabase" --apiVersion 1 --username YOUR_USER_NAME
+			      DB_URL: mongodb://db/vidly
+			    # this is so that you can see you code changes without rebuilding the images
+			    # nodemon should have -L for this to effect in package.json
+			    volumes:
+      			  - ./backend:/app
+			    # Specifies the command to run when starting the container. In this case, it's executing the docker-entrypoint.sh script
+			    # this is to make sure database is loaded, migrated, before npm start of backend
+			    # this command will overwrite the CMD ["npm", "start"] in the Dockerfile of backend
+			    command: ./docker-entrypoint.sh
+
+			  db:
+			  	# Specifies the Docker image to use for the db service, in this case, MongoDB version 4.0
+			    image: mongo:4.0-xenial
+			    # Maps port 27017 from the host to port 27017 in the container.
+			    ports:
+			      - 27017:27017
+			    # Creates a named volume named vidly and mounts it to the /data/db directory in the container.
+			    # This is used to persist MongoDB data.
+			    volumes:
+			      # vidly here is a volume name
+			      # /data/db 
+			      		# is a directory inside this container
+			      		# whatever is written in /data/db also goes to vidly so data is retained even if this container is removed or if vidly volume is used by a different container
+			      - vidly:/data/db
+
+			# Defines a named volume named vidly. 
+			# This volume is used by the db service to persist MongoDB data
+			volumes:
+			  vidly:
+
+	# compose build images
+	> docker-compose build --help
+	> docker-compose build
+	> docker image ls
+
+	# compose full rebuild
+	> docker-compose build --no-cache
+
+	# see all containers relevent to this application
+	> docker-compose ps
+
+	# idk how docker-compose manage to know what group of containers to run, maybe because i'm inside a specific directory
+	> docker-compose up
+
+	# force rebuild and up
+	> docker-compose up --build
+
+	# detach
+	> docker-compose up -d
+
+	# take down compose
+	> docker-compose down
+
+
+
+> routine n - running multi container - check docker network
+	/*
+		Notes:
+			- when docker-compose is run, it will automatically create a network and add our containers in that network so that these containers can talk to each other
+	*/
+	> docker-compose up -d
+	> docker network ls
+
+	# start a shell session in the web container and ping the backend container
+	> docker ps
+	> docker exec -it conatineridofweb sh
+	# or interact shell using root
+	> docker exec -it -u root conatineridofweb sh
+	> ping backend
+	> ctrl c
+	# check ipaddress of current container
+	> ifconfig
+
+	# check mongodb data
+	> docker exec -it -u root conatineridofmongo sh
+	> mongo
+	> show dbs
+	> use vidly
+	> show collections
+	> db.movies.find()
+
+
+
+> routine n - running multi container - view logs
+	/*
+		Notes:
+	*/
+	# view the logs across all containers of this application in one place
+	> docker-compose logs --help
+	> docker-compose logs
+
+	# look at logs for specific container 
+	> docker ps
+	> docker logs -f containerid
+
+
+
+> routine n - running multi container - publishing changes
+	/*
+		Notes:
+			- i have done the tasks for this video in the "routine n - running multi container - creating compose file"
+	*/
+	06-running-multi-container-applications-11-publishing-changes.mp4
+
+
+
+
+> routine n - running multi container - migrating database
+	/*
+		Notes:
+			- its worth noting to review the video again and again on how he put the commands in yml to a bash script to make it cleaner
+				- you will review wait for it script
+				- migrate up for migration
+				- db:00000 check to check before proceeding
+
+	*/
+	06-running-multi-container-applications-12-migrating-the-database.mp4
+
+
+
+
+> routine n - running multi container - 
+	/*
+		Notes:
+			- just watch if you need to setup test
+	*/
+	we need to rewatch 06 videos again when we understand docker and docker-compose much better
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+

@@ -1,0 +1,6505 @@
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+
+> routine n - installation
+	/*
+		Notes:
+	*/
+	// download python
+		python.org
+	// install
+		// add Python to PATH
+
+
+
+> routine n - check python installation
+	/*
+		Notes:
+	*/
+	// cmd
+		python
+		// exit interpreter
+		ctrl + z
+
+
+
+> routine n - test interpreter
+	/*
+		Notes:
+	*/
+	cmd
+	python
+	2 + 2
+	2 > 1
+
+
+
+> routine n - create your first program
+	/*
+		Notes:
+	*/
+	// create folder in desktop
+	// open vscode in that folder
+	// create new file
+		app.py
+	// code
+		print('hello world')
+		print('*' * 10)
+	// run the code
+		// open vscode terminal
+		> python app.py
+		// or run in cmd, same result
+
+
+
+> routine n - install python extensions in vscode
+	/*
+		Notes:
+			- improves
+				- linting
+				- autocompletion
+				- unit testing
+				- debugging
+				- code formatting
+				- code snippets
+	*/
+	// in vscode, open extensions tab in the left side bar
+		- install
+			- Python
+			- pylint
+
+
+
+> routine n - pylint issues
+	/*
+		Notes:
+	*/
+	// pylint Missing module docstring error
+		- just add docstring above the file
+			""" This file is for blah blah blah """
+
+			print("hello world")
+		- disable it if it gets too annoying
+
+
+
+> routine n - install auto formatting python code autopep8
+	/*
+		Notes:
+	*/
+	// install autopep8 in extension
+	// manual Format Document
+		- ctrl + shift + p
+		- Format Document
+	// Auto Format Document when save
+		> file > Preferences > Settings > search in searchbox "formatOnSave" > tick the checkbox
+
+
+
+> routine n - shortcut to running your program
+	/*
+		Notes:
+	*/
+	// install extension code runner
+		// Code Runner
+		// shortcut command to run
+		ctrl + alt + n
+		// if python 2 is your default
+			> file > Preference > ... > Open Settings json > search box "code-runner.executorMap" > USER SETTINGS window > "code-runner.executorMap" press enter > change > "python": "python3"
+
+
+
+> routine n - variables
+	/*
+		Notes:
+	*/
+	// interger
+		students_count = 1000
+	// float
+		rating = 4.99
+	// boolean
+		is_published = True
+	// string
+		course_name = "Python Programming"
+
+
+
+
+> routine n - strings
+	/*
+		Notes:
+	*/
+	//
+		course = "Python Programming"
+	
+	//
+		email = """
+			Dear Cheng,
+				Apply na
+			Thanks
+		"""
+	
+	// get number of characters
+		len(course)
+
+	// access specific index
+		course[0]
+		// P
+		course[-1]
+		// g
+		course[0:3]
+		// Pyt
+		print(course[0:])
+		// Python Programming
+		print(course[:3])
+		// Pyt
+		print(course[:])
+		// Python Programming
+		print(course[1:-1])
+		// ython Programmin
+
+	// 
+
+
+
+> routine n - escape sequence
+	/*
+		Notes:
+	*/
+	course = "Python \"Programming\""
+
+
+
+> routine n - comment
+	/*
+		Notes:
+	*/
+	# this is a comment
+
+
+
+> routine n - formatted strings
+	/*
+		Notes:
+	*/
+	first = "Cheng"
+	last = "Michael"
+	full = first + " " + last
+	full_again = f"{first} {last}"
+	or 
+	full = F"{first} {last}"
+
+
+
+> routine n - string methods
+	/*
+		Notes:
+	*/
+	course = "python programming"
+	print(course.upper()) //returns a new string
+	course.title() //capitalize every first letter
+	course.strip() // removes extra white space from beginning and ending
+	course.replace("p", "j")
+	course.find("pro") // 9
+	print("pro" in course) // True
+	print("swift" not in course) // True
+
+
+
+> routine n - numbers
+	/*
+		Notes:
+	*/
+	x = 1 // intergers
+	x = 1.1 // float
+	x = 1 + 2j # a + bi // complex numbers. Where i is the imagiary numbers
+	print(10 / 3) // 3.333333333
+	print(10 // 3 ) // 3
+
+
+
+> routine n - some function for numbers
+	/*
+		Notes:
+	*/
+	round(2.9) // 3
+	abs(-2.9) // 2.9
+	//
+		import math
+		math.ceil(2.2) // 3
+
+
+
+> routine n - type conversion
+	/*
+		Notes:
+	*/
+	// dont run this in code runner as code runner is for readonly
+		x = input("x: ")
+		y = int(x) + 1
+	// convert
+		int(x)
+		float(x)
+		bool(x)
+		str(x)
+	// check type
+		type(x)
+	// false
+		""
+		0
+		None
+		bool("") // False
+		bool(0) // False
+
+
+
+> routine n - comparizon operators
+	/*
+		Notes:
+	*/
+	10 > 3 // True
+	10 >= 3 // True
+	10 == "10" // False
+	10 != "10" // True
+	"bag" > "apple" // True
+	"bag" == "BAG" // False
+
+
+
+> routine n - conditional statements
+	/*
+		Notes:
+	*/
+	//
+		temp = 35
+		if temp > 30:
+			print("It's warm")
+			print("Drink water")
+		elif temp > 20:
+			print("It's nice")
+		else:
+			print("It's cold")
+		print("Done")
+
+
+
+> routine n - ternary operator
+	/*
+		Notes:
+	*/
+	//
+		age = 22
+		if age >= 18:
+			message = "Eligible"
+		else:
+			message = "Not eligible"
+	//
+		message = "Eligible" if age >= 18 else "Not eligible"
+
+
+
+> routine n - logical operators
+	/*
+		Notes:
+			and
+			or
+			not
+	*/
+	//
+		high_income = True
+		good_credit = True
+		if high_income and good_credit:
+			print("Eligible")
+		else:
+			print("Not eligible")
+	
+	// 
+		student = True
+		if not student:
+			print("Eligible")
+
+	//
+		if (high_income or good_credit) and not student:
+			print("Eligible")
+
+
+
+> routine n - short-circuit evaluation
+	/*
+		Notes:
+	*/
+
+
+
+> routine n - chaining comparison operators
+	/*
+		Notes:
+	*/
+	//
+		age = 22
+		if age >= 18 and age < 65:
+			print("Eligible")
+
+	//
+		if 18 <= age < 65:
+			print("Eligible")
+
+
+
+> routine n - for loops
+	/*
+		Notes:
+	*/
+	//
+		for number in range(3):
+			print("Attempt", number) 
+				// repeats 3 times. 0 1 2
+				// Attempt 0
+				// Attempt 1
+				// Attempt 2
+
+	//
+		for number in range(3):
+			print(number + 1) // 1 2 3
+
+	//
+		for number in range(3):
+			print("Attempt", number + 1, (number + 1) * ".")
+			// Attempt 1 .
+			// Attempt 2 ..
+			// Attempt 3 ...
+
+	//
+		for number in range(1, 4):
+			print("Attempt", number, number * ".")
+			// Attempt 1 .
+			// Attempt 2 ..
+			// Attempt 3 ...
+
+	//
+		for number in range(1, 10, 2): # skip count
+			print("Attempt", number, number * ".")
+			// Attempt 1 .
+			// Attempt 3 ...
+			...
+			// Attempt 9 .........
+
+
+
+
+> routine n - For..Else
+	/*
+		Notes:
+	*/
+	//
+		successful = True
+		for number in range(3):
+			print("Attempt")
+			if successful:
+				print("Successful")
+				break
+		//
+			Attempt
+			Successful
+
+	//
+		successful = False
+		for number in range(3):
+			print("Attempt")
+			if successful:
+				print("Successful")
+				break
+		else:
+			print("Attempted 3 times and failed")
+		//
+			Attempt
+			Attempt
+			Attempt
+			Attempted 3 times and failed
+			
+
+
+> routine n - nested loops
+	/*
+		Notes:
+	*/
+	for x in range(5):
+		for y in range(3):
+			print(f"({x}, {y})")
+
+
+
+> routine n - iterables
+	/*
+		Notes:
+	*/
+	//
+		print(type(5))
+		// <class 'int'>
+
+	//
+		print(type(range(5)))
+		// <class 'range'>
+
+	//
+		# range is iterable
+		for x in range(5):
+
+	// string is iterable
+		for x in "Python":
+			print(x)
+
+	// list is iterable
+		for x in [1, 2, 3, 4]:
+			print(x)
+
+
+
+> routine n - while loops
+	/*
+		Notes:
+	*/
+	//
+		number = 100
+		while number > 0:
+			print(number)
+			number = number // 2
+		//
+			100
+			50
+			25
+			12
+			6
+			3
+			1
+
+	//
+		command = ""
+		while command != "quit":
+			command = input(">")
+			print("ECHO", command)
+
+
+
+> routine n - infinite loop
+	/*
+		Notes:
+	*/
+	white True:
+		command = input(">")
+		print("Echo", command)
+		if command.lower() == "quit":
+			break
+
+
+
+> routine n - defining functions
+	/*
+		Notes:
+	*/
+	def greet():
+		print("Hi there")
+		print("Welcome")
+
+	greet()
+
+
+
+> routine n - arguments
+	/*
+		Notes:
+	*/
+	def greet(first_name, last_name):
+		print(f"Hi {first_name} {last_name}")
+
+	greet("Michael", "Cheng")
+
+
+
+> routine n - types of functions
+	/*
+		Notes:
+	*/
+	def get_greeting(name):
+		return f"Hi {name}"
+
+	message = get_greet("Michael")
+
+
+
+> routine n - keyword arguments
+	/*
+		Notes:
+	*/
+	def increment(number, by):
+		return number + by
+
+	print(increment(2, by=1))
+
+
+
+> routine n - default arguments
+	/*
+		Notes:
+			- all required parameters should come first before optional
+	*/
+	def increment(number, by=1):
+		return number + by
+
+	print(increment(2))
+
+
+
+> routine n - *args
+	/*
+		Notes:
+	*/
+	def multiply(*numbers):
+		total = 1
+		print(numbers) // returns a tuple. (value1, value2, ...)
+		for number in numbers:
+			print(number)
+			total *= number
+		return total
+
+	print(multiply(2, 3, 4, 5))
+
+
+
+> routine n - **args
+	/*
+		Notes:
+	*/
+	def save_user(**user):
+		print(user) // returns a dictionary. {'id': 1, 'name': 'John', 'age': 22}
+		print(user["id"])
+		print(user["name"])
+		print(user["age"])
+
+	save_user(id=1, name="John", age=22)
+
+
+
+> routine n - scope
+	/*
+		Notes:
+	*/
+	//
+		message = "a"
+
+		def greet(name):
+			global message // not recommended
+			message = "b"
+
+		greet("Mosh")
+		print(message) // b
+
+
+
+> routine n - lists
+	/*
+		Notes:
+	*/
+	// list
+		letters = ['a', 'b', 'c']
+		numbers = [1, 2, 3]
+	// 2 dimensional list
+		matrix = [[0, 1], [2, 3]]
+	// list of a hundred 0
+		zeros = [0] * 100
+	// concatinate
+		combined = zeros + letters
+		// [0, 0, 0, 0, ..., 'a', 'b', 'c', ]
+	// create a list from 0 to 19
+		numbers = list(range(20))
+	// 
+		chars = list("hellow world")
+		print(chars)
+		// ['h', 'e', 'l', ...]
+	//
+		print(len(chars))
+		// 11
+
+
+
+> routine n - accessing items
+	/*
+		Notes:
+	*/
+	//
+		letters = ['a', 'b', 'c', 'd']
+		print(letters[0])
+			// a
+		print(letters[-1])
+			// d
+		letters[0] = 'A'
+		print(letters)
+			// ['A', 'b', ...]
+		print(letters[0:3])
+			// ['A', 'b', 'c']
+		print(letters[:3])
+			// ['A', 'b', 'c']
+		print(letters[0:])
+			// ['A', 'b', 'c', 'd']
+		print(letters[:])
+			// ['A', 'b', 'c', 'd']
+			// get a copy of our original list
+		print(letters[::2])
+			// ['A', 'c']
+	//
+		numbers = list(range(20))
+		print(numbers)
+			// [0, ..., 19]
+		print(numbers[::2])
+			// [0, 2, 4, ..., 18]
+		print(numbers[::-1])
+			// [19, 18, 17, ..., 0]
+
+
+
+
+> routine n - list unpacking
+	/*
+		Notes:
+	*/
+	// unpacking
+		numbers = [1, 2, 3]
+		first, second, third = numbers # just like destruct
+		# you need to unpack the same qty
+	// packing again
+		numbers = [1, 2, 3, 4, 4, 4, 4]
+		first, second, *other = numbers
+		print(first)
+			// 1
+		print(other)
+			// [3, 4, 4, 4, 4]
+			// a list of the rest
+	//
+		numbers = [1, 2, 3, 4, 4, 4, 4, 9]
+		first, *other, last = numbers
+		print(first, last)
+			// 1 9
+		print(other)
+			// [2, 3, 4, 4, 4, 4]
+
+
+
+> routine n - looping over list
+	/*
+		Notes:
+	*/
+	//
+		letters = ['a', 'b', 'c']
+		for letter in letters:
+			print(letter)
+		//
+			a
+			b
+			c
+	//
+		letters = ['a', 'b', 'c']
+		print(enumerate(letters)) # enumerate returns an enumerate object which is iterable
+		//
+			<enumerate object at 0x000001BD644F1EE0>
+	//
+		letters = ['a', 'b', 'c']
+		for letter in enumerate(letters): # in each enumerate object will give us a tuple
+			print(letter)
+		//
+			(0, 'a') # tupple
+			(1, 'b')
+			(2, 'c')
+		//
+			tupple is just like a list but its readonly
+			(index, item)
+	//
+		letters = ['a', 'b', 'c']
+		for letter in enumerate(letters): 
+			print(letter[0], letter[1])
+		//
+			0 a
+			1 b
+			2 c
+	// unpacking style
+		letters = ['a', 'b', 'c']
+		for index, letter in enumerate(letters): 
+			print(index, letter)
+		//
+			0 a
+			1 b
+			2 c
+
+
+
+> routine n - adding or removing items
+	/*
+		Notes:
+	*/
+	//
+		letters = ['a', 'b', 'c']
+	// add
+		letters.append('d')
+		print(letters)
+		// ['a', 'b', 'c', 'd']
+	// add specific position
+		letters.insert(0, '-')
+		print(letters)
+		// ['-', 'a', 'b', 'c', 'd']
+	// remove
+		letters.pop()
+		print(letters)
+		// ['-', 'a', 'b', 'c']
+	// remove
+		letters.pop(0)
+		print(letters)
+		// ['a', 'b', 'c']
+	// remove
+		letters.remove('b') # remove the first occurence of b
+		print(letters)
+		// ['a', 'c']
+	// remove
+		del letters[0:3] # del you can remove a range of items
+	// remove all
+		letters.clear()
+
+
+
+> routine n - finding items
+	/*
+		Notes:
+	*/
+	//
+		letters = ['a', 'b', 'c']
+		print(letters.index('a'))
+			// 0
+	//
+		letters = ['a', 'b', 'c']
+		print(letters.index('d'))
+			// ValueError
+	// 
+		letters = ['a', 'b', 'c']
+			if "d" in letters:
+				print(letters.index('d'))
+					// nothing to show
+					// no error
+	// 
+		letters.count('d')
+		// 0
+
+
+
+> routine n - sorting lists
+	/*
+		Notes:
+	*/
+	//
+		numbers = [3, 51, 2, 8, 6]
+		numbers.sort()
+		// [2, 3, 6, 8, 51]
+	//
+		numbers.sort(reverse=True)
+		// [51, 8, ...]
+	//
+		sorted(numbers)
+		[2, 3, 6, 8, 51]
+	//
+		sorted(numbers, reverse=True)
+		// [51, 8, ...]
+	//
+		items = [
+			("Product1", 10),
+			("Product2", 9),
+			("Product3", 12),
+		]
+		items.sort()
+		print(items)
+		//
+			nothing change,
+			python doesn't know how to sort this list
+	//
+		items = [
+			("Product1", 10),
+			("Product2", 9),
+			("Product3", 12),
+		]
+		def sort_item(item):
+			return item[1] # returns 10, 9, then 12
+		items.sort(key=sort_item)
+		print(items)
+		//
+			[
+				("Product2", 9),
+				("Product1", 10),
+				("Product3", 12),
+			]
+
+
+
+> routine n - lambda function
+	/*
+		Notes:
+			- recheck sorting lists topic first before checking this
+	*/
+	//
+		items = [
+			("Product1", 10),
+			("Product2", 9),
+			("Product3", 12),
+		]
+		items.sort(key=lambda item:item[1])
+		print(items)
+		//
+			[
+				("Product2", 9),
+				("Product1", 10),
+				("Product3", 12),
+			]
+
+
+
+> routine n - Map Function
+	/*
+		Notes:
+	*/
+	//
+		items = [
+			("Product1", 10),
+			("Product2", 9),
+			("Product3", 12),
+		]
+		prices = []
+		for item in items:
+			prices.append(item[1])
+		print(prices)
+		// [10, 9, 12]
+	//
+		items = [
+			("Product1", 10),
+			("Product2", 9),
+			("Product3", 12),
+		]
+		x = map(lambda item: item[1], items)
+		print(x)
+			// <map object>
+		for item in x:
+			print(item)
+			//
+				10
+				9
+				12
+	//
+		items = [
+			("Product1", 10),
+			("Product2", 9),
+			("Product3", 12),
+		]
+		prices = list(map(lambda item: item[1], items))
+		print(prices)
+			// [10, 9, 12]
+
+
+
+> routine n - Filter Function
+	/*
+		Notes:
+	*/
+	//
+		items = [
+			("Product1", 10),
+			("Product2", 9),
+			("Product3", 12),
+		]
+		// item[1] >= 10 result of this is boolean, if its true, this item will return
+		x = filter(lambda item: item[1] >= 10, items)
+		print(x)
+		//
+			<filter object>
+	//
+		items = [
+			("Product1", 10),
+			("Product2", 9),
+			("Product3", 12),
+		]
+		filtered = list(filter(lambda item: item[1] >= 10, items))
+		print(filtered)
+		//
+			[('Product1', 10), ('Product3', 12)]
+
+
+
+> routine n - List Comprehensions
+	/*
+		Notes:
+			- what he did above is showing functional programming
+			- but in python we have Comprehension that can do the same
+			- in python, the prefered way to map and filter items is to use list comprehensions
+	*/
+	//
+		items = [
+			("Product1", 10),
+			("Product2", 9),
+			("Product3", 12),
+		]
+
+		// prices = list(map(lambda item: item[1], items))
+		// same result
+		prices [item[1] for item in items]
+
+		//filtered = list(filter(lambda item: item[1] >= 10, items))
+		filtered = [item for item in items if item[1] >= 10]
+		// return current item for each item in items if value of item[1] is >= 10
+
+
+
+> routine n - Zip Function
+	/*
+		Notes:
+	*/
+	//
+		list1 = [1, 2, 3]
+		list2 = [10, 20, 30]
+		print(zip(list1, list2))
+		//
+			<zip object>
+	//
+		list1 = [1, 2, 3]
+		list2 = [10, 20, 30]
+		print(list(zip(list1, list2)))
+		//
+			[(1, 10), (2, 20), (3, 30)]
+
+
+
+> routine n - Stacks
+	/*
+		Notes:
+			- LIFO
+				- last in first out
+	*/
+	//
+		browsing_session = []
+		browsing_session.append(1)
+		browsing_session.append(2)
+		browsing_session.append(3)
+		print(browsing_session)
+		//
+			[1, 2, 3]
+		browsing_session.pop()
+		print(browsing_session)
+		//
+			[1, 2]
+		if not browsing_session: 
+			print(browsing_session[-1])
+		//
+			2
+
+
+
+> routine n - Queus
+	/*
+		Notes:
+			- fifo
+				- first in first out
+	*/
+	//
+		from collections import deque
+		queue = deque([])
+		queue.append(1)
+		queue.append(2)
+		queue.append(3)
+		queue.popleft()
+		print(queue)
+		//
+			deque([2, 3])
+	//
+		if not queue:
+			print('empty')
+
+
+
+> routine n - Tuples
+	/*
+		Notes:
+			- tuple is a read only list
+	*/
+	//
+		point = (1, 2)
+		point = 1, 2 # same
+		point = 1, # trailing comma means still tuple
+		point = () # empty tuple
+	// concatinate tuple
+		point = (1, 2) + (3, 4)
+		print(point)
+		//
+			(1, 2, 3, 4)
+	//
+		point = (1, 2) * 3
+		print(point)
+		//
+			(1, 2, 1, 2, 1, 2)
+	// convert list to tuple
+		point = tuple([1, 2])
+	//
+		point = tuple("hello")
+		//
+			('h', 'e', 'l', 'l', 'o')
+	//
+		point = (1, 2, 3)
+		print(point[0:2])
+		//
+			(1, 2)
+	// unpack
+		point = (1, 2, 3)
+		x, y, z = point
+		if 10 in point:
+			print('exists')
+	//
+		point[0] = 10
+		//
+			TypeError: tuple does not support assignment
+
+
+
+> routine n - swapping variables
+	/*
+		Notes:
+	*/
+	//
+		x = 10
+		y = 11
+		x, y = y, x # this is a combination of tuple and unpacking(destruct)
+		print('x', x)
+			// x 11
+		print('y', y)
+			// y 11
+
+
+
+> routine n - arrays
+	/*
+		Notes:
+			- array(typecode, )
+				- search google python 3 typecode
+					- eg
+						- 'i' - signed int
+			- typecode
+				- its a string of one character that determines the type of objects in your list
+			- unlike list, every item in the list should be the same type as the typecode
+			- use array if your only dealing with a large sequence of numbers and you encounter performance problems. For others, use list or tuples by default
+	*/
+	//
+		from array import array
+		numbers = array("i", [1, 2, 3])
+		numbers.append(4)
+
+
+
+> routine n - Sets
+	/*
+		Notes:
+			- sets are unorder collection
+				- means we can't get value by using index. eg item[0]
+	*/
+	//
+		numbers = [1, 1, 2, 3, 4]
+		uniques = set(numbers)
+		print(uniques)
+		//
+			{1, 2, 3, 4}
+	//
+		second = {1, 4}
+		second.add(5)
+		second.remove(5)
+		len(second)
+	//
+		numbers = [1, 1, 2, 3, 4]
+		first = set(numbers)
+		second = {1, 5}
+		# get union of 2 sets
+		print(first | second)
+		//
+			{1, 2, 3, 4, 5}
+		# returns a new set that includes all the items that are in both 1st and 2nd sets
+		prin
+		print(first & second)
+		//
+			{1}
+		# get difference
+		print(first - second)
+		//
+			{2, 3, 4}
+		# sematic difference
+		print(first ^ second)
+		//
+			{2, 3, 4, 5}
+	//
+		if 1 in first:
+			print("yes")
+
+
+
+> routine n - dictionaries
+	/*
+		Notes:
+	*/
+	//
+		point = {"x": 1, "y": 2}
+	//
+		point = dict(x=1, y=2) # remember x=1 are called key arguments
+	//
+		print(point["x"])
+		//
+			1
+	//
+		point["x"] = 10
+		print(point)
+		//
+			{'x': 10, 'y': 2}
+	//
+		point["z"] = 20
+		print(point)
+		//
+			{'x': 10, 'y': 2, 'z': 20}
+	//
+		print(point.get("a"))
+		//
+			None
+	//
+		print(point.get("a", 0))
+		//
+			0
+	//
+		if "a" in point:
+			print(point["a"])
+	//
+		del point["x"]
+		print(point)
+		//
+			{'y': 2, 'z': 20}
+	//
+		for key in point:
+			print(key, point[key])
+			//
+				y 2
+				z 20
+	//
+		for x in point.items():
+			print(x)
+			//
+				('y', 2)
+				('z', 20)
+	//
+		for key, value in point.items():
+			print(key, value)
+			//
+				y 2
+				z 20
+			
+
+
+
+> routine n - dictionary comprehension
+	/*
+		Notes:
+	*/
+	//
+		values = []
+		for x in range(5):
+			values.append(x * 2)
+	// [expression for item in items]
+		values = [x * 2 for x in range(5)]
+	// use it in sets
+		values = {x * 2 for x in range(5)}
+		print(values)
+		//
+			{0, 2, 4, 6, 8}
+	// dictionaries
+		values = {x: x * 2 for x in range(5)}
+		print(values)
+		//
+			{0: 0, 1: 2, 2: 4, 3: 6, 4: 8}
+	// tuple
+		values = (x * 2 for x in range(5))
+		print(values)
+		//
+			<generator object>
+			check generator expressions topic
+
+
+
+> routine n - generator expressions
+	/*
+		Notes:
+			- generator object 
+				- is still iterable
+				- don't store all items in memory unlike list
+					- that means you wont be able to get the total number of items you're working with
+	*/
+	//
+		values = (x * 2 for x in range(5))
+		for x in values:
+			print(x)
+			//
+				0
+				2
+				...
+				18
+	//
+		from sys import getsizeof
+		values = (x * 2 for x in range(1000))
+		print("gen: ", getsizeof(values))
+		//
+			gen: 120
+		values = [x * 2 for x in range(1000)]
+		print("list: ", getsizeof(values))
+		//
+			list: 824464
+
+
+
+> routine n - unpacking operator
+	/*
+		Notes:
+			- unpack any iterables
+	*/
+	//
+		numbers = [1, 2, 3]
+		print(numbers)
+		// [1, 2, 3]
+		print(1, 2, 3)
+		// 1 2 3
+	//
+		print(*numbers) // like spread operator
+		// 1 2 3
+	//
+		values = list(range(5))
+		print(values)
+		//
+			[0, 1, 2, 3, 4]
+		values = [*range(5), *"Hello"]
+		//
+			[0, 1, 2, 3, 4, 'H', 'e', 'l', 'l', 'o']
+	// unpacking dictionary needs 2 *
+		first = {"x": 1}
+		second = {"x": 10, "y": 2}
+		combined = {**first, **second, "z": 1}
+		print(combined)
+		//
+			{'x': 10, 'y': 2, 'z': 1}
+
+
+
+> routine n - find the most repeated characters
+	/*
+		Notes:
+	*/
+	//
+		sentence = "This is a common interview question"
+		char_frequency = {}
+		for char in sentence:
+			if char in char_frequency:
+				char_frequency[char] += 1
+			else:
+				char_frequency[char] = 1
+		print(char_frequency)
+		//
+			{'T': 1, 'h': 1, 'i': 5, ...}
+	//
+		from pprint import pprint # beautify your printing stuffs
+
+		pprint(char_frequency, width=1)
+		//
+			{' ': 5,
+			 'T': 1, 
+			 ...
+			}
+	// sorting
+		sentence = "This is a common interview question"
+		char_frequency = {}
+		for char in sentence:
+			if char in char_frequency:
+				char_frequency[char] += 1
+			else:
+				char_frequency[char] = 1
+		char_frequency_sorted = sorted(char_frequency.items(), key=lambda kv:kv[1], reverse=True)
+		print(char_frequency_sorted[0])
+		//
+			('i', 5)
+
+
+
+> routine n - exceptions
+	/*
+		Notes:
+	*/
+	//
+		numbers = [1, 2]
+		print(numbers[3])
+		// IndexError
+	//
+
+
+
+> routine n - handling exceptions
+	/*
+		Notes:
+	*/
+	//
+		try:
+			age = int(input("Age: "))
+		except ValueError:
+			print("You didn't enter a valid age.")
+		else:
+			print("No exceptions were thrown")
+		//
+			> 10
+			No exceptions were thrown
+	//
+		try:
+			age = int(input("Age: "))
+		except ValueError as ex:
+			print("You didn't enter a valid age.")
+			print(ex)
+			print(type(ex))
+		else:
+			print("No exceptions were thrown")
+		//
+			> a
+			You didn't enter a valid age.
+			invalid literal for int()
+			<class 'ValueError'>
+
+
+
+> routine n - handling different exceptions
+	/*
+		Notes:
+	*/
+	//
+		try:
+			age = int(input("Age: "))
+			xfactor = 10 / age
+		except ValueError:
+			print("You didn't enter a valid age.")
+		except ZeroDivisionError:
+			print("Age cannot be 0.")
+		else:
+			print("No exceptions were thrown")
+	//
+		try:
+			age = int(input("Age: "))
+			xfactor = 10 / age
+		except (ValueError, ZeroDivisionError):
+			print("You didn't enter a valid age.")
+		else:
+			print("No exceptions were thrown")
+
+
+
+> routine n - cleaning up
+	/*
+		Notes:
+	*/
+	//
+		try:
+			file = open("app.py")
+			age = int(input("Age: "))
+			xfactor = 10 / age
+		except (ValueError, ZeroDivisionError):
+			print("You didn't enter a valid age.")
+		else:
+			print("No exceptions were thrown")
+		finally:
+			file.close()
+
+
+
+> routine n - With Statement
+	/*
+		Notes:
+			- the With statement is used to automatically release external resources
+	*/
+	//
+		try:
+			with open("app.py") as file:
+				print("File opened.")
+			age = int(input("Age: "))
+			xfactor = 10 / age
+		except (ValueError, ZeroDivisionError):
+			print("You didn't enter a valid age.")
+		else:
+			print("No exceptions were thrown")
+
+
+
+> routine n - raising exceptions
+	/*
+		Notes:
+			- search python 3 builtin exceptions
+	*/
+	//
+		def calculate_xfactor(age):
+			if age <= 0:
+				raise ValueError("Age cannot be 0 or less") 
+			return 10 / age
+		calculate_xfactor(-1)
+		//
+			ValueError: Age cannot be 0
+	//
+		def calculate_xfactor(age):
+			if age <= 0:
+				raise ValueError("Age cannot be 0 or less") 
+			return 10 / age
+		try:
+			calculate_xfactor(-1)
+		except ValueError as error:
+			print(error)
+		
+
+
+
+> routine n - cost of raising exceptions
+	/*
+		Notes:
+			- raising your own exceptions creates cost daw
+			- watch video on how to us timeit
+			- raise exceptions lng daw if you really have to
+	*/
+	//
+
+
+
+> routine n - creating classes
+	/*
+		Notes:
+	*/
+	//
+		class Point:
+			def draw(self):
+				print("draw")
+		point = Point
+		point.draw()
+		print(isinstance(point, Point))
+		//
+			True
+	//
+
+
+
+> routine n - constructor
+	/*
+		Notes:
+			- self is a reference to the current point point object
+	*/
+	//
+		class Point:
+			def __init__(self, x, y):
+				self.x = x
+				self.y = y
+
+			def draw(self):
+				print(f"Point ({self.x}, {self.y})")
+		point = Point(1, 2)
+		print(point.x)
+		//
+			1
+		point.draw()
+		//
+			Point(1, 2)
+
+
+
+> routine n - class vs instance attributes
+	/*
+		Notes:
+			- class level attribute value is available to all instance
+	*/
+	//
+		class Point:
+			default_color = "red" # class level attribute
+
+			def __init__(self, x, y):
+				self.x = x # x and y are instance attributes
+				self.y = y
+
+			def draw(self):
+				print(f"Point ({self.x}, {self.y})")
+		point = Point(1, 2)
+		print(point.default_color)
+		//
+			red
+		print(Point.default_color)
+		//
+			red
+		point.draw()
+		//
+			Point(1, 2)
+		point.z = 10
+		another = Point(3, 4)
+		another.draw()
+		//
+			Point(3, 4)
+		Point.default_color = "yellow"
+		print(Point.default_color)
+		//
+			yellow
+		print(another.default_color)
+		//
+			yellow
+
+
+
+> routine n - class vs instance methods
+	/*
+		Notes:
+	*/
+	//
+		class Point:
+			def __init__(self, x, y): # this is instance method
+				self.x = x
+				self.y = y
+
+			@classmethod #decorator
+			def zero(cls): # this is class method
+				return cls(0, 0)
+
+			def draw(self): # this is instance method
+				print(f"Point ({self.x}, {self.y})")
+
+		point = Point.zero()
+		point.draw()
+		//
+			Point (0, 0)
+
+
+
+> routine n - magic methods
+	/*
+		Notes:
+	*/
+	//
+		class Point:
+			def __init__(self, x, y): # magic method
+				self.x = x
+				self.y = y
+			def __str__(self): # magic method
+				return f"({self.x}, {self.y})"
+			def draw(self):
+				print(f"Point ({self.x}, {self.y})")
+		point = Point(1, 2)
+		print(point)
+		//
+			(1, 2)
+
+
+
+> routine n - comparing objects
+	/*
+		Notes:
+	*/
+	//
+		class Point:
+			def __init__(self, x, y):
+				self.x = x
+				self.y = y
+		point = Point(1, 2)
+		other = Point(1, 2)
+		print(point == other)
+		//
+			False
+	//
+		class Point:
+			def __init__(self, x, y):
+				self.x = x
+				self.y = y
+			def __eq__(self, other):
+				return self.x == other.x and self.y == other.y
+		point = Point(1, 2)
+		other = Point(1, 2)
+		print(point == other)
+		//
+			True
+	//
+		class Point:
+			def __init__(self, x, y):
+				self.x = x
+				self.y = y
+			def __eq__(self, other):
+				return self.x == other.x and self.y == other.y
+			def __gt__(self, other):
+				return self.x > other.x and self.y > other.y
+		point = Point(10, 20)
+		other = Point(1, 2)
+		print(point > other)
+		//
+			True
+		print(point < other)
+		//
+			False
+
+
+
+> routine n - performing arithmetic operations
+	/*
+		Notes:
+			- https://rszalski.github.io/magicmethods/
+	*/
+	//
+		class Point:
+			def __init__(self, x, y):
+				self.x = x
+				self.y = y
+			def __add__(self, other):
+				return Point(self.x + other.x, self.y + other.y)
+		point = Point(10, 20)
+		other = Point(1, 2)
+		combined = point + other
+		print(combined)
+
+
+
+> routine n - making custom containers
+	/*
+		Notes:
+	*/
+	//
+		class TagCloud:
+			def __init__(self):
+				self.tags = {}
+			def add(self, tag):
+				self.tags[tag] = self.tags.get(tag, 0) + 1
+		cloud = TagCloud()
+		cloud.add("python")
+		cloud.add("python")
+		cloud.add("python")
+		print(cloud.tags)
+		//
+			{'python': 3}
+	//
+		class TagCloud:
+			def __init__(self):
+				self.tags = {}
+			def add(self, tag):
+				self.tags[tag] = self.tags.get(tag, 0) + 1
+		cloud = TagCloud()
+		cloud.add("Python")
+		cloud.add("python")
+		cloud.add("python")
+		print(cloud.tags)
+		//
+			{'Python': 1,
+			'python': 2}
+	//
+		class TagCloud:
+			def __init__(self):
+				self.tags = {}
+			def add(self, tag):
+				self.tags[tag.lower()] = self.tags.get(tag.lower(), 0) + 1
+		cloud = TagCloud()
+		cloud.add("Python")
+		cloud.add("python")
+		cloud.add("python")
+		print(cloud.tags)
+		//
+			{python': 3}
+	//
+		class TagCloud:
+			def __init__(self):
+				self.tags = {}
+			def add(self, tag):
+				self.tags[tag.lower()] = self.tags.get(tag.lower(), 0) + 1
+			def __getitem__(self, tag):
+				return self.tags.get(tag.lower(), 0)
+			def __setitem__(self, tag, count):
+				self.tags[tag.lower()] = count
+			def __len__(self):
+				return len(self.tags)
+			def __iter__(self): # get iterator object magic method
+				return iter(self.tags)
+
+		cloud = TagCloud()
+		print(cloud["python"])
+		//
+			0
+		cloud["python"] = 10
+		print(cloud["python"])
+		// 
+			10
+		print(len(cloud))
+		//
+			1
+
+
+
+> routine n - private members
+	/*
+		Notes:
+			-
+				self.tags # public
+				self.__tags # private
+	*/
+	//
+		class TagCloud:
+			def __init__(self):
+				self.__tags = {}
+			def add(self, tag):
+				self.__tags[tag.lower()] = self.__tags.get(tag.lower(), 0) + 1
+			def __getitem__(self, tag):
+				return self.__tags.get(tag.lower(), 0)
+			def __setitem__(self, tag, count):
+				self.__tags[tag.lower()] = count
+			def __len__(self):
+				return len(self.__tags)
+			def __iter__(self): # get iterator object magic method
+				return iter(self.__tags)
+		cloud = TagCloud()
+		print(cloud.tags)
+		//
+			AttributeError: no attribute
+		print(cloud.__tags)
+		//
+			AttributeError: no attribute
+	//
+		class TagCloud:
+			def __init__(self):
+				self.__tags = {}
+			def add(self, tag):
+				self.__tags[tag.lower()] = self.__tags.get(tag.lower(), 0) + 1
+			def __getitem__(self, tag):
+				return self.__tags.get(tag.lower(), 0)
+			def __setitem__(self, tag, count):
+				self.__tags[tag.lower()] = count
+			def __len__(self):
+				return len(self.__tags)
+			def __iter__(self): # get iterator object magic method
+				return iter(self.__tags)
+		cloud = TagCloud()
+		print(cloud.__dict__)
+		//
+			{'_TagCloud__tags': {}}
+		print(cloud._TagCloud__tags)
+		//
+			{}
+
+
+
+> routine n - properties
+	/*
+		Notes:
+	*/
+	//
+		class Product:
+			def __init__(self, price):
+				self.set_price = price
+			# this is now private
+			def __get_price(self):
+				return self.__price
+			def set_price(self, value):
+				if value < 0:
+					raise ValueError("Price cannob be negative.")
+				self.__price = value
+			# this is how you set property
+			price = property(get_price, set_price)
+		product = Product(10)
+		print(product.price)
+		//
+			10
+		product.price = -1
+		//
+			ValueError
+	//
+		class Product:
+			def __init__(self, price):
+				self.price = price
+			# this is now private
+			@property
+			def price(self):
+				return self.__price
+			@price.setter
+			def price(self, value):
+				if value < 0:
+					raise ValueError("Price cannob be negative.")
+				self.__price = value
+		product = Product(10)
+		print(product.price)
+		//
+			10
+		product.price = -1
+		//
+			ValueError
+	//
+		class Product:
+			def __init__(self, price):
+				self.price = price
+			# this is now private
+			@property
+			def price(self):
+				return self.__price
+		product = Product(10)
+		print(product.price)
+		//
+			10
+		product.price = 2
+		//
+			AttributeError: can't set attribute
+
+
+
+> routine n - inheritance
+	/*
+		Notes:
+	*/
+	class Animal:
+		def __init__(self):
+			self.age = 1
+		def eat(self):
+			print("eat")
+	# Animal: Parent, Base
+	# Mammal: Child, Sub class
+	class Mammal(Animal):
+		def walk(self):
+			print("walk")
+	class Fish(Animal):
+		def swim(self):
+			print("swim")
+	m = Mamma()
+	m.eat()
+	//
+		eat
+	print(m.age)
+	//
+		1
+
+
+
+> routine n - the object class
+	/*
+		Notes:
+			- Animal class defaul inherits to object
+			- object is that base class of all
+	*/
+	//
+		class Animal:
+			def __init__(self):
+				self.age = 1
+			def eat(self):
+				print("eat")
+		class Mammal(Animal):
+			def walk(self):
+				print("walk")
+		m = Mamma()
+		print(isinstance(m, object))
+		//
+			True
+		o = object()
+		print(issubclass(Mammal, Animal))
+		//
+			True
+		print(issubclass(Mammal, object))
+		//
+			True
+
+		
+
+> routine n - method overriding
+	/*
+		Notes:
+	*/
+	//
+		class Animal:
+			def __init__(self):
+				self.age = 1
+			def eat(self):
+				print("eat")
+		class Mammal(Animal):
+			def __init__(self):
+				super().__init__()
+				self.weight = 2
+			def walk(self):
+				print("walk")
+		m = Mammal()
+		print(m.age)
+		print(m.weight)
+
+
+
+> routine n - multilevel inheritance
+	/*
+		Notes:
+			- watch video, just explanation, no much coding
+	*/
+	//
+		class Animal:
+			def eat(self):
+				print("eat")
+		class Bird(Animal):
+			def fly(self):
+				print("fly")
+		class Chicken(Bird):
+			pass
+
+
+
+> routine n - multiple inheritance
+	/*
+		Notes:
+			- watch video. explaining why multiple inheritance is also bad
+			- its bad if you dont use it properly
+	*/
+	//
+		class Employee:
+			def greet(self):
+				print("Employee Greet")
+
+		class Person:
+			def greet(self):
+				print("Person Greet")
+
+		class Manager(Employee, Person):
+			pass
+
+		manager = Manager()
+		manager.greet()
+		//
+			Employee Greet
+	// good example of multiple inheritance
+		class Flyer:
+			def fly(self):
+				pass
+		class Swimmer:
+			def swim(self):
+				pass
+		class FlyingFish(Flyer, Swimmer)
+			pass
+
+
+
+> routine n - good example of inheritance
+	/*
+		Notes:
+	*/
+	//	
+		class InvalidOperationError(Exception):
+			pass
+		class Stream:
+			def __init__(self):
+				self.opened = False
+			def open(self):
+				if self.opened:
+					raise InvalidOperationError("Stream is already open")
+				self.opened = True
+			def close(self):
+				if not self.opened:
+					raise InvalidOperationError("Stream is already closed")
+				self.opened = False
+		class FileStream(Stream):
+			def read(self):
+				print("Reading data from a file")
+		class NetworkStream(Stream):
+			def read(self):
+				print("Reading data from a network")
+
+
+
+> routine n - abstract base classes
+	/*
+		Notes:
+			- abc 
+				- abstract base class
+			- need to review starting method overriding
+				- these stuffs should be easy
+				- he just have bad examples
+	*/
+	//	
+		from abc import ABC, abstractmethod
+		class InvalidOperationError(Exception):
+			pass
+		class Stream(ABC):
+			def __init__(self):
+				self.opened = False
+			def open(self):
+				if self.opened:
+					raise InvalidOperationError("Stream is already open")
+				self.opened = True
+			def close(self):
+				if not self.opened:
+					raise InvalidOperationError("Stream is already closed")
+				self.opened = False
+			@abstractmethod
+			def read(self):
+				pass
+		class FileStream(Stream):
+			def read(self):
+				print("Reading data from a file")
+		class NetworkStream(Stream):
+			def read(self):
+				print("Reading data from a network")
+
+
+
+> routine n - polymorphism
+	/*
+		Notes:
+			- watch his video
+				- bad example
+			- better to find our own tutorial and notes for this
+	*/
+
+
+> routine n - duck typing
+	/*
+		Notes:
+			- watch his video
+				- bad example
+			- better to find our own tutorial and notes for this
+	*/
+
+
+> routine n - extending built-in types
+	/*
+		Notes:
+			- str is a class in python
+	*/
+	//
+		class Text(str):
+			def duplicate(self):
+				return self + self
+		class TrackableList(list):
+			def append(self, object):
+				print("Append called")
+				super().append(object)
+		text = Text("Python")
+		print(text.lower())
+		//
+			python
+		print(text.duplicate())
+		//
+			PythonPython
+		list = TrackableList()
+		list.append("1")
+		//
+			Append called
+
+
+
+> routine n - Data Classes
+	/*
+		Notes:
+			- data classes mean you have a class that only has data but no methods
+			- you might want to use tuple if you have class that only has data and no method
+	*/
+	//
+		class Point:
+			def __init__(self, x, y):
+				self.x = x
+				self.y = y
+			def __eq__(self, other):
+				return self.x == other.x and self.y == other.y
+		p1 = Piont(1, 2)
+		p2 = Piont(1, 2)
+		print(p1 == p2)
+		//
+			True
+		print(id([p1])) # print memory id
+		print(id([p2])) # print memory id
+	//
+		from collections import namedtuple
+		Point = namedtuple("Point", ["x", "y"])
+		p1 = Point(x=1, y=2)
+		p2 = Point(x=1, y=2)
+		print(p1 == p2)
+		//
+			True
+		
+
+
+> routine n - creating modules
+	/*
+		Notes:
+	*/
+	//
+		// sales.py
+			def calc_tax():
+				pass
+			def calc_shipping():
+				pass
+		// app.py
+			from sales import calc_shipping, calc_tax
+			calc_shipping()
+	// not recommended
+		// sales.py
+			def calc_tax():
+				pass
+			def calc_shipping():
+				pass
+		// app.py
+			from sales import *
+			calc_shipping()
+	//
+		// sales.py
+			def calc_tax():
+				pass
+			def calc_shipping():
+				pass
+		// app.py
+			import sales
+			sales.calc_shipping()
+
+
+
+> routine n - compiled python files
+	/*
+		Notes:
+			- better to check the video
+	*/
+
+
+
+> routine n - module search path
+	/*
+		Notes:
+			- better to check the video
+	*/
+	
+
+
+> routine n - packages
+	/*
+		Notes:
+			- package is a container of 1 or more modules
+	*/
+	//
+		// ecommerce/sales.py
+			def calc_tax():
+				pass
+			def calc_shipping():
+				pass
+		// ecommerece/__init__.py
+			# python will treat this folder as a package if you have this file
+		// app.py
+			import ecommerce.sales
+			ecommerce.sales.calc_tax()
+			# or
+			from ecommerce.sales import calc_tax, calc_shipping
+			calc_tax()
+			# or 
+			from ecommere import sales
+			sales.calc_tax
+
+
+
+> routine n - sub packages
+	/*
+		Notes:
+	*/
+	//
+		// ecommerce/shopping/sales.py
+			def calc_tax():
+				pass
+			def calc_shipping():
+				pass
+		// ecommerce/shopping/__init__.py
+		// ecommerece/__init__.py
+			# python will treat this folder as a package if you have this file
+		// app.py
+			from ecommerce.shopping impor sales
+
+
+
+> routine n - intra package reference
+	/*
+		Notes:
+			- better watch the video
+	*/
+
+
+
+> routine n - dir Function
+	/*
+		Notes:
+			- better to see the video
+	*/
+	//
+		from ecommerce.shipping import sales
+		print(dir(sales))
+		print(sales.__name__)
+		print(sales.__package__)
+		print(sales.__file__)
+
+
+
+> routine n - executing modules as scripts
+	/*
+		Notes:
+			- better to see the video
+	*/
+	
+
+
+> routine n - python standard library
+	/*
+		Notes:
+	*/
+	//
+
+
+
+> routine n - working with paths
+	/*
+		Notes:
+			- better watch the video
+	*/
+	// various ways to create path object
+		from pathlib import Path
+		# Path("C:\\Program Files\\Microsoft")
+		Path(r"C:\Program Files\Microsoft")
+		Path("/usr/local/bin")
+		Path() # current folder
+		Path("ecommerce/__init__.py")
+		Path() / Path("ecommerce")
+		Path() / "ecommerce" / "__init__.py"
+		Path.home()
+	//
+		path = Path("ecommerce/__init__.py")
+		path.exists()
+		path.is_file()
+		path.is_dir()
+		print(path.name)
+		//
+			__init__.py
+		print(path.stem)
+		//
+			__init__
+		print(path.suffix)
+		//
+			.py
+		print(path.parent)
+		//
+			ecommerce
+		path = path.with_name("file.txt")
+		print(path)
+		//
+			ecommerce/file.txt
+		print(path.absolute())
+		//
+			C:/.../file.txt
+
+
+
+> routine n - working with directories
+	/*
+		Notes:
+			- better to watch in video
+	*/
+	//
+		from pathlib import Path
+		path = Path("ecommerce")
+		path.exist()
+		path.mkdir()
+		path.rmdir()
+		path.rename("ecommerce2")
+	//
+		from pathlib import Path
+		path = Path("ecommerce")
+		print(path.iterdir())
+		//
+			<generator Object>
+		for p in path.iterdir():
+			print(p)
+			//
+				ecommerce/__init__.py
+				ecommerce/__pycache__
+				ecommerce/customer
+				ecommerce/shopping
+	//
+		from pathlib import Path
+		path = Path("ecommerce")
+		print(path.iterdir())
+		//
+			<generator Object>
+		paths = [p for p in path.iterdir()]
+		print(paths)
+		//
+			[PosixPath or a list of windows path]
+	//
+		from pathlib import Path
+		path = Path("ecommerce")
+		print(path.iterdir())
+		//
+			<generator Object>
+		paths = [p for p in path.iterdir() if p.is_dir()]
+		print(paths)
+		//
+			[PosixPath or a list of windows path]
+	//
+		from pathlib import Path
+		path = Path("ecommerce")
+		print(path.iterdir())
+		//
+			<generator Object>
+		paths = [p for p in path.iterdir() if p.is_dir()]
+		py_files = [p for p in path.glob("*.py")]
+		print(py_files)
+		//
+			[PosixPath or a list of windows path]
+
+
+
+> routine n - working with files
+	/*
+		Notes:
+			- better to watch in video
+			- hasten tiny examples
+	*/
+	//
+		from pathlib import Path
+		from time import ctime
+		path = Path("ecommerce/__init__.py")
+		path.exists()
+		path.rename("init.txt")
+		path.unlink()
+		print(ctime(path.stat().st_ctime))
+		//
+			Tue Nov 20 12:31:48 2018
+
+
+
+> routine n - working with zip files
+	/*
+		Notes:
+			- better to watch in video
+			- hasten tiny examples
+	*/
+
+
+> routine n - working with csv files
+	/*
+		Notes:
+			- better to watch in video
+	*/
+
+
+> routine n - working with json files
+	/*
+		Notes:
+			- better to watch in video
+	*/
+
+
+> routine n - working with sqlite database
+	/*
+		Notes:
+			- better to watch in video
+	*/
+
+
+
+> routine n - working with Timestamps
+	/*
+		Notes:
+			- better watch in video
+	*/
+
+
+
+
+https://members.codewithmosh.com/courses/python-programming-course-beginners-1/lectures/8417619
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+

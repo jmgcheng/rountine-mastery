@@ -1,0 +1,29 @@
+RxJS Angluar routine topics
+01 - observable
+	- observer
+	- observable
+	- subcribe
+	- unsubscribe
+02 - operator
+	- pipe
+		- map
+		- tap
+		- take
+03 - observable with operator
+04 - catch and replace procedural in service
+	- catch and rethrow procedural in service
+05 - declarative in service
+06 - common observable in component
+07 - reactive in component
+08 - declarative in component
+09 - declarative with error handling
+10 - mapping in service
+11 - combining streams
+12 - 3 steps in reacting to actions
+	- create an action
+	- combine action stream and data stream
+	- emit a value to action stream
+13 - reacting to actions in component
+14 - reacting to actions - select operation sample
+15 - reacting to actions - add operation sample
+16 - caching observable

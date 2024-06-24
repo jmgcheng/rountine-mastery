@@ -1,0 +1,2507 @@
+... improving notes for daily routine
+		note that this was modified and made shorter to prepare me for an interview
+		i may remove more or add more base on what is needed for just an interview
+
+
+
+Date: Oct 10 2023
+
+
+
+> routine n - nnn
+	/*
+		Notes:
+	*/
+
+
+
+
+> routine n - CLI Commands - check python and pip version
+	python --version
+	pip --version
+
+
+
+
+
+> routine n - CLI Commands - setup virtual environment
+	mkdri projName
+	cd projName
+	python -m venv env
+	env\Scripts\activate
+
+	# your in current directory
+	env\Scripts\activate
+	# env is on your parent directory
+	..\env\Scripts\activate	
+
+
+
+
+
+> routine n - CLI Commands - install django
+	python -m pip install Django
+
+
+
+
+
+
+> routine n - CLI Commands - start new project
+	# note that the outer folder core can be renamed without consequence daw
+	django-admin startproject core
+	cd core
+	code .
+
+
+
+
+
+
+> routine n - CLI Commands - run server
+	python manage.py runserver
+
+
+
+
+
+
+
+
+> routine n - CLI Commands - migrations
+	python manage.py makemigrations
+	python manage.py migrate
+
+
+
+
+
+
+> routine n - CLI Commands - create super user
+	python manage.py createsuperuser
+
+
+
+
+
+
+
+> routine n - CLI Commands - create new app
+	python manage.py startapp products
+
+
+
+
+
+
+> routine n - CLI Commands - pip freeze
+	pip freeze > requirements.txt
+	pip install -r requirements.txt
+
+
+
+
+
+
+> routine n - Setup Project - connect virtual env in studio code
+	File > View > Command Palette > enter interpreter > look for python.exe in your env folder
+	or 
+	Ctrl + Shift + P
+
+
+
+
+
+
+> routine n - Setup Project - folder and file structure
+	> challenges
+		> static
+			> challenges
+				> includes
+					> header.css
+				> challenges.css
+				> index.css
+		> templates
+			> challenges
+				> includes
+					> header.html
+				> challenge.html
+				> index.html
+	> static
+		> styles.css
+	> media
+	> media_cdn
+
+
+
+
+
+
+
+> routine n - Setup Project - setting urls and page I can visit
+	- generate
+		python manage.py startapp products
+
+
+
+
+
+	- products/views.py
+		from django.http import HttpResponse
+
+		def index(request):
+			return HttpResponse('Hello World')
+
+
+
+
+
+	- products/urls.py
+		from django.urls import path
+		from . import views
+
+		urlpatterns = [
+			path('', views.index)
+		]
+
+
+
+
+
+	- core/urls.py
+		from django.urls import path, include
+
+		urlpatterns = [
+			path('products/', include('products.urls'))
+		]
+
+
+
+
+
+	- visit
+		http:127.0.0.1:8000/products/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Setup Project - using own HTML Template
+	- core/templates/base.html
+		<html>
+			<head></head>
+			<body>
+				<header>
+					header here
+				</header>
+				<main>
+					{% block content %}{% endblock content %}
+				</main>
+				<footer>
+					footer here
+				</footer>
+			</body>
+		</html>
+
+
+
+
+
+	- products/templates/products/index.html
+		{% extends 'base.html' %}
+		{% block content %}
+			<h1>Products</h1>
+			<ul>
+				{% for product in products %}
+				<li>{{product.id}} - {{product.name}}</li>
+				{% endfor %}
+			</ul>
+		{% endblock content %}
+
+
+
+
+
+	- products/templates/products/detail.html
+		{% extends 'base.html' %}
+		{% block content %}
+			<h1>Product Detail</h1>
+		{% endblock content %}
+
+
+
+
+
+	- products/views.py
+		from django.shortcuts import render
+
+		def index(request):
+			context = {
+				'products': [
+					{
+						'id': 1,
+						'name': 'apple'
+					},
+					{
+						'id': 2,
+						'name': 'banana'
+					},
+				]
+			}
+			return render(requset, 'products/index.html', context)
+
+		def detail(request):
+			return render(request, 'products/detail.html')
+
+
+
+
+
+	- products/urls.py
+		from django.urls import path
+
+		urlpatterns = [
+			path('', views.index),
+			path('detail', views.detail)
+		]
+
+
+
+
+
+	- core/urls.py
+		from django.urls import path, include
+
+		urlpatterns = [
+			path('products/', include('products.urls'))
+		]
+
+
+
+
+
+	- core/settings.py
+		INSTALLED_APPS = [
+			'products', 
+			...
+		]
+
+		TEMPLATES = [
+			{
+				'DIRS': [
+					BASE_DIR / 'templates'
+				]
+			}
+		]
+
+
+
+
+
+	- visit
+		http://127.0.0.1:8000/products
+		http://127.0.0.1:8000/products/detail
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Setup Project - using Bootstrap Template - Basic
+	- core/templates/base.html
+		<html>
+			<head>
+				link ref of bootstrap
+			</head>
+			<body>
+				<header>
+					header here
+				</header>
+				<main role="main" class="container">
+					{% block content %}{% endcontent %}
+				</main>
+				<footer>
+					footer here
+				</footer>
+
+				scripts for bootstrap
+			</body>
+		</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Setup Project - Setup Static Files - css
+	- core/urls.py
+		from django.conf import settings
+		from django.conf.urls.static import static
+
+		if settings.DEBUG:
+			urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+
+
+
+	- core/settings.py
+		STATICFILES_DIRS = [
+				BASE_DIR / 'static'
+			]
+		STATIC_ROOT = BASE_DIR / 'static_cdn'
+
+
+
+
+
+	- structure
+		> core
+			> static
+				> main.css
+
+
+
+
+
+	- core/templates/base.html
+		{% load static %}
+		<html>
+			<head>
+				link ref of bootstrap
+				<link rel='stylesheet' type='text/css' href='{% static "main.css" %}'>
+			</head>
+			<body>
+				<header>
+					header here
+				</header>
+				<main role="main" class="container">
+					{% block content %}{% endcontent %}
+				</main>
+				<footer>
+					footer here
+				</footer>
+
+				scripts for bootstrap
+			</body>
+		</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Setup Project - Bootstrap - context - dictionary data
+	- products/templates/products/index.html
+		{% extends 'base.html' %}
+		{% block content %}
+			<h1>Products</h1>
+			<ul>
+				{% for product in products %}
+				<li>{{product.id}} - {{product.name}}</li>
+				{% endfor %}
+			</ul>
+		{% endblock content %}
+
+
+
+
+
+	- products/views.py
+		from django.shortcuts import render
+
+		def index(request):
+			context = {
+				'products': [
+					{
+						'id': 1,
+						'name': 'apple'
+					},
+					{
+						'id': 2,
+						'name': 'banana'
+					},
+				]
+			}
+			return render(requset, 'products/index.html', context)
+
+		def detail(request):
+			return render(request, 'products/detail.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Setup Project - Bootstrap - context - model data
+	- products/models.py
+		from django.db import models
+
+		class Product(models.Model):
+			name = models.CharField(max_lenght=50, unique=True, blank=False, null=False)
+			description = models.TextField(blank=True)
+
+
+
+
+	
+	- products/admin.py
+		from django.contrib import admin
+		from .models import Product
+
+		admin.site.register(Product)
+
+
+
+
+
+	- migrations
+		python manage.py makemigrations
+		python manage.py migrate
+
+
+
+
+	- admin
+		- add data in admin
+
+
+
+
+
+	- products/templates/products/index.html
+		{% extends 'base.html' %}
+		{% block content %}
+			<h1>Products</h1>
+			<ul>
+				{% for product in products %}
+				<li>{{product.id}} - {{product.name}} - {{product.description}}</li>
+				{% endfor %}
+			</ul>
+		{% endblock content %}
+
+
+
+
+
+	- products/views.py
+		from django.shortcuts import render
+		from .models import Product
+
+		def index(request):
+			context = {
+				'products': Product.objects.all()
+			}
+			return render(requset, 'products/index.html', context)
+
+		def detail(request):
+			return render(request, 'products/detail.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Setup Project - Bootstrap - context - include snippet
+	- products/templates/products/index.html
+		{% extends 'base.html' %}
+		{% block content %}
+			<h1>Products</h1>
+			<ul>
+				{% include 'products/snippets/snippet-list.html' with value=products %}
+			</ul>
+		{% endblock content %}
+
+
+
+
+
+	- product/templates/products/snippets/snippet-list.html
+		{% for product in products %}
+			<li>{{product.id}} - {{product.name}} - {{product.description}}</li>
+		{% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Setup Project - Links - anchor links
+	- html
+		<a href="{% url 'products' %}">Products</a>
+		{% for product in products %}
+			<li>
+				<a href="{% url 'product-detail' product.id %}">Products</a>
+			</li>
+		{% endfor %}>
+
+
+
+
+
+	- urls.py
+		urlpatterns = [
+			path('', views.index, name='products'),
+			path('<int:pk>/', views.detail, name='product-detail')
+		]
+
+
+
+
+
+	- views.py
+		from django.shortcuts import render
+		from .models import Product
+
+		def index(request):
+			context = {
+				'products': Product.objects.all()
+			}
+			return render(requset, 'products/index.html', context)
+
+		def detail(request, pk):
+			print(pk)
+			return render(request, 'products/detail.html')
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Admin - basic setup
+	- books/models.py
+		from django.db import models
+
+		class Book(models.Model):
+			title = models.CharField(max_length=50)
+			author = models.CharField(null=True, max_lenght=100)
+
+			def __str__ (str):
+				return self.title
+
+
+
+
+
+	- books/admin.py
+		from django.contrib import admin
+		from .models import Book
+
+		class BookAdmin(admin.ModelAdmin):
+			list_display = ('title', 'author')
+
+		admin.site.register(Book, BookAdmin)
+
+
+
+
+
+
+
+
+
+
+> routine n - Model - shell - simple crud
+	- books/models.py
+		from django.db import models
+
+		class Book(models.Model):
+			title = models.CharField(max_length=50)
+			author = models.CharField(null=True, max_lenght=100)
+
+			def __str__ (str):
+				return self.title
+
+
+
+
+
+	- commands
+		python manage.py shell
+		from books.models import Book
+		Book.objects.all()
+		Book.objects.all()[0].author
+		-
+		books_for_dummies = Book(title='Book For Dummies', author='IDK')
+		books_for_dummies.save()
+		-
+		harry_potter = Book.objects.all()[0]
+		harry_potter.title
+		harry_potter.title = 'Harry Potter'
+		harry_potter.title
+		-
+		books_for_dummies = Book.objects.all(author='IDK')
+
+
+
+
+
+
+
+
+
+
+> routine n - Model - shell - simple relationship
+	- books/models.py
+		from django.db import models
+
+		class Author(models.Model):
+			name = models.CharField(max_length=50)
+
+			def __str__(str):
+				return self.name
+
+		class Book(models.Model):
+			title = models.CharField(max_length=50)
+			author = models.ForeignKey(Author, on_delete=CASCADE)
+
+			def __str__ (str):
+				return self.title
+
+
+
+
+
+	- commands
+		python manage.py shell
+		from books.models import Book, Author
+		Author.objects.all()
+		Book.objects.all()
+		-
+		author1 = Author.objects.get(id=1)
+		author1
+		book1 = Book(title='The Green Book', author=author1)
+		book1.save()
+		-
+		Book.objects.all()
+		-
+		book1.author.name
+		- 
+		Book.objects.filter(author__name='Olivia')
+		-
+		author1.book_set.all()
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Admin - filtering and search
+	- admin.py
+		from django.contrib import admin
+		from .models import Book
+
+		class BookAdmin(admin.ModelAdmin):
+			list_display = ('title', 'author')
+			list_filter = ('title', 'author')
+			search_fields = ('title', 'author__name')
+
+		admin.site.register(Book, BookAdmin)		
+
+
+
+
+
+
+
+
+
+
+> routine n - Admin - change site admin header and title
+	- urls.py
+		admin.site.site_header = 'Title in Admin Site Header'
+		admin.site.site_title = 'Title in Admin Site Title'
+		admin.site.index_title = 'Title in Admin Index'
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Forms - Form Class Style - Create Data
+	- reviews/models.py
+		from django.db import models
+
+		class Review(models.Model):
+			user_name = models.CharField(max_length=100)
+			review_text = models.TextField()
+			rating = models.IntegerField()
+
+
+
+
+
+	- reviews/forms.py
+		from django import forms
+
+		class ReviewForm(forms.Form):
+			user_name = forms.CharField(
+					label='Your Name',
+					max_length=100,
+					error_messages={
+						'required': 'Your name must not be empty',
+						'max_length': 'Please enter a shorter name'
+					}
+				)
+			review_text = forms.CharField(
+					label='Your Feedback',
+					widget=forms.Textarea,
+					max_length=200
+				)
+			rating = forms.IntergerField(
+					label='Your Rating',
+					min_value=1,
+					max_value=5
+				)
+
+
+
+
+
+	- reviews/views.py
+		from django.http import HttpResponseRedirect
+		from django.shortcuts import render
+		from .forms import ReviewForm
+		from .models import Review
+
+		def review(request):
+			if request.method == 'POST':
+				form = ReviewForm(request.POST)
+
+				if form.is_valid():
+					review = Review(
+							user_name = form.cleaned_data['user_name'],
+							review_text = form.cleaned_deta['review_text'],
+							rating = form.cleaned_data['rating']
+						)
+					review.save()
+					return HttpResponseRedirect('/reviews/thank-you')
+			else:
+				form = ReviewForm()
+
+				return render(request, 'reviews/review.html', {
+					'form': form
+				})
+
+		def thank_you(request):
+			return render(request, 'reviews/thank_you.html')
+
+
+
+
+
+	- core/urls.py
+		from django.contrib import admin
+		from django.urls import path, include
+		from django.conf import settings
+		from django.conf.urls.static import static
+
+		urlpatterns = [
+			path('admin/', admin.site.urls),
+			path('products/', include('products.urls')),
+			path('reviews/', include('reviews.urls')),
+		]
+
+		if settings.DEBUG:
+			urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+
+
+
+	- reviews/urls.py
+		from django.urls import path
+		from . import views
+
+		urlpatterns = [
+			path('', views.review),
+			path('thank-you', views.thank_you)
+		]
+
+
+
+
+
+	- reviews/templates/reviews/review.html
+		<form action='/reviews/' method='POST'>
+			{% csrf_token %}
+			{% for field in form %}
+				<div class='{% if field.errors %}errors{% endif %}'>
+					{{ field.label_tag }}
+					{{ field }}
+					{{ field.errors }}
+				</div>
+			{% endfor %}
+			<button type='submit'>Send</button>
+		</form>
+
+
+
+
+
+	- reviews/templates/reviews/thank_you.html
+		<p>Thank You</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Forms - Model Form Style - Create Data
+	- reviews/forms.py
+		from django import forms
+		from .models import Review
+
+		class ReviewForm(forms.ModelForm):
+			class Meta:
+				model = Review
+				field = "__all__"
+				labels = {
+					"user_name": "Your Name",
+					"review_text": "Your Feedback",
+					"rating": "Your Rating"
+				}
+				error_messages = {
+					"user_name": {
+						"required": "Your name must not be empty",
+						"max_length": "Please enter a shorter name"
+					}
+				}
+
+
+
+
+
+	- reviews/views.py
+		from django.http import HttpResponseRedirect
+		from django.shortcuts import render
+		from .forms import ReviewForm
+
+		def review(request):
+			if request.method == 'POST':
+				form = ReviewForm(request.POST)
+
+				if form.is_valid():
+					form.save()
+					return HttpResponseRedirect('/reviews/thank-you')
+			else:
+				form = ReviewForm()
+
+				return render(request, 'reviews/review.html', {
+					'form': form
+				})
+
+		def thank_you(request):
+			return render(request, 'reviews/thank_you.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - 3rd Parties - Crispy Form Basic
+	- install
+		pip install django-crispy-forms
+		pip install crispy-bootstrap4
+
+
+
+
+
+	- core/settings.py
+		INSTALLED_APPS = [
+			'crispy_forms',
+			'crispy_bootstrap4',
+		]
+
+		CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
+		CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
+
+
+
+	- html
+		{% extends 'base.html' %}
+		{% load crispy_forms_tags %}
+		{% block content %}
+		<form action="/reviews/" method="POST">
+			{% csrf_token %}
+			{{ form|crispy }}
+			<button type="submit">Send</button>
+		</form>
+		{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Views - Class Based View - Create Data
+	- reviews/models.py
+		from django.db import models
+
+		class Review(models.Model):
+			user_name = models.CharField(max_length=100)
+			review_text = models.TextField()
+			rating = models.IntegerField()
+
+
+
+
+
+	- reviews/forms.py
+		from django import forms
+		from .models import Review
+
+		class ReviewForm(forms.ModelForm):
+			class Meta:
+				model = Review
+				field = "__all__"
+				labels = {
+					"user_name": "Your Name",
+					"review_text": "Your Feedback",
+					"rating": "Your Rating"
+				}
+				error_messages = {
+					"user_name": {
+						"required": "Your name must not be empty",
+						"max_length": "Please enter a shorter name"
+					}
+				}
+
+
+
+
+
+
+
+	- reviews/urls.py
+		from django.urls import path
+		from . import views
+
+		urlpatterns = [
+			path('', views.ReviewView.as_view()),
+			path('thank-you', views.thank_you)
+		]
+
+
+
+
+
+
+
+	- reviews/views.py
+		from django.http import HttpResponseRedirect
+		from django.shortcuts import render
+		from django.views import View
+		from .forms import ReviewForm
+
+		class ReviewView(request):
+			def get(self, request):
+				form = ReviewForm()
+
+				return render(request, 'reviews/review.html', {
+					'form': form
+				})
+
+			def post(self, request):
+				form = ReviewForm(request.POST)
+
+				if form.is_valid():
+					form.save()
+					return HttpResponseRedirect('/reviews/thank-you')
+
+				return render(request, 'reviews/review.html', {
+					'form': form
+				})
+
+		def thank_you(request):
+			return render(request, 'reviews/thank_you.html')
+
+
+
+
+
+	- reviews/review.html
+		{% extends 'base.html' %}
+		{% load crispy_forms_tags %}
+		{% block content %}
+		<form action='/reviews/' method='POST'>
+			{% csrf_token %}
+			{{ form|crispy }}
+			<button type="submit">Send</button>
+		</form>
+		{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+	- reviews/templates/reviews/review.html
+		<form action='/reviews/' method='POST'>
+			{% csrf_token %}
+			{% for field in form %}
+				<div class='{% if field.errors %}errors{% endif %}'>
+					{{ field.label_tag }}
+					{{ field }}
+					{{ field.errors }}
+				</div>
+			{% endfor %}
+			<button type='submit'>Send</button>
+		</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Views - TemplateView - Basic
+	- reviews/urls.py
+		from django.urls import path
+		from . import views
+
+		urlpatterns = [
+			path('', views.ReviewView.as_view()),
+			path('thank-you', views.ThankYouView.as_view())
+		]
+
+
+
+
+
+
+
+	- reviews/views.py
+		...
+		from django.views.generic.base import TemplateView
+		from .forms import ReviewForm
+
+		...
+
+		class ThankYouView(TemplateView):
+			template_name = 'reviews/thank_you'.html
+
+			def get_context_data(self, **kwargs):
+				context = super().get_context_data(**kwarts)
+				context['message'] = 'This Works!'
+				return context
+
+
+
+
+
+
+
+	- reviews/thank_you.html
+		<p>
+			Thank You. {{ message }}
+		</p>
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Views - TemplateView - List and Detail Data
+	- reviews/urls.py
+		from django.urls import path
+		from . import views
+
+		urlpatterns = [
+			path('create', views.ReviewView.as_view()),
+			path('thank-you', views.ThankYouView.as_view()),
+			path('', views.ReviewsListView.as_view()),
+			path('<int:id>', views.SingleReviewView.as_view()),
+		]
+
+
+
+
+
+
+
+	- reviews/views.py
+		...
+		from django.views.generic.base import TemplateView
+		from .forms import ReviewForm
+
+		...
+
+		class ReviewListView(TemplateView):
+			template_name = 'reviews/review_list.html'
+
+			def get_context_data(self, **kwargs):
+				context = super().get_context_data(**kwargs)
+				reviews = Review.objects.all()
+				context['reviews'] = reviews
+				return context
+
+		class SingleReviewView(TemplateView):
+			template_name = 'reviews/single_review.html'
+
+			def get_context_data(self, **kwargs):
+				context = super().get_context_data(**kwargs)
+				review_id = kwargs['id']
+				print(review_id)
+				selected_review = Review.objects.get(id=review_id)
+				context['review'] = selecte_review
+				return context
+
+	
+
+
+
+
+	- review/review_list.html
+		<ul>
+			{% for review in reviews %}
+				<li>{{review.user_name}} {{review.rating}}</li>
+			{% endfor %}
+		</ul>
+
+
+
+
+
+	- review/single_review.html
+		<h1>{{review.user_name}}</h1>
+		<p>Rating: {{review.rating}}</p>
+		<p>{{review.review_text}}</p>	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Views - ListView - Read Data
+	- reviews/views.py
+		...
+		from django.views.generic.base import TemplateView
+		from django.views.generic import ListView
+
+		...
+
+		class ReviewListView(ListView):
+			template_name = 'reviews/review_list.html'
+			model = Review
+			context_object_name = 'reviews'
+
+		...
+			
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Views - ListView - Pagination
+	- reviews/views.py
+		...
+		from django.views.generic.base import TemplateView
+		from django.views.generic import ListView
+
+		...
+
+		class ReviewListView(ListView):
+			template_name = 'reviews/review_list.html'
+			model = Review
+			context_object_name = 'reviews'
+			paginate_by = 2  # each page has this qty of records
+
+		...
+
+
+
+
+
+	- reviews/review_list.html
+		{% if is_paginated %}
+
+		{% if page_obj.has_previous %}
+			<a href="?page=1">First</a>
+			<a href="?page{{ page_obj.previous_page_number }}">Previous</a>
+		{% endif %}
+
+		{% for num in page_obj.paginator.page_range %}
+			{% if page_obj.number == num %}
+				<a href="?page={{ num }}">{{ num }}</a>
+			{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+				<a href="?page={{ num }}">{{ num }}</a>
+			{% endif %}
+		{% endfor %}
+
+		{% if page_obj.has_next %}
+			<a href="?page{{ page_obj.next_page_number }}">Next</a>
+			<a href="?page{{ page_obj.paginator.num_pages }}">Last</a>
+		{% endif %}
+
+		{% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Views - DetailView - Read Data
+	- reviews/urls.py
+		from django.urls import path
+		from . import views
+
+		urlpatterns = [
+			...
+			path('<int:pk>', views.SingleReviewView.as_view()),
+		]
+
+
+
+
+
+	- reviews/views.py
+		...
+		from django.views.generic.base import TemplateView
+		from django.views.generic import ListView, DetailView
+
+		...
+
+		class SingleReviewView(DetailView):
+			template_name = 'reviews/single_review.html'
+			model = Review
+
+		...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Views - FormView - Create Data
+	- reviews/views.py
+		...
+		from django.views.generic.base import TemplateView
+		from django.views.generic import ListView, DetailView
+		from django.views.generic.edit import FormView
+
+		...
+
+		class ReviewView(FormView):
+			form_class = ReviewForm
+			template_name = 'reviews/review.html'
+			success_url = '/reviews/thank-you'
+
+			def form_valid(self, form):
+				form.save()
+				return super().form_valid(form)
+
+		...
+
+
+
+
+
+	- reviews/review.html
+		{% extends 'base.html' %}
+		{% load crispy_forms_tags %}
+		{% block content %}
+		<form action='/reviews/create' method='POST'>
+			{% csrf_token %}
+			{{ form|crispy }}
+			<button type='submit'>Send</button>
+		</form>
+		{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Views - CreateView - Create Data
+	- reviews/views.py
+		...
+		from django.views.generic.base import TemplateView
+		from django.views.generic import ListView, DetailView
+		from django.views.generic.edit import CreateView
+		from .forms import ReviewForm
+		from .models import Review
+
+		...
+
+		class ReviewView(CreateView):
+			model = Review
+			form_class = ReviewForm
+			template_name = 'reviews/review.html'
+			success_url = '/reviews/thank-you'
+
+		...
+
+
+
+
+
+	- reviews/review.html
+		{% extends 'base.html' %}
+		{% load crispy_forms_tags %}
+		{% block content %}
+		<form action='/reviews/create' method='POST'>
+			{% csrf_token %}
+			{{ form|crispy }}
+			<button type='submit'>Send</button>
+		</form>
+		{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Views - UpdateView - Update Data
+	- reviews/urls.py
+		from django.urls import path
+		from . import views
+
+		urlpatterns = [
+			path('create', views.ReviewView.as_view()),
+			path('thank-you', views.ThankYouView.as_view()),
+			path('', views.ReviewsListView.as_view()),
+			path('<int:pk>', views.SingleReviewView.as_view()),
+			path('<int:pk>/edit/', views.ReviewEdit.as_view()),
+		]
+	- reviews/views.py
+		...
+		from django.views.generic.base import TemplateView
+		from django.views.generic import ListView, DetailView
+		from django.views.generic.edit import CreateView, UpdateView
+		from .forms import ReviewForm
+		from .models import Review
+
+		...
+
+		class ReviewView(CreateView):
+			model = Review
+			form_class = ReviewForm
+			template_name = 'reviews/review.html'
+			success_url = '/reviews/thank-you'
+
+		class ReviewEdit(UpdateView):
+			model = Review
+			form_class = ReviewForm
+			template_name = 'reviews/review.html'
+			success_url = '/reviews/thank-you'
+
+		...
+
+
+
+
+
+	- reviews/review.html
+		{% extends 'base.html' %}
+		{% load crispy_forms_tags %}
+		{% block content %}
+		<form action='/reviews/create' method='POST'>
+			{% csrf_token %}
+			{{ form|crispy }}
+			<button type='submit'>Send</button>
+		</form>
+		{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Views - DeleteView - Delete Data
+	- reviews/urls.py
+		from django.urls import path
+		from . import views
+
+		urlpatterns = [
+			path('create', views.ReviewView.as_view()),
+			path('thank-you', views.ThankYouView.as_view()),
+			path('', views.ReviewsListView.as_view()),
+			path('<int:pk>', views.SingleReviewView.as_view()),
+			path('<int:pk>/edit/', views.ReviewEdit.as_view()),
+			path('<int:pk>/delete/', views.ReviewDeleteView.as_view()),
+		]
+	- reviews/views.py
+		...
+		from django.views.generic.base import TemplateView
+		from django.views.generic import ListView, DetailView
+		from django.views.generic.edit import CreateView, UpdateView, DeleteView
+		from .forms import ReviewForm
+		from .models import Review
+
+		...
+
+		class ReviewView(CreateView):
+			model = Review
+			form_class = ReviewForm
+			template_name = 'reviews/review.html'
+			success_url = '/reviews/thank-you'
+
+		class ReviewEdit(UpdateView):
+			model = Review
+			form_class = ReviewForm
+			template_name = 'reviews/review.html'
+			success_url = '/reviews/thank-you'
+
+		class ReviewDeleteView(DeleteView):
+			model = Review
+
+			def get_success_url(self):
+				return reverse('review-home')
+
+		...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Authentication - Basic User
+	- core/settings.py
+		INSTALLED_APPS = [
+		    'blogs.apps.BlogsConfig',
+		    'users.apps.UsersConfig',
+		    'crispy_forms',
+		    'crispy_bootstrap4',
+		    ...
+		]		
+
+		STATIC_URL = 'static/'
+		STATICFILES_DIRS = [BASE_DIR / "static"]
+		STATIC_ROOT = BASE_DIR / "static_root"
+
+		CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+		CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+		# do this if you use from django.contrib.auth import views as auth_views to manage your login
+		# so that django will not redirect to profile "default" after logging in
+		LOGIN_REDIRECT_URL = 'blog-home'
+
+		# users get redirected here if trying to access page that needs authentication
+		LOGIN_URL = 'login'
+
+		# for resetting password
+		# watch link below for continue setup
+		# https://youtu.be/-tyBEsHSv7w?list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p&t=729
+		# https://myaccount.google.com › apppasswords
+		EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+		EMAIL_HOST = 'smtp.gmail.com'
+		EMAIL_PORT = 587
+		EMAIL_USE_TLS = True
+		EMAIL_HOST_USER = 'emailUsername'
+		EMAIL_HOST_PASSWORD = 'passGeneratedByGoogleAppPasswords'	
+	
+
+
+
+
+	- core/urls.py
+		from django.contrib import admin
+		from django.contrib.auth import views as auth_views
+		from django.urls import path, include
+		from users import views as user_views
+
+		urlpatterns = [
+		    path('admin/', admin.site.urls),
+		    path('register/', user_views.register, name='register'),
+
+		    path('login/', 
+		    		auth_views.LoginView.as_view(
+		    			template_name='users/login.html'), name='login'
+		    	),
+		    path('logout/', 
+		    		auth_views.LogoutView.as_view(
+		    			template_name='users/logout.html'), name='logout'
+		    	),
+
+		    path('profile/', user_views.profile, name='profile'),
+		    
+		    path('password-reset/',
+		         auth_views.PasswordResetView.as_view(
+		             template_name='users/password_reset.html'
+		         ),
+		         name='password_reset'),
+		    path('password-reset/done/',
+		         auth_views.PasswordResetDoneView.as_view(
+		             template_name='users/password_reset_done.html'
+		         ),
+		         name='password_reset_done'),
+		    path('password-reset-confirm/<uidb64>/<token>/',
+		         auth_views.PasswordResetConfirmView.as_view(
+		             template_name='users/password_reset_confirm.html'
+		         ),
+		         name='password_reset_confirm'),
+		    path('password-reset-complete/',
+		         auth_views.PasswordResetCompleteView.as_view(
+		             template_name='users/password_reset_complete.html'
+		         ),
+		         name='password_reset_complete'),
+
+		    path('', include('blogs.urls')),
+		]	
+
+
+
+
+	- users/models.py
+		# nothing here
+
+
+
+
+
+	- users/forms.py
+		from django import forms
+		from django.contrib.auth.models import User
+		from django.contrib.auth.forms import UserCreationForm
+
+
+		class UserRegisterForm(UserCreationForm):
+		    email = forms.EmailField()
+
+		    class Meta:
+		        model = User
+		        fields = ['username', 'email', 'password1', 'password2']
+
+
+		class UserUpdateForm(forms.ModelForm):
+		    email = forms.EmailField()
+
+		    class Meta:
+		        model = User
+		        fields = ['username', 'email', ]
+
+
+
+
+
+
+	- users/views.py
+		from django.shortcuts import render, redirect
+		from django.contrib import messages
+		from django.contrib.auth.decorators import login_required
+		from .forms import UserRegisterForm, UserUpdateForm
+
+
+		def register(request):
+		    if request.method == 'POST':
+		        form = UserRegisterForm(request.POST)
+		        if form.is_valid():
+		            form.save()
+		            # username = form.cleaned_data.get('username')
+		            messages.success(request, f'Your account has been created! You are now able to log in')
+		            return redirect('login')
+		    else:
+		        form = UserRegisterForm()
+		    return render(request, 'users/register.html', {'form': form})
+
+
+		# decorator to enforce only login users can go to this page
+		@login_required
+		def profile(request):
+		    if request.method == 'POST':
+		        u_form = UserUpdateForm(request.POST, instance=request.user)
+		        # p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+
+		        # if u_form.is_valid() and p_form.is_valid():
+		        if u_form.is_valid():
+		            u_form.save()
+		            # p_form.save()
+		            messages.success(request, f'Your account has been updated!')
+		            return redirect('profile')
+		    else:
+		        u_form = UserUpdateForm(instance=request.user)
+		        # p_form = ProfileUpdateForm(instance=request.user.profile)
+
+		    context = {
+		        'u_form': u_form,
+		        # 'p_form': p_form,
+		    }
+
+		    return render(request, 'users/profile.html', context)
+
+
+
+
+
+
+
+
+
+
+	- templates/base.html
+		{% if user.is_authenticated %}
+			<a href="{% url 'profile' %}">Profile</a>
+			<a href="{% url 'logout' %}">Logout</a>
+		{% else %}
+			<a href="{% url 'login' %}">Login</a>
+			<a href="{% url 'register' %}">Register</a>
+		{% endif %}
+
+
+
+
+
+
+
+	- users/templates/users/login.html
+		{% extends "base.html" %}
+		{% load crispy_forms_tags %}
+		{% block content %}
+		    <div class="content-section">
+		        <form method="POST">
+		            {% csrf_token %}
+		            <fieldset class="form-group">
+		                <legend class="border-bottom mb-4">Login</legend>
+		                {{ form|crispy }}
+		            </fieldset>
+		            <div class="form-group">
+		                <button class="btn btn-outline-info" type="submit">Login</button>
+		            </div>
+		        </form>
+		        <div class="border-top pt-3">
+		            <small class="text-muted">
+		                Need An Account? <a class="ml-2" href="{% url 'register' %}">Sign Up Now!</a>
+		            </small>
+		        </div>
+		    </div>
+		{% endblock content %}	
+
+
+
+
+
+
+
+
+
+
+	- users/templates/users/logout.html
+		{% extends "base.html" %}
+
+		{% block content %}
+		    <h2>You have been logged out</h2>
+		   <div class="border-top pt-3">
+		        <small class="text-muted">
+		            <a class="" href="{% url 'login' %}">Log In Again</a>
+		        </small>
+		    </div>
+
+		{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+	- users/templates/users/password_reset.html
+		{% extends "base.html" %}
+		{% load crispy_forms_tags %}
+		{% block content %}
+		    <div class="content-section">
+		        <form method="POST">
+		            {% csrf_token %}
+		            <fieldset class="form-group">
+		                <legend class="border-bottom mb-4">Reset Password</legend>
+		                {{ form|crispy }}
+		            </fieldset>
+		            <div class="form-group">
+		                <button class="btn btn-outline-info" type="submit">Request Password Reset</button>
+		            </div>
+		        </form>
+		    </div>
+		{% endblock content %}	
+
+
+
+
+
+
+
+
+
+
+	- users/templates/users/password_reset_complete.html
+		{% extends "base.html" %}
+		{% block content %}
+		    <div class="alert alert-info">
+		        Your password has been set.
+		    </div>
+		    <a href="{% url 'login' %}">Sign In Here</a>
+		{% endblock content %}	
+
+
+
+
+
+
+
+
+
+
+	- users/templates/users/password_reset_confirm.html
+		{% extends "base.html" %}
+		{% load crispy_forms_tags %}
+		{% block content %}
+		    <div class="content-section">
+		        <form method="POST">
+		            {% csrf_token %}
+		            <fieldset class="form-group">
+		                <legend class="border-bottom mb-4">Reset Password</legend>
+		                {{ form|crispy }}
+		            </fieldset>
+		            <div class="form-group">
+		                <button class="btn btn-outline-info" type="submit">Reset Password</button>
+		            </div>
+		        </form>
+		    </div>
+		{% endblock content %}	
+
+
+
+
+
+
+
+
+
+
+	- users/templates/users/password_reset_done.html
+		{% extends "base.html" %}
+		{% block content %}
+		    <div class="alert alert-info">
+		        An email has been sent with instructions to reset your password
+		    </div>
+		{% endblock content %}	
+
+
+
+
+
+
+
+
+
+
+	- users/templates/users/profile.html
+		{% extends "base.html" %}
+		{% load crispy_forms_tags %}
+		{% block content %}
+		    <div class="content-section">
+		      <div class="media">
+		        <!-- <img class="rounded-circle account-img" src="#" /> -->
+		        <div class="media-body">
+		          <h2 class="account-heading">{{ user.username }}</h2>
+		          <p class="text-secondary">{{ user.email }}</p>
+		        </div>
+		      </div>
+		      <form method="POST" enctype="multipart/form-data">
+		          {% csrf_token %}
+		          <fieldset class="form-group">
+		              <legend class="border-bottom mb-4">Profile Info</legend>
+		              {{ u_form|crispy }}
+		          </fieldset>
+		          <div class="form-group">
+		              <button class="btn btn-outline-info" type="submit">Update</button>
+		          </div>
+		      </form>
+		    </div>
+		{% endblock content %}	
+
+
+
+
+
+
+
+
+
+
+	- users/templates/users/register.html
+		{% extends "base.html" %}
+		{% load crispy_forms_tags %}
+		{% block content %}
+		    <div class="content-section">
+		        <form method="POST">
+		            {% csrf_token %}
+		            <fieldset class="form-group">
+		                <legend class="border-bottom mb-4">Join Today</legend>
+		                {{ form|crispy }}
+		            </fieldset>
+		            <div class="form-group">
+		                <button class="btn btn-outline-info" type="submit">Sign Up</button>
+		            </div>
+		        </form>
+		        <div class="border-top pt-3">
+		            <small class="text-muted">
+		                Already Have An Account? <a class="ml-2" href="{% url 'login' %}">Sign In</a>
+		            </small>
+		        </div>
+		    </div>
+		{% endblock content %}	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - Authentication - Custom User
+	- core/settings.py
+		AUTH_USER_MODEL = 'users.CustomUser'
+
+
+
+
+
+	- core/urls.py
+		from django.contrib import admin
+		from django.urls import path, include
+		from django.conf import settings
+		from django.conf.urls.static import static
+		from users import views as user_views
+
+		urlpatterns = [
+		    path('admin/', admin.site.urls),
+
+		    path('register/', user_views.registration_view, name='register'),
+		    path('login/', user_views.login_view, name='login'),
+		    path('logout/', user_views.logout_view, name='logout'),
+		    path('profile/', user_views.profile_view, name='profile'),
+
+		]
+
+
+
+
+
+
+
+	- users/models.py
+		from django.db import models
+		from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+
+
+		class CustomUserManager(BaseUserManager):
+		    # def below are default and required
+		    def create_user(self, email, username, password=None):
+		        if not email:
+		            raise ValueError('Users must have an email address')
+		        if not username:
+		            raise ValueError('Users must have a username')
+
+		        user = self.model(
+		            email=self.normalize_email(email),
+		            username=username,
+		        )
+
+		        user.set_password(password)
+		        user.save(using=self._db)
+		        return user
+
+		    def create_superuser(self, email, username, password):
+		        user = self.create_user(
+		            email=self.normalize_email(email),
+		            password=password,
+		            username=username,
+		        )
+		        user.is_admin = True
+		        user.is_staff = True
+		        user.is_superuser = True
+		        user.save(using=self._db)
+		        return user    
+
+		class CustomUser(AbstractBaseUser):
+		    email = models.EmailField(verbose_name='email', max_length=60, unique=True)
+		    username = models.CharField(max_length=30, unique=True)
+		    date_joined = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
+		    last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
+		    is_admin = models.BooleanField(default=False)
+		    is_active = models.BooleanField(default=True)
+		    is_staff = models.BooleanField(default=False)
+		    is_superuser = models.BooleanField(default=False)
+
+		    # use email for login rather than username
+		    USERNAME_FIELD = 'email'
+		    # email is already required even if you don't put it in REQUIRED_FIELDS
+		    REQUIRED_FIELDS = ['username']
+
+		    objects = CustomUserManager()
+
+		    def __str__(self):
+		        return self.email
+
+		    # For checking permissions. to keep it simple all admin have ALL permissons
+		    def has_perm(self, perm, obj=None):
+		        return self.is_admin
+
+		    # Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
+		    def has_module_perms(self, app_label):
+		        return True	
+
+
+
+
+
+
+
+
+
+	- users/forms.py
+		from django import forms
+		from django.contrib.auth.forms import UserCreationForm
+		from django.contrib.auth import authenticate
+		from users.models import CustomUser
+
+
+		class CustomUserRegistrationForm(UserCreationForm):
+		    email = forms.EmailField(max_length=60, help_text='Required. Add a valid email address')
+
+		    class Meta:
+		        model = CustomUser
+		        fields = ('email', 'username', 'password1', 'password2')
+
+
+		class CustomUserAuthenticationForm(forms.ModelForm):
+		    password = forms.CharField(label='Enter your password', widget=forms.PasswordInput)
+
+		    class Meta:
+		        model = CustomUser
+		        fields = ('email', 'password')
+
+		    def clean(self):
+		        if self.is_valid():
+		            email = self.cleaned_data['email']
+		            password = self.cleaned_data['password']
+
+		        if not authenticate(email=email, password=password):
+		            raise forms.ValidationError("Invalid login")
+
+
+		class CustomUserUpdateForm(forms.ModelForm):
+		    class Meta:
+		        model = CustomUser
+		        fields = ('email', 'username')
+
+		    def clean_email(self):
+		        if self.is_valid():
+		            email = self.cleaned_data['email']
+		            try:
+		                customuser = CustomUser.objects.exclude(pk=self.instance.pk).get(email=email)
+		            except CustomUser.DoesNotExist:
+		                return email
+		            raise forms.ValidationError('Email "%s" is already in use.' % email)
+
+		    def clean_username(self):
+		        if self.is_valid():
+		            username = self.cleaned_data['username']
+		            try:
+		                customuser = CustomUser.objects.exclude(pk=self.instance.pk).get(username=username)
+		            except CustomUser.DoesNotExist:
+		                return username
+		            raise forms.ValidationError('Username "%s" is already in use.' % username)	
+
+
+
+
+
+
+
+	- users/views.py
+		from django.shortcuts import render, redirect
+		from django.contrib import messages
+		from django.contrib.auth import login, authenticate, logout
+		from django.contrib.auth.decorators import login_required
+		from users.forms import CustomUserRegistrationForm, CustomUserAuthenticationForm, CustomUserUpdateForm
+
+
+		def registration_view(request):
+		    context = {}
+		    if request.POST:
+		        form = CustomUserRegistrationForm(request.POST)
+		        if form.is_valid():
+		            form.save()
+		            email = form.cleaned_data.get('email')
+		            raw_password = form.cleaned_data.get('password1')
+		            user = authenticate(email=email, password=raw_password)
+		            login(request, user)
+		            messages.success(request, f'Your account has been created!')
+		            return redirect('post-home')
+		        else:
+		            context['form'] = form
+		    else:
+		        form = CustomUserRegistrationForm()
+		        context['form'] = form
+		    return render(request, 'users/register.html', context)
+
+
+		def logout_view(request):
+		    logout(request)
+		    return redirect('/')
+
+
+		def login_view(request):
+		    context = {}
+
+		    user = request.user
+		    if user.is_authenticated:
+		        return redirect("post-home")
+
+		    if request.POST:
+		        form = CustomUserAuthenticationForm(request.POST)
+		        if form.is_valid():
+		            email = request.POST['email']
+		            password = request.POST['password']
+		            user = authenticate(email=email, password=password)
+
+		            if user:
+		                login(request, user)
+		                return redirect("post-home")
+		    else:
+		        form = CustomUserAuthenticationForm()
+
+		    context['form'] = form
+		    return render(request, 'users/login.html', context)
+
+
+		# decorator to enforce only login users can go to this page
+		@login_required
+		def profile_view(request):
+		    context = {}
+		    if request.POST:
+		        form = CustomUserUpdateForm(request.POST, instance=request.user)
+		        if form.is_valid():
+		            form.save()
+		            messages.success(request, f'Your account has been updated!')
+		            return redirect('profile')
+		    else:
+		        form = CustomUserUpdateForm(instance=request.user)
+
+		    context['form'] = form
+
+		    # blog_posts = BlogPost.objects.filter(author=request.user)
+		    # context['blog_posts'] = blog_posts
+
+		    return render(request, "users/profile.html", context)	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - File Manager - Basic
+	- install
+		pip install pillow
+
+
+
+
+
+	- core/settings.py
+		INSTALLED_APPS = [
+		    'files.apps.FilesConfig',
+		]	
+
+		STATIC_URL = 'static/'
+		MEDIA_URL = '/media/'
+
+		STATICFILES_DIRS = [
+		        BASE_DIR / "static",
+		        BASE_DIR / 'media',
+		    ]
+		STATIC_ROOT = BASE_DIR / "static_cdn"
+		# MEDIA_ROOT = BASE_DIR / 'media_cdn'
+		MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
+
+
+
+
+
+	- files/urls.py
+		from django.urls import path
+		from . import views
+
+		urlpatterns = [
+		    path('', views.FileListView.as_view(), name='file-home'),
+		    path('upload/', views.FileCreateView.as_view(), name="file-upload"),
+		        
+		]
+
+
+
+
+
+	- files/models.py
+		import os
+		from django.conf import settings
+		from uuid import uuid4
+		from django.db import models
+		from django.shortcuts import redirect
+
+
+		def upload_location(instance, filename):
+		    owner_id = str(instance.owner.id)
+		    old_name = os.path.splitext(filename)[0]
+		    extension = os.path.splitext(filename)[1]  # Get the file extension
+		    timestamp = uuid4().hex[:10]  # Generate a timestamp (you can adjust the length as needed)
+		    new_filename = f"{old_name}-{timestamp}{extension}"  # Add the timestamp to the filename
+		    file_path = f'files/{owner_id}/{new_filename}'
+		    return file_path
+
+
+		class File(models.Model):
+		    file = models.FileField(upload_to=upload_location, null=False, blank=False)
+		    date = models.DateTimeField(auto_now_add=True, verbose_name="date uploaded")
+		    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='files')
+
+		    def __str__(self):
+		        return self.file.file.name
+
+
+
+
+
+
+
+
+	- files/views.py
+		from django.shortcuts import render, get_object_or_404
+		from django.conf import settings
+		from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+		from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+		from files.models import File
+		from users.models import CustomUser
+		from .mixins import AdminRequiredMixin
+
+
+		class FileCreateView(AdminRequiredMixin, CreateView):
+		    model = File
+		    fields = ['file']
+		    success_url = '/'
+
+		    def form_valid(self, form):
+		        form.instance.owner = self.request.user
+		        return super().form_valid(form)
+
+
+		class FileListView(AdminRequiredMixin, ListView):
+		    model = File
+		    template_name = 'files/home.html'
+		    context_object_name = 'files'
+		    ordering = ['-date']
+		    paginate_by = 10
+
+		    def get_context_data(self, **kwargs):
+		        context = super().get_context_data(**kwargs)
+		        context["media_url"] = settings.MEDIA_URL
+		        return context    
+		    
+		    def get_queryset(self):
+		        user = get_object_or_404(CustomUser, email=self.request.user.email)
+		        return File.objects.filter(owner=user).order_by('-date')    
+		    	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn
+> routine n - nnn

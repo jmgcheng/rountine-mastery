@@ -1,0 +1,765 @@
+Date: Sep 28 2021
+> Simple Git Flow
+_______________________________________________________________________________________________
+|           |               |                          |                  |                   |
+|   Stash   |   Workspace   |   Index/Staging   Area   |   Local   Repo   |   Upstream Repo   |
+|           |               |                          |                  |                   |
+-----------------------------------------------------------------------------------------------
+             git init
+               or
+             git clone ___
+             git status
+                    git add --all ->
+                                       git commit -m "comment" ->
+                                                           git push origin master ->
+             git branch b1
+             git checkout b1
+             git status
+                    git add --all ->
+                                       git commit -m "comment" ->
+                                                           git push origin b1 ->
+        <- git stash
+  git stash appy ->
+
+
+
+Date: Sep 28 2021
+> routine 1
+	> desc
+		> a simple company creating their website using git
+	> situation
+		> pretend there are 4 developers
+			> use different folders and git bash for each developer
+		> dev1 = main developer
+		> dev2 = css developer
+		> dev3 = product developer
+		> dev4 = service developer
+	> steps
+		> stepn - dev1
+			> first site setup
+			- create folder gitprac-site-name
+				$ mkdir gitprac-site-name
+			- enter gitprac-site-name
+				$ cd gitprac-site-name
+			- initialize git
+				$ git init
+			- connect to a new empty remote repo
+				$ git remote add origin https://github.com/jmgcheng/gitprac-site-name.git
+			- check status
+				$ git status
+			- list all branches
+				$ git branch
+			- list all remote
+				$ git remote
+			- create initial files and folders
+				- index.php
+					> text inside
+					- header
+					- menu
+					- content
+					- footer
+				- about.php
+					> text inside
+					- header
+					- menu
+					- content
+					- footer
+				- contact.php
+					> text inside
+					- header
+					- menu
+					- content
+					- footer
+				- css
+				- images
+			- check status
+				$ git status
+			- check difference Workspace VS Index/Staging Area
+				$ git diff
+			- add changes to Index/Staging Area
+				$ git add --all
+			- check difference Index/Staging Area VS Local Repo
+				$ git diff --cached
+			- commit changes to Local Repo
+				$ git commit -m "dev1 - 1st site setup"
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin master
+			- check files in remote server, note that empty folders was not uploaded if empty
+			/ check status
+				$ git status
+		> stepn - dev2
+			> add styling
+			- clone repo
+				$ git clone https://github.com/jmgcheng/gitprac-site-name.git
+			- go inside the directory
+				$ cd gitprac-site-name
+			- check status
+				$ git status
+			- list all branches
+				$ git branch
+			- list all remote
+				$ git remote
+			- create/update files
+				- css/style.css
+					- .style1
+					- .style1.content
+				- header.php
+					> text inside
+					- style1.css
+					- header
+				- menu.php
+					> text inside
+					- menu
+						- index
+						- about
+						- contact
+				- footer.php
+					> text inside
+					- footer
+				- index.php
+					> text inside
+					- header.php
+					- menu.php
+					- content .style1.content
+					- footer.php
+				- about.php
+					> text inside
+					- header.php
+					- menu.php
+					- content .style1.content
+					- footer.php
+				- contact.php
+					> text inside
+					- header.php
+					- menu.php
+					- content .style1.content
+					- footer.php
+			- check status
+				$ git status
+			- stash files before pulling
+				> also means stash files that are still untracked that have never been added, files that are entirely new in the working area
+				> https://app.pluralsight.com/course-player?clipId=1dad2b57-c0a7-4849-8021-d189484b8b17
+				$ git stash --include-untracked
+			- list all stash
+				$ git stash list
+			- update local = fetch and merge
+				$ git pull origin master
+			- apply recent stash
+				$ git stash apply
+			- fix conflicts if any
+			- check difference Workspace VS Index/Staging Area
+				$ git diff
+			- add changes to Index/Staging Area
+				$ git add --all
+			- check difference Index/Staging Area VS Local Repo
+				$ git diff --cached
+			- commit changes to Local Repo
+				$ git commit -m "dev2 - apply 1st style"
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin master
+			- check status
+				$ git status
+			- clear stash
+				$ git stash clear
+			/ list all stash
+				$ git stash list
+		> stepn - dev3
+			> product project: start
+			- clone repo
+				$ git clone https://github.com/jmgcheng/gitprac-site-name.git
+			- go inside the directory
+				$ cd gitprac-site-name
+			- check status
+				$ git status
+			- list all branches
+				$ git branch
+			- create new branch for this project
+				$ git branch prj-product-v1
+			- go to the newly created branch
+				$ git checkout prj-product-v1
+			- list all branches and check where im now
+				$ git branch				
+			- list all remote
+				$ git remote
+			- create/update files
+				- product-detail.php
+					> text inside
+					- header.php
+					- menu.php
+					- content
+					- footer.php
+				- products.php
+					> text inside
+					- header.php
+					- menu.php
+					- content
+					- footer.php
+				- menu.php
+					> text inside
+					- menu
+						- index
+						- products
+						...					
+			- check status
+				$ git status
+			- add changes to Index/Staging Area
+				$ git add --all
+			- commit changes to Local Repo
+				$ git commit -m "dev3 - deploy product project in prj-product-v1 branch"
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin prj-product-v1
+			/ check status
+				$ git status
+		> stepn - dev4
+			> service project: start
+			- clone repo
+				$ git clone https://github.com/jmgcheng/gitprac-site-name.git
+			- go inside the directory
+				$ cd gitprac-site-name
+			- check status
+				$ git status
+			- list all branches
+				$ git branch
+			- create new branch for this project
+				$ git branch prj-service-v1
+			- go to the newly created branch
+				$ git checkout prj-service-v1
+			- list all branches and check where im now
+				$ git branch				
+			- list all remote
+				$ git remote
+			- create/update files
+				- service-detail.php
+					> text inside
+					- header.php
+					- menu.php
+					- content
+					- footer.php
+				- services.php
+					> text inside
+					- header.php
+					- menu.php
+					- content
+					- footer.php
+				- menu.php
+					> text inside
+					- menu
+						- index
+						- services
+						...					
+			- check status
+				$ git status
+			- add changes to Index/Staging Area
+				$ git add --all
+			- commit changes to Local Repo
+				$ git commit -m "dev4 - deploy service project in prj-service-v1 branch"
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin prj-service-v1
+			/ check status
+				$ git status
+		> stepn - dev2
+			> product project: apply style
+			- check status
+				$ git status
+			- checkout master branch
+				$ git checkout master				
+			- update local = fetch and merge
+				$ git pull origin master
+			- get prj-product-v1 branch in remote to your local
+				> If prj-product-v1 exists on the remote repository, but not on your local branch
+				> https://stackoverflow.com/questions/9537392/git-fetch-remote-branch
+				$ git switch prj-product-v1
+				OR
+				> https://www.freecodecamp.org/news/git-checkout-remote-branch-tutorial/
+				$ git fetch origin					// Fetch all remote branches
+				$ git branch 						// list branches to know
+				$ git branch -r 					// list branches to know
+				$ git branch -a					// list branches to know
+				$ git checkout prj-product-v1 			// automatically switch in console meesage. Files pulled
+				$ git status
+				$ git branch 						// list branches to know
+			- list all branches and check where im now
+				$ git branch				
+			- list all remote
+				$ git remote
+			- check status
+				$ git status
+			- create/update files
+				- style.css
+					...
+					- .style1.products
+					- .style1.product-details
+				- product-detail.php
+					> text inside
+					...
+					- content .style.product-details
+					...
+				- products.php
+					> text inside
+					...
+					- content .style.products
+					...
+			- check status
+				$ git status
+			- stash files before pulling
+				> also means stash files that are still untracked that have never been added, files that are entirely new in the working area
+				> https://app.pluralsight.com/course-player?clipId=1dad2b57-c0a7-4849-8021-d189484b8b17
+				$ git stash --include-untracked
+			- list all stash
+				$ git stash list
+			- update local = fetch and merge
+				$ git pull origin prj-product-v1
+			- apply recent stash
+				$ git stash apply
+			- fix conflicts if any
+			- add changes to Index/Staging Area
+				$ git add --all
+			- commit changes to Local Repo
+				$ git commit -m "dev2 - apply style: products and product-details"
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin prj-product-v1
+			- check status
+				$ git status
+			- clear stash
+				$ git stash clear
+			/ list all stash
+				$ git stash list
+		> stepn - dev2
+			> service project: apply style
+			- check status
+				$ git status
+			- checkout master branch
+				$ git checkout master
+			- update local = fetch and merge
+				$ git pull origin master
+			- get prj-service-v1 branch in remote to your local
+				> If prj-service-v1 exists on the remote repository, but not on your local branch
+				> https://stackoverflow.com/questions/9537392/git-fetch-remote-branch
+				$ git switch prj-service-v1
+				OR
+				> https://www.freecodecamp.org/news/git-checkout-remote-branch-tutorial/
+				$ git fetch origin					// Fetch all remote branches
+				$ git branch 						// list branches to know
+				$ git branch -r 					// list branches to know
+				$ git branch -a					// list branches to know
+				$ git checkout prj-service-v1 			// automatically switch in console meesage. Files pulled
+				$ git status
+				$ git branch 						// list branches to know
+			- list all branches and check where im now
+				$ git branch				
+			- list all remote
+				$ git remote
+			- check status
+				$ git status
+			- create/update files
+				- style.css
+					...
+					- .style1.services
+					- .style1.service-details
+				- service-detail.php
+					> text inside
+					...
+					- content .style.service-details
+					...
+				- services.php
+					> text inside
+					...
+					- content .style.services
+					...
+			- check status
+				$ git status
+			- stash files before pulling
+				> also means stash files that are still untracked that have never been added, files that are entirely new in the working area
+				> https://app.pluralsight.com/course-player?clipId=1dad2b57-c0a7-4849-8021-d189484b8b17
+				$ git stash --include-untracked
+			- list all stash
+				$ git stash list
+			- update local = fetch and merge
+				$ git pull origin prj-service-v1
+			- apply recent stash
+				$ git stash apply
+			- fix conflicts if any
+			- add changes to Index/Staging Area
+				$ git add --all
+			- commit changes to Local Repo
+				$ git commit -m "dev2 - apply style: services and service-details"
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin prj-service-v1
+			- check status
+				$ git status
+			- clear stash
+				$ git stash clear
+			/ list all stash
+				$ git stash list
+		> stepn - dev1
+			> site: update contact page
+			- check status
+				$ git status
+			- update local = fetch and merge
+				$ git pull origin master
+			- check status
+				$ git status				
+			- list all branches
+				$ git branch
+			- list all remote
+				$ git remote
+			- create/update files
+				- contact.php
+					> text inside
+					...
+					- content
+						- contact1
+						- contact2
+						- contact3
+					...
+			- check status
+				$ git status
+			- stash files before pulling
+				> also means stash files that are still untracked that have never been added, files that are entirely new in the working area
+				> https://app.pluralsight.com/course-player?clipId=1dad2b57-c0a7-4849-8021-d189484b8b17
+				$ git stash --include-untracked
+			- list all stash
+				$ git stash list
+			- update local = fetch and merge
+				$ git pull origin master
+			- apply recent stash
+				$ git stash apply
+			- fix conflicts if any
+			- add changes to Index/Staging Area
+				$ git add --all
+			- commit changes to Local Repo
+				$ git commit -m "dev1 - site: update contacts in contact page"
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin master
+			/ check status
+				$ git status
+		> stepn - dev1
+			> site: project deployment - merge prj-product-v1 to master and push to remote
+			- check status
+				$ git status
+			- checkout master
+				$ git checkout master
+			- update local = fetch and merge
+				$ git pull origin master
+			- check status
+				$ git status				
+			- list all branches
+				$ git branch
+			- list all remote
+				$ git remote
+			- get prj-product-v1 branch in remote to your local
+				> If prj-product-v1 exists on the remote repository, but not on your local branch
+				> https://stackoverflow.com/questions/9537392/git-fetch-remote-branch
+				$ git switch prj-product-v1
+				OR
+				> https://www.freecodecamp.org/news/git-checkout-remote-branch-tutorial/
+				$ git fetch origin					// Fetch all remote branches
+				$ git branch 						// list branches to know
+				$ git branch -r 					// list branches to know
+				$ git branch -a					// list branches to know
+				$ git checkout prj-product-v1 			// automatically switch in console meesage. Files pulled
+				$ git status
+				$ git branch 						// list branches to know
+			- list all branches and check where im now
+				$ git branch				
+			- list all remote
+				$ git remote
+			- check status
+				$ git status
+			- checkout master
+				$ git checkout master
+			- merge prj-product-v1 to master
+				$ git merge prj-product-v1
+			- fix conflicts if any
+			- check status
+				$ git status
+			- check files if updated properly
+			- stash files before pulling
+				> also means stash files that are still untracked that have never been added, files that are entirely new in the working area
+				> https://app.pluralsight.com/course-player?clipId=1dad2b57-c0a7-4849-8021-d189484b8b17
+				> can't do this since directory clean after merge
+				$ git stash --include-untracked
+			- list all stash
+				> can't do this since directory clean after merge
+				$ git stash list
+			- update local = fetch and merge
+				> can't do this since directory clean after merge
+				$ git pull origin master
+			- apply recent stash
+				> can't do this since directory clean after merge
+				$ git stash apply
+			- fix conflicts if any
+			- add changes to Index/Staging Area
+				> can't do this since directory clean after merge
+				$ git add --all
+			- commit changes to Local Repo
+				> can't do this since directory clean after merge
+				$ git commit -m "dev1 - site: project deployment - merge prj-product-v1 to master and push to remote"
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin master
+			/ check status
+				$ git status
+		> stepn - dev4
+			> service project: add special services
+			- check status
+				$ git status
+			- list all branches
+				$ git branch
+			- checkout prj-service-v1
+				$ git checkout prj-service-v1
+			- update local = fetch and merge
+				$ git pull origin prj-service-v1
+			- check to see if dev2 styles was applied
+			- check status
+				$ git status
+			- list all branches and check where im now
+				$ git branch				
+			- list all remote
+				$ git remote
+			- create/update files
+				- service-specials.php
+					> text inside
+					- header.php
+					- menu.php
+					- content
+					- footer.php
+				- service-special-details.php
+					> text inside
+					- header.php
+					- menu.php
+					- content
+					- footer.php
+				- service-detail.php
+					> text inside
+					...
+					- content
+						- service-special-details
+					...
+				- menu.php
+					> text inside
+					- menu
+						- index
+						- services
+						- service-specials
+						...					
+			- check status
+				$ git status
+			- stash files before pulling
+				> also means stash files that are still untracked that have never been added, files that are entirely new in the working area
+				> https://app.pluralsight.com/course-player?clipId=1dad2b57-c0a7-4849-8021-d189484b8b17
+				$ git stash --include-untracked
+			- list all stash
+				$ git stash list
+			- update local = fetch and merge
+				$ git pull origin prj-service-v1
+			- apply recent stash
+				$ git stash apply
+			- fix conflicts if any
+			- add changes to Index/Staging Area
+				$ git add --all
+			- commit changes to Local Repo
+				$ git commit -m "dev4 - service project: add special services"
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin prj-service-v1
+			- check status
+				$ git status
+			- clear stash
+				$ git stash clear
+			/ list all stash
+				$ git stash list
+		> stepn - dev2
+			> service project: apply style for service specials
+			- check status
+				$ git status
+			- checkout master branch
+				$ git checkout master
+			- update local = fetch and merge
+				$ git pull origin master
+			- check status
+				$ git status
+			- list all branches and check where im now
+				$ git branch				
+			- list all remote
+				$ git remote
+			- checkout prj-service-v1 branch
+				$ git checkout prj-service-v1
+			- update local = fetch and merge
+				$ git pull origin prj-service-v1
+			- check status
+				$ git status
+			- create/update files
+				- style.css
+					...
+					- .style1.service-specials
+					- .style1.service-special-details
+				- service-specials.php
+					> text inside
+					...
+					- content .style1.service-specials
+					...
+				- service-special-details.php
+					> text inside
+					...
+					- content .style1.service-special-details
+					...
+			- check status
+				$ git status
+			- stash files before pulling
+				> also means stash files that are still untracked that have never been added, files that are entirely new in the working area
+				> https://app.pluralsight.com/course-player?clipId=1dad2b57-c0a7-4849-8021-d189484b8b17
+				$ git stash --include-untracked
+			- list all stash
+				$ git stash list
+			- update local = fetch and merge
+				$ git pull origin prj-service-v1
+			- apply recent stash
+				$ git stash apply
+			- fix conflicts if any
+			- add changes to Index/Staging Area
+				$ git add --all
+			- commit changes to Local Repo
+				$ git commit -m "dev2 - service project: apply style for service specials"
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin prj-service-v1
+			- check status
+				$ git status
+			- clear stash
+				$ git stash clear
+			/ list all stash
+				$ git stash list
+		> stepn - dev4
+			> service project: merge master and deploy to remote prj-service-v1 for final review
+			- check status
+				$ git status
+			- list all branches
+				$ git branch
+			- list all remote
+				$ git remote
+			- checkout master
+				$ git checkout master
+			- update local = fetch and merge
+				$ git pull origin master
+			- check status
+				$ git status
+			- check the files first on what is new
+			- checkout prj-service-v1
+				$ git checkout prj-service-v1
+			- update local = fetch and merge
+				$ git pull origin prj-service-v1
+			- check to see if dev2 styles in special was applied
+			- check status
+				$ git status
+			- merge master to prj-service-v1
+				$ git merge master
+			- fix conflicts if any
+			- check status
+				$ git status
+			- check files if updated properly
+			- you need to commit first if there are conflicts that you fixed in mergin
+				$ git commit -m "dev4 - service project: merge master and deploy to remote prj-service-v1 for final review"
+			- update local = fetch and merge
+				$ git pull origin master
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin prj-service-v1
+			- check status
+				$ git status
+			- clear stash
+				$ git stash clear
+			/ list all stash
+				$ git stash list
+		> stepn - dev4
+			> service project: greenlight, merge prj-service-v1 to master and deploy to remote master
+			- check status
+				$ git status
+			- list all branches
+				$ git branch
+			- list all remote
+				$ git remote
+			- checkout prj-service-v1
+				$ git checkout prj-service-v1
+			- update local = fetch and merge
+				$ git pull origin prj-service-v1
+			- check status
+				$ git status
+			- check the files first
+			- checkout master
+				$ git checkout master
+			- update local = fetch and merge
+				$ git pull origin master
+			- check status
+				$ git status
+			- check the files first
+			- merge prj-service-v1 to master
+				$ git merge prj-service-v1
+			- fix conflicts if any
+			- check status
+				$ git status
+			- check files if updated properly
+			- stash files before pulling
+				> also means stash files that are still untracked that have never been added, files that are entirely new in the working area
+				> https://app.pluralsight.com/course-player?clipId=1dad2b57-c0a7-4849-8021-d189484b8b17
+				$ git stash --include-untracked
+			- list all stash
+				$ git stash list
+			- update local = fetch and merge
+				$ git pull origin master
+			- apply recent stash
+				$ git stash apply
+			- fix conflicts if any
+			- add changes to Index/Staging Area
+				$ git add --all
+			- commit changes to Local Repo
+				$ git commit -m "dev4 - service project: greenlight, merge prj-service-v1 to master and deploy to remote master"
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin master
+			- check status
+				$ git status
+			- clear stash
+				$ git stash clear
+			/ list all stash
+				$ git stash list
+		> stepn - dev1
+			> site: update contact page - add contact4 and contact5
+			- check status
+				$ git status
+			- checkout master
+				$ git checkout master
+			- update local = fetch and merge
+				$ git pull origin master
+			- check status
+				$ git status
+			- check the files whats new
+			- list all branches
+				$ git branch
+			- list all remote
+				$ git remote
+			- create/update files
+				- contact.php
+					> text inside
+					...
+					- content
+						...
+						- contact4
+						- contact5
+					...
+			- check status
+				$ git status
+			- stash files before pulling
+				> also means stash files that are still untracked that have never been added, files that are entirely new in the working area
+				> https://app.pluralsight.com/course-player?clipId=1dad2b57-c0a7-4849-8021-d189484b8b17
+				$ git stash --include-untracked
+			- list all stash
+				$ git stash list
+			- update local = fetch and merge
+				$ git pull origin master
+			- apply recent stash
+				$ git stash apply
+			- fix conflicts if any
+			- add changes to Index/Staging Area
+				$ git add --all
+			- commit changes to Local Repo
+				$ git commit -m "dev1 - site: update contact page - add contact4 and contact5"
+			- push changes to Upstream. github/bitbucket/server
+				$ git push origin master
+			- check status
+				$ git status
