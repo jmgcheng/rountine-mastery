@@ -161,7 +161,7 @@ drf - django rest framework - Eduonix - Build Python REST API with Django REST F
 			http://127.0.0.1:8000/articles/
 			body > raw > JSON
 				{
-					"title": 'test by postment',
+					"title": "test by postment",
 					"description": ...
 				}
 
@@ -169,7 +169,7 @@ drf - django rest framework - Eduonix - Build Python REST API with Django REST F
 			http://127.0.0.1:8000/articles/test-by-postman/
 			body > raw > JSON
 				{
-					"slug": 'test-by-postman',
+					"slug": "test-by-postman",
 					...
 				}
 
@@ -835,6 +835,36 @@ token
 	manual add token
 		admin > auth token > add token
 
+
+
+
+
+
+
+add token for old user. Skips user with existing token
+	python manage.py shell
+	from django.contrib.auth.models import User
+	from rest_framework.authtoken.models import Token
+
+	for user in User.objects.all():
+	    Token.objects.get_or_create(user=user)
+
+
+
+generate token for specific user
+	./manage.py drf_create_token <username>
+
+regenerate token for specific user
+	./manage.py drf_create_token -r <username>
+
+
+
+auto generate token when creating user
+	signal
+		@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+		def create_auth_token(sender, instance=None, created=False, **kwargs):
+		    if created:
+		        Token.objects.create(user=instance)
 
 
 
