@@ -1,0 +1,316 @@
+# https://www.youtube.com/watch?v=q8OleYuqntY
+
+# directives - key and value pairs
+# directives - instructions or commands that tell nginx what to do
+# contexts - group of related directives that apply a certain part of configuration
+
+# value should be number of your cpu cores or auto
+worker_processes 1;
+
+# a few top-level contexts:
+# events - general connection processing
+# http - http traffic
+# mail - mail traffic
+# stream - tcp and udp traffic
+
+events {
+	# how many simultaneous connections can be opened. Default 512
+	# if you have 1 worker process, you will be able to serve 1024 clients
+	worker_connections 1024; 		
+}
+
+# configuration specific to http and affecting all virtual servers
+http {
+
+	# tell nginx to include corresponding mime types
+	# this helps the client understand how to process or render the file
+	include mime.types;
+
+	# upstream = traffic from client towards server
+	# downstream = traffic going back to client
+	upstream nodejs_cluster {
+		# send request to the least busiest
+		least_conn;
+
+		# list all backends or all the servers that node js should forward or use
+		# docker ps
+		server 127.0.0.1:3001;
+		server 127.0.0.1:3002;
+		server 127.0.0.1:3003;
+	}
+
+	server {
+		# listen to port 8080 which is standard for local development testing
+		# port on which the server will accept requests
+		listen 8080;
+		# which domain or IP address this server block should respond to
+		# http://localhost:8080/
+		server_name localhost;
+
+		# how specific types of requests should be handled
+		location / {
+			# proxy_pass explicitly configuring our nginx to be a proxy server(pass the request)
+			# tells nginx to "pass" the request to another server, making it act as a "reverse proxy"
+			# proxy basically forwards to upstream
+			proxy_pass http://nodejs_cluster;
+
+			proxy_set_header Host $host;
+			proxy_set_header X-Real-IP $remote_addr;
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+root vs alias
+
+root
+	final path = root + location
+alias
+	final path = alias
+
+
+root example
+	location /static/ {
+	    root /var/www/app/static/;
+	}
+	# result
+	# /var/www/app/static/static
+
+
+alias example
+	location /static/ {
+	    alias /var/www/app/static/;
+	} 	
+	# result
+	# /var/www/app/static
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+# reload nginx
+> nginx -s reload
+
+
+
+------------------------
+
+
+
+
+
+
+
+
+
+
+enable https
+we need ssl certificate
+we need private key and public key(certificate)
+
+for production, get certificate somwhere else
+generate locally(self-signed certificate)
+> mkdir nginx-certs
+> cd nginx-certs
+> openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx-selfsigned.key -out nginx-selfsigned.crt
+# private
+# -keyout nginx-selfsigned.key 
+# public
+# -out nginx-selfsigned.crt
+> ls
+
+
+	server {
+		# 443 default port for https
+		listen 443 ssl;
+		server_name localhost;
+
+		# add the certificates you created earlier
+		ssl_certificate /Users/jan.cheng/nginx-certs/nginx-selfsigned.crt;
+		ssl_certificate_key /Users/jan.cheng/nginx-certs/nginx-selfsigned.key;
+
+		location / {
+			proxy_pass http://nodejs_cluster;
+			proxy_set_header Host $host;
+			proxy_set_header X-Real-IP $remote_addr;
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		}
+	}
+
+	server {
+		# if someone visits http
+		listen 8080;
+		server_name localhost;
+
+		location / {
+			# redirect them to your https
+			return 301 https://$host$request_uri;
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------
+
+
+- Use Case: This is a minimalist server block often used inside a Docker container or a limited-use environment.
+- It works because:
+- Nginx has default values for events and http, so if you're not doing anything fancy, you don’t need to explicitly define them.
+- Docker-style use: Most Nginx Docker images assume this style—you usually drop this into "/etc/nginx/conf.d/default.conf".
+
+server {
+    listen 80;
+
+    location /static/ {
+        alias /app/static/;
+    }
+
+    location / {
+        proxy_pass http://web:8000;
+        ...
+    }
+}
+
+
+
+------------------
+
+Use Case: This is a complete Nginx configuration file, typically placed at "/etc/nginx/nginx.conf".
+Why you use this: You need more control—like setting up:
+multiple worker processes
+load balancing via upstream
+MIME types
+global-level settings like timeouts, logging formats, gzip, etc.
+
+worker_processes 1;
+
+events {
+	worker_connections 1024; 		
+}
+
+http {
+	include mime.types;
+	upstream nodejs_cluster {
+		...
+	}
+	server {
+		...
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------
+
+static in k8s
+
+✅ Option 1: Serve static files via Django
+Not recommended for production but okay for dev/testing.
+location /static/ {
+    proxy_pass http://django:8000/static/;
+}
+
+✅ Option 2: Use Nginx as a static file server
+You build your Docker image with static files inside (like /app/static/) and serve them:
+location /static/ {
+    alias /app/static/;
+}
+
+✅ Option 3: Use a dedicated storage (e.g., S3, GCS, or Azure Blob)
+In production setups, this is very common. You configure Django to upload and serve static/media files via S3 or another cloud bucket, and Nginx never deals with it.
+🔥 When using S3 for static and media:
+Django generates URLs like:
+https://your-bucket.s3.amazonaws.com/static/css/styles.css
+These URLs go directly to S3 (or CloudFront if you use a CDN).
+Your img, link, script, etc. tags in templates will reference full URLs, not local paths.
+You don't need any Nginx config to serve these.
+
+
+🛠️ How to Configure Django to Use S3
+1. 📦 Install boto3 and django-storages
+pip install boto3 django-storages
+
+2. 🧬 In settings.py, configure:
+INSTALLED_APPS += ['storages']
+
+AWS_ACCESS_KEY_ID = 'your-access-key'
+AWS_SECRET_ACCESS_KEY = 'your-secret-key'
+AWS_STORAGE_BUCKET_NAME = 'your-bucket-name'
+AWS_S3_REGION_NAME = 'us-east-1'  # change as needed
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
+# For STATIC files
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+
+# For MEDIA files (user uploads)
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+⚠️ Security tip: Use environment variables or a .env file for credentials!
+
+3. 🚀 Collect Static
+python manage.py collectstatic
+This will upload all static files to S3.
+
+4. 🖼️ In your Django template:
+<img src="{{ STATIC_URL }}images/logo.png" alt="Logo">
+<link href="{{ STATIC_URL }}css/styles.css" rel="stylesheet">
+Or if you're using {% static %} tag:
+{% load static %}
+<img src="{% static 'images/logo.png' %}" alt="Logo">
+Django will resolve that to:
+<img src="https://your-bucket.s3.amazonaws.com/static/images/logo.png">
+
+🧪 Local Dev vs Prod?
+In local dev, you can still use local static/media settings like:
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+Then switch to S3 when in production using:
+if not DEBUG:
+    STATICFILES_STORAGE = ...
+    DEFAULT_FILE_STORAGE = ...
