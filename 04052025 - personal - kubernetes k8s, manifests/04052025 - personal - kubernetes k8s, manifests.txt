@@ -1,0 +1,705 @@
+kubernetes - k8s and manifest notes
+
+
+
+------------------------
+
+Facts:
+
+Kubernetes Architecture & Deployment on Multiple Nodes
+
+- Where does the Django code reside in a multi-node setup?
+	- you package Django into a Docker image, push it to a container registry (like Docker Hub or a private registry), and then Kubernetes pulls and runs the image on any node that needs it.
+	- The master node (ComputerA) controls the cluster but doesn’t run your app directly. The worker nodes (ComputerB, ComputerC, etc.) run the actual Django containers (inside pods).
+
+- Do we need the Django code or just the image?
+	- Just the Docker image. Unlike docker-compose, Kubernetes does not require your source code to be present on the nodes. Everything runs from the container image.
+
+- Does Kubernetes need docker-compose.yml?
+	- No, Kubernetes does not use docker-compose.yml. Instead, it uses multiple YAML manifest files (like Deployment, Service, Ingress, etc.) that define how your app should run.
+
+- What do we need to install for Kubernetes to work?
+	- In a real Kubernetes setup, you need to install Kubernetes itself (kubeadm, kubelet, kubectl, etc.) on all nodes. The master node also needs extra components (like the API server, scheduler, etc.).
+	- However, in Minikube, everything is simulated inside a single VM.
+
+- Where do we put Kubernetes YAML files in a multi-node setup?
+	- You apply them from the master node using kubectl apply -f <file>. Kubernetes then distributes the workload across worker nodes automatically.
+
+- How does the master node distribute pods to worker nodes?
+	- The master node schedules pods based on resource availability and policies. You don’t manually assign pods to specific nodes (unless you configure specific rules).
+
+- Are pods scattered across different nodes?
+	- Yes, Kubernetes automatically spreads pods across worker nodes to balance the load.
+
+- Should master node commands always be detached mode?
+	- Not necessarily. The master handles everything dynamically, so you can keep executing commands interactively.
+
+- Do we debug only from the master node?
+	- Mostly yes. You inspect logs, check pod statuses, and exec into pods from the master node. You rarely need direct access to worker nodes.
+
+- Are nodes just like separate computers or virtual machines?
+	- They can be either. In cloud environments, they’re usually virtual machines (VMs). In on-premise setups, they can be physical machines.
+
+- Does Kubernetes require a different entrypoint.sh than Docker Compose?
+	- Not necessarily, but since Kubernetes does things differently (like handling networking, volume mounts, and environment variables), you may need some adjustments.
+
+- Is real Kubernetes setup just YAML files and terminal commands like in Minikube?
+	- Yes! Even in a production environment, Kubernetes is managed mostly via YAML manifests and kubectl commands.
+
+- How do you exit Minikube’s isolated Docker environment?
+	When you use Minikube, it runs its own Docker daemon. To switch back to your local Docker:
+	eval $(minikube docker-env -u)  # Linux/macOS
+	minikube docker-env -u | Invoke-Expression  # Windows PowerShell
+	Or simply restart your terminal.
+
+
+
+
+
+
+
+
+
+How Does the Master Know Which Nodes Exist?
+When you install Kubernetes on a node, you join it to the cluster with:
+sh
+kubeadm join <master-ip>:6443 --token <your-token>
+Once a node joins, it becomes "available" for scheduling.
+The master checks CPU, memory, and other factors before placing pods.
+
+
+
+
+
+
+
+
+
+
+How Can We Restrict Pods to Certain Nodes?
+If you only want Kubernetes to use Computer1 - Computer5, you can:
+
+Label Your Nodes
+Assign labels to the nodes you want to use:
+
+sh
+kubectl label nodes computer1 environment=production
+kubectl label nodes computer2 environment=production
+
+Use Node Selectors in Your YAML
+Modify your Deployment manifest to use only nodes with environment=production:
+
+yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-app
+spec:
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      nodeSelector:
+        environment: production
+      containers:
+        - name: django
+          image: my-django-app
+
+Use Taints & Tolerations
+If you want Computer6 - Computer10 to be ignored completely, you "taint" them:
+
+sh
+kubectl taint nodes computer6 dedicated=ignore:NoSchedule
+Now, no pod will run there unless explicitly tolerated.
+
+🔹 So Kubernetes does not automatically know which nodes to use—you must configure it via labels, selectors, or taints.
+
+
+
+
+
+
+
+
+
+
+
+----------------------
+
+
+
+
+
+debugging tips
+kubectl explain deployment.spec.template.spec
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------
+
+
+
+
+
+
+manifests = just yaml configuration files
+
+k8s manifest files has 4 main core components:
+- apiVersion
+- kind
+- metadata
+- spec
+
+
+1. apiVersion
+Specifies the Kubernetes API version for the resource type. 
+Each resource type (e.g., Pod, Service) belongs to a specific API group and version.
+Example:
+v1 for Pod and Service.
+apps/v1 for Deployment.
+Why It Matters: Using the correct API version ensures compatibility with the Kubernetes cluster version.
+
+
+2. kind
+Defines the type of resource being created. Common resource types include:
+Pod
+Deployment
+Service
+ConfigMap
+Secret
+PersistentVolumeClaim
+Each resource serves a specific purpose. 
+For instance, a Pod represents a single container or a group of tightly coupled containers, while a Deployment manages replica sets and rolling updates.
+
+
+3. metadata
+Contains identifying information about the resource, such as:
+name - A unique name for the resource.
+labels - Key-value pairs used to organize and query resources.
+namespace - Isolates the resource within a specific environment (e.g., dev, prod).
+
+
+4. spec
+defining the desired state of the resource
+For example:
+In a Pod, spec defines the containers, images, and ports.
+In a Service, spec defines how to expose applications (e.g., via ClusterIP, NodePort, or LoadBalancer).
+
+
+
+---------
+
+
+metadata sample
+
+metadata:
+  name: my-app
+  namespace: development
+  labels:
+    app: my-app
+    environment: dev
+
+name: – Always required. It's the unique identifier of the resource in the namespace.
+labels: – Optional but very useful. Used to organize, select, or target resources (e.g., for Services or selectors).
+namespace: – Optional. Kubernetes lets you organize resources into virtual clusters (namespaces). If omitted, it defaults to default.
+
+
+
+
+
+
+
+
+
+
+
+----------
+
+
+
+
+
+'kinds' that use 'spec':
+- Deployment	
+	- Defines how to run pods, replicas, image, strategy, etc.
+- Pod	
+	- Directly specifies containers, volumes, etc.
+- Service	
+	- Defines how to expose pods (via selectors, ports).
+- Ingress	
+	- Routing rules, backend services
+- PersistentVolumeClaim	
+	- Defines storage request (size, mode)
+- ConfigMap	
+	- Key-value data
+- Secret	
+	- Encoded sensitive data
+
+
+
+-------------
+
+https://youtu.be/y_vy9NVeCzo?t=236
+and chatgpt
+
+'Deployment' 'spec' full structure breakdown
+
+spec:
+  replicas: 3  								# (optional, default: 1) Number of pod copies
+
+  selector:    								# (required) Match pods using these labels
+    matchLabels:
+      app: my-app
+
+  strategy:    								# (optional) Rolling update settings. For update settings
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1 							# max pod to add more if version is changing or need to reupdate all pods
+      maxUnavailable: 0
+
+  template:    								# (required) Defines the pod to be created
+    metadata:
+      labels:  								# These MUST match selector.matchLabels
+        app: my-app
+
+    spec:      								# <- POD spec starts here
+      containers:
+        - name: my-container
+          image: myimage:latest
+          ports:
+            - containerPort: 8000
+          env:   							# (optional) environment variables
+            - name: DEBUG
+              value: "True"
+          volumeMounts:    					# (optional). Tells the container where to mount a volume from 'spec.volumes.name'. Inside each container. Without volumeMounts, the container has no access to the volume even if it’s defined!
+            - name: static-files
+              mountPath: /app/static 		# where to mount inside container
+
+      volumes:   							# (optional) define volumes to mount. Declares what volumes are available to the pod. Pod level (shared)
+        - name: static-files
+          persistentVolumeClaim:
+            claimName: static-pvc
+
+
+
+
+
+
+
+
+
+-----------------
+
+
+
+
+
+
+https://youtu.be/sGZx3OjMPQI?list=PL5aURjJ6mdUedh8rPBXJ5w_ogdD9PM0D7&t=438
+and chatgpt
+
+'Service' 'spec' Breakdown
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-service
+spec:
+  selector:               # REQUIRED — targets pods by label
+    app: django           # must match Deployment pod labels. Should match Deployment's spec.template.metadata.labels
+
+  type: ClusterIP         # optional, default: ClusterIP
+                          # other options: NodePort, LoadBalancer, ExternalName
+
+  ports:                  # REQUIRED — list of exposed ports
+    - port: 80            # the port Service exposes internally. Example: other pods will talk to http://django-service:80, which maps to targetPort: 8000. Example case: You have a frontend pod that wants to talk to django-service:80, and that will be routed to the container's 8000 port
+      targetPort: 8000    # the port the container listens to. The 8000 in 'http://localhost:8000'?
+      protocol: TCP       # optional, default: TCP
+      name: http          # optional, helpful for multi-port services
+
+
+
+
+
+
+
+more samples
+
+✅ Example 1: ClusterIP (default, internal-only)
+spec:
+  type: ClusterIP
+  selector:
+    app: django
+  ports:
+    - port: 80
+      targetPort: 8000
+
+
+✅ Example 2: NodePort (expose to outside via host port)
+spec:
+  type: NodePort
+  selector:
+    app: django
+  ports:
+    - port: 80
+      targetPort: 8000
+      nodePort: 30036   # Optional: manually define external port
+
+
+✅ Example 3: LoadBalancer (on cloud K8s)
+spec:
+  type: LoadBalancer
+  selector:
+    app: django
+  ports:
+    - port: 80
+      targetPort: 8000
+
+
+
+
+
+
+---------------
+
+
+
+
+Breakdown: Full structure of a ConfigMap
+💡 Use ConfigMap for non-sensitive config values (env vars, config files, etc.)
+
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config           # ✅ REQUIRED
+  namespace: default        # ⛔ OPTIONAL, default is 'default'
+  labels:                   # ⛔ OPTIONAL
+    app: my-app
+
+data:                       # ✅ REQUIRED (or binaryData)
+  DEBUG: "True"             # all values are stored as strings
+  API_URL: "https://api.example.com"
+
+# Optional alternative
+# binaryData:
+#   config.json: <base64-string>
+
+
+
+
+
+another example
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  default.conf: |
+    server {
+        listen 80;
+
+        location /static/ {
+            alias /app/static/;
+        }
+
+        location / {
+            proxy_pass http://django:8000;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+    }
+
+
+
+
+
+how to get data
+
+1. ConfigMap → How do other Pods and Django code get the values?
+ConfigMaps are like environment variables that are public. Other Pods access them via:
+
+✅ Method 1: Environment variables
+env:
+  - name: DEBUG
+    valueFrom:
+      configMapKeyRef:
+        name: my-config
+        key: DEBUG
+➡️ Then in Django:
+import os
+DEBUG = os.getenv("DEBUG", "False") == "True"
+
+✅ Method 2: Mounted files (optional)
+volumeMounts:
+  - name: config-volume
+    mountPath: /etc/config
+volumes:
+  - name: config-volume
+    configMap:
+      name: my-config
+Then in your container, you'd have the config keys as files inside /etc/config.
+
+
+
+
+
+
+
+
+
+
+
+ -----------------------
+
+
+
+ Breakdown: Full structure of a Secret
+💡 Use Secret for passwords, API keys, credentials. Use stringData if you don’t want to manually base64 encode values.
+
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret           # ✅ REQUIRED
+  namespace: default        # ⛔ OPTIONAL
+  labels:                   # ⛔ OPTIONAL
+
+type: Opaque                # ✅ REQUIRED (usually 'Opaque')
+
+data:                       # ✅ REQUIRED (base64 encoded)
+  DB_PASSWORD: bXlwYXNzd29yZA==   # 'mypassword' base64-encoded
+  SECRET_KEY: c2VjcmV0X2tleQ==    # 'secret_key'
+
+# You can also use `stringData` (raw values, auto-encoded):
+# stringData:
+#   DB_PASSWORD: mypassword
+#   SECRET_KEY: secret_key
+
+
+
+
+
+
+
+get the data
+
+Same way as ConfigMap:
+
+✅ Method 1: Environment variables
+env:
+  - name: DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: my-secret
+        key: DB_PASSWORD
+
+✅ Method 2: Mounted as files
+volumeMounts:
+  - name: secret-volume
+    mountPath: /etc/secrets
+volumes:
+  - name: secret-volume
+    secret:
+      secretName: my-secret
+➡️ Your secret key will show up as a file inside /etc/secrets/DB_PASSWORD.
+
+
+
+
+Do you deploy this in the repo?
+💥 NO—secrets are sensitive!
+Options instead:
+Use sealed secrets (encrypted, repo-safe)
+Use external secret management (Vault, SOPS, etc.)
+Or have your CI/CD pipeline inject them safely
+If you're learning/testing, you can temporarily store a secret.yaml locally but NEVER commit it to Git.
+
+
+
+
+
+
+
+
+Secret: Base64 vs. Auto-Encoded (What's the difference?)
+
+Option 1: Manual (base64)
+data:
+  DB_PASSWORD: bXlwYXNzd29yZA==  # this is base64 for 'mypassword'
+You must base64 it yourself first:
+echo -n "mypassword" | base64
+
+Option 2: stringData (auto-encoded)
+stringData:
+  DB_PASSWORD: mypassword
+Kubernetes will automatically encode these to data: in the background.
+
+✅ Best for dev/test! Use stringData so you don’t have to manually encode stuff.
+
+
+
+
+
+
+
+------------------------
+
+
+Breakdown: Full structure of a PersistentVolumeClaim (PVC)
+💡 PVCs are used to request persistent storage. They will get bound to a PV that satisfies the request (manual or dynamic provisioning).
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc              # ✅ REQUIRED
+  namespace: default        # ⛔ OPTIONAL
+  labels:                   # ⛔ OPTIONAL
+
+spec:                       # ✅ REQUIRED
+  accessModes:              # ✅ REQUIRED
+    - ReadWriteOnce         # other options: ReadOnlyMany, ReadWriteMany
+  resources:                # ✅ REQUIRED
+    requests:
+      storage: 5Gi          # amount of storage needed
+  storageClassName: standard  # ⛔ OPTIONAL, default depends on cluster
+
+
+
+
+PersistentVolumeClaim
+PVC is used whenever a pod needs to store data persistently.
+Example: PostgreSQL, Redis, or any storage-based app that shouldn’t lose data when restarted.
+✅ It does not store directly to your repo—it talks to:
+hostPath (local disk of the node),
+cloud volumes (like AWS EBS, GCE disks),
+or NFS/S3/Longhorn depending on your storage class.
+
+
+1. How does PVC talk to AWS volumes like EBS (Elastic Block Store)?
+To make PVCs work with AWS EBS:
+
+🛠️ A. You need to use a StorageClass that supports AWS EBS.
+When you're on a Kubernetes cluster running on AWS (like EKS), the cloud controller knows how to talk to AWS APIs to create volumes (like EBS) dynamically.
+Here’s how:
+
+1️⃣ Create a StorageClass (or use AWS default):
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-sc
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+
+2️⃣ Create a PersistentVolumeClaim:
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: app-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: ebs-sc
+💡 The storageClassName connects the PVC to the StorageClass, which tells Kubernetes how to provision an actual EBS volume.
+Once the PVC is bound, K8s tells AWS: “Hey, I need a 5GiB EBS volume for this pod.” It then attaches the volume to the node that runs the pod.
+
+
+
+
+
+
+another sample
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16.3
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  ports:
+    - protocol: TCP
+      port: 5432
+  selector:
+    app: postgres
+
+
+
+
+
+
+PostgreSQL PVC Recap (Clarified):
+The PostgreSQL pod mounts a PersistentVolumeClaim.
+That PVC is a request to the cluster: “Give me 5Gi of disk space”.
+Kubernetes finds a PersistentVolume (PV) or dynamically creates one from a StorageClass.
+So where is the data physically stored?
+🔸 With StorageClass (e.g., AWS EBS): stored on a cloud disk (outside pod/node).
+🔸 Without StorageClass: Kubernetes uses hostPath or local disk on the node.
+💥 That means:
+If there’s no StorageClass, the volume sticks to the node it was created on. If that node dies, your data is gone unless you backed it up.    
+
+
+
+
+
+----------
