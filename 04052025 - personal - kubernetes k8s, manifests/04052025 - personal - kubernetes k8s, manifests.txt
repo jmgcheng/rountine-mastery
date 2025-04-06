@@ -181,6 +181,7 @@ Service
 ConfigMap
 Secret
 PersistentVolumeClaim
+Ingress
 Each resource serves a specific purpose. 
 For instance, a Pod represents a single container or a group of tightly coupled containers, while a Deployment manages replica sets and rolling updates.
 
@@ -252,7 +253,19 @@ namespace: – Optional. Kubernetes lets you organize resources into virtual clu
 
 -------------
 
+
+
+
+
+
+
+
+
+
+
+
 https://youtu.be/y_vy9NVeCzo?t=236
+!!! please watch video to easily remember what variable tries to match what
 and chatgpt
 
 'Deployment' 'spec' full structure breakdown
@@ -260,7 +273,7 @@ and chatgpt
 spec:
   replicas: 3  								# (optional, default: 1) Number of pod copies
 
-  selector:    								# (required) Match pods using these labels
+  selector:    								# (required) Match pods using these labels. 
     matchLabels:
       app: my-app
 
@@ -294,6 +307,24 @@ spec:
             claimName: static-pvc
 
 
+>>> explaining volume...
+
+in this example:
+	- 'template.spec.containers.valumeMounts' said mount 'mountPath: /app/static' inside my container and name this mount 'name: static-files'
+	- 'template.spen.volumes' looks for a persistentVolumeClaim named 'claimName: static-pvc' for a 'name: static-files' that is pointing to 'template.spec.containers.valumeMounts.name: static-files'
+	- you will need a 'kind' of 'PersistentVolumeClaim' that has 'name: static-pvc' so that 'template.spen.volumes' can connect properly 'template.spec.containers.valumeMounts' to it
+
+note:
+	- using 'emptyDir: {}' for 'template.spen.volumes' means that it will only share those directories between containers inside a pod
+		- a django pod and an nginx pod with the same setup will not share the same thing because it will only exist in their own pod
+	- If you want a django pod and an nginx pod to share static files, you'd use a PersistentVolumeClaim and mount the same PVC in both Pods at /app/static
+
+
+
+
+
+
+
 
 
 
@@ -302,6 +333,298 @@ spec:
 
 
 -----------------
+
+
+more volume explanation
+	- sample of volume from a ConfigMap that was created a file
+
+--- nginx.yaml ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.24
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+            - name: static-volume
+              mountPath: /app/static
+            - name: media-volume
+              mountPath: /app/media
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+        - name: static-volume
+          emptyDir: {}
+        - name: media-volume
+          emptyDir: {}
+------------------
+
+
+--- nginx-config.yaml ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  default.conf: |
+    server {
+        listen 80;
+
+        location /static/ {
+            alias /app/static/;
+        }
+
+        location / {
+            proxy_pass http://django:8000;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+    }
+-------------------------
+
+
+
+
+>>> explaning volume...
+
+- so at 'nginx-config.yaml', the variable 'default.conf' with its server and configurations contents becomes a file inside the directory of 'mountPath: /etc/nginx/conf.d' setup by 'Deployment.spec.template.spec.containers.volumeMounts.name: nginx-config'
+- who decided that 'default.conf' will become a file and not just a regular variable?
+	- K8s rule: When you mount a ConfigMap to a directory, each key becomes a filename, and each value becomes the content of that file.
+
+
+ConfigMap for file OR env: (ConfigMap is dual-purpose!!!)
+- ConfigMap is only mounted as files if you use it via volumes
+- If you use it via envFrom or env, it becomes environment variables instead. 
+
+
+
+
+
+
+sample of ConfigMap but use as env inside your code
+
+--- ConfigMap ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: django-env
+data:
+  DEBUG: "True"
+  ALLOWED_HOSTS: "localhost,127.0.0.1"
+-----------------
+
+--- Deployment ---
+envFrom:
+  - configMapRef:
+      name: django-env
+------------------
+
+--- django code ---
+import os
+os.getenv('DEBUG')
+-------------------
+
+
+
+
+
+
+
+
+sample of Secret use as env inside your code
+
+--- Secret ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: django-secret
+type: Opaque
+stringData:
+  DOCKER_ENV: "True"
+  POSTGRES_DB: myblogdb
+  POSTGRES_USER: mybloguser
+  POSTGRES_PASSWORD: mypassword
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: "5432"
+---------------
+
+--- Deployment ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+        - name: django
+          ...
+          envFrom:
+            - secretRef:
+                name: django-secret
+------------------
+
+--- django settings.py ---
+import os
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', default='myblogdb'),
+        'USER': os.getenv('POSTGRES_USER', default='mybloguser'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='mypassword'),
+        'HOST': os.getenv('POSTGRES_HOST', default='localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', default=5432),
+    }
+}
+--------------------------
+
+
+
+
+
+
+
+
+
+
+another sample of Secret use as env for postgres
+
+--- Secret ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+type: Opaque
+stringData:
+  POSTGRES_DB: myblogdb
+  POSTGRES_USER: mybloguser
+  POSTGRES_PASSWORD: mypassword
+--------------
+
+
+--- Deployment ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16.3
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+------------------
+
+
+
+
+
+
+
+
+
+
+
+a sample of postgrest deployment using PersistentVolumeClaim
+
+------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16.3
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+------------------
+
+
+
+
+
+
+
+
+
+
+
+-----------------
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -325,15 +648,32 @@ spec:
                           # other options: NodePort, LoadBalancer, ExternalName
 
   ports:                  # REQUIRED — list of exposed ports
-    - port: 80            # the port Service exposes internally. Example: other pods will talk to http://django-service:80, which maps to targetPort: 8000. Example case: You have a frontend pod that wants to talk to django-service:80, and that will be routed to the container's 8000 port
-      targetPort: 8000    # the port the container listens to. The 8000 in 'http://localhost:8000'?
+    - port: 80            # this service is listening to this port
+      targetPort: 8000    # targets and forwards data to 'Deployment.spec.template.spec.containers.ports.containerPort'. If not defined then it will have the same value of ports
       protocol: TCP       # optional, default: TCP
       name: http          # optional, helpful for multi-port services
 
 
 
 
+Type	Public?	Description
+ClusterIP	
+	❌ Internal only	
+	Default. Used for internal comms between Pods.
+NodePort	
+	✅ Public (sort of)	
+	Exposes Service on each Node's IP at a static port (like 30008).
+LoadBalancer	
+	✅ Public via cloud	
+	Creates external load balancer (cloud only: AWS ELB, etc.).
+ExternalName	
+	✅ DNS alias	
+	Maps the service to an external DNS name (used for integrating external APIs).
 
+
+
+Use NodePort in Minikube for public access
+In real cloud setups → you'd prefer LoadBalancer instead of exposing raw ports.
 
 
 more samples
@@ -629,6 +969,25 @@ Once the PVC is bound, K8s tells AWS: “Hey, I need a 5GiB EBS volume for this 
 
 
 
+
+
+
+
+🟠 If we have a PersistentVolumeClaim with no storageClassName, where does the storage come from?
+If you don't specify storageClassName, Kubernetes will:
+Try to use the default StorageClass, if one exists.
+If no default exists, the PVC will stay in "Pending" state and not get bound to a volume.
+🔹 In Minikube, there's often a default StorageClass (called standard) that uses local disk space.
+✅ So:
+In Minikube, the storage will usually be carved from your local system disk (via a hostPath volume behind the scenes) — inside the Minikube VM/container, not directly your host OS.
+
+
+
+
+
+
+
+
 another sample
 
 apiVersion: v1
@@ -697,6 +1056,150 @@ So where is the data physically stored?
 🔸 Without StorageClass: Kubernetes uses hostPath or local disk on the node.
 💥 That means:
 If there’s no StorageClass, the volume sticks to the node it was created on. If that node dies, your data is gone unless you backed it up.    
+
+
+
+
+
+----------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+YAML Example: connecting Ingress ↔ Service ↔ Deployment
+
+--- Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+        - name: django
+          image: my-django-image:latest
+          ports:
+            - containerPort: 8000
+
+
+
+
+
+--- Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-svc
+spec:
+  selector:
+    app: django
+  ports:
+    - port: 80        # Service port (user hits). Service is listening to this as this is what user hits
+      targetPort: 8000 # Pod port (app listens). This is where this Service will forward the request to, to the Pod/container port of a Deployment
+  type: ClusterIP
+
+
+
+
+--- Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: django-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: django.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: django-svc
+                port:
+                  number: 80
+
+💡 To test this locally, add 127.0.0.1 django.local to your /etc/hosts, and make sure Ingress Controller is installed (e.g. NGINX).
+
+
+
+
+
+
+
+more samples of ingress for specific url
+
+spec:
+  rules:
+    - host: www.mydomain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: django-svc
+                port:
+                  number: 80
+
+    - host: api.mydomain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: django-svc
+                port:
+                  number: 80
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
