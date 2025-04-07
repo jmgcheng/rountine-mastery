@@ -60,3 +60,38 @@ docker pull jmgcheng/react-app:latest
 
 docker images
 docker ps
+
+
+
+
+
+
+
+
+
+# -d is detached mode
+# -p is port, 1st value is your host, 2nd value is port inside container
+docker run -d -p 3000:3000 react-app
+
+docker run -d -p 3001:3000 --name pinkstart react-app
+
+docker logs -f containerID
+
+docker exec -it pinkstart sh
+
+
+
+
+
+docker volume create volumeName
+docker volume create app-data
+docker volume inspect app-data
+
+
+
+docker run -d -p 5000:3000 -v volumeName:/fileSystemInTheContainer imageName
+docker run -d -p 5000:3000 -v volumeName:/fileSystemInTheContainer --name nameToBeCreated imageName
+docker run -d -p 5000:3000 -v app-data:/app/data --name redstart react-app
+
+
+docker run -d -p 7001:3000 -v %cd%:/app --name redsalamander -e WATCHPACK_POLLING=true react-app
