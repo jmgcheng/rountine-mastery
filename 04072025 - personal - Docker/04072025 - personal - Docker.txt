@@ -1,0 +1,62 @@
+- FROM
+- WORKDIR
+- COPY
+- ADD
+- RUN
+- ENV
+- EXPOSE
+- USER
+- CMD
+- ENTRYPOINT
+
+
+FROM python:3.12.4-slim
+WORKDIR /app
+COPY core/requirements.txt /app/
+RUN pip install -r requirements.txt
+COPY core /app/
+COPY shscripts /shscripts
+RUN chmod +x /shscripts/entrypoint.sh
+ENTRYPOINT ["/shscripts/entrypoint.sh"]
+
+
+
+docker run -it imageName
+docker run -it ubuntu
+
+
+
+docker build -t react-app:latest .
+
+
+
+docker start -i containerID
+
+
+
+docker stop containerID
+
+
+
+docker container prune
+docker image prune
+docker image rm repoOrImageID
+
+
+
+
+docker image rm jmgchengisi/react-app
+docker image tag bf5129087df6 jmgchengisi/react-app:latest
+docker push jmgchengisi/react-app:latest
+
+
+
+docker login
+
+
+docker push jmgcheng/react-app:latest
+docker pull jmgcheng/react-app:latest
+
+
+docker images
+docker ps
