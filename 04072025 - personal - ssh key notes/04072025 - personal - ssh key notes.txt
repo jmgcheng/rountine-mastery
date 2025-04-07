@@ -1,0 +1,147 @@
+ssh key
+
+1st
+'ssh-keygen -t rsa -b 4096 -C "youremail"'
+The details are saved at:
+~/.ssh
+~/id_rsa_note_your_own_file
+~/id_rsa_note_your_own_file.pub
+
+
+2nd, 
+created a variable at the site with a key of 'SSH_PRIVATE_KEY______' and the value of whats inside '~/id_rsa_note_your_own_file' 
+
+
+3rd,
+add in the authorize_keys
+# This appends (adds) the contents of id_rsa_08082024.pub to ~/.ssh/authorized_keys.
+# The authorized_keys file contains public keys that are allowed to authenticate to this machine via SSH.
+# This is only useful on a server where you want to allow key-based login (e.g., for remote access).
+# If you have a server and you want to SSH into it without a password, you add your .pub key to authorized_keys on that server.
+# useful for if for example you want gitlab to automatically push something into your server if you commit something in gitlab just like a pipeline
+cat ~/id_rsa_08082024.pub | cat >> ~/.ssh/authorized_keys
+# This starts the ssh-agent (if it's not running).
+# ssh-agent is a background process that stores private keys so you don't have to type your passphrase every time you use SSH.
+eval "$(ssh-agent -s)"
+# This adds your private key (id_rsa_08082024) to the ssh-agent.
+# If your private key has a passphrase, this command will prompt you to enter it once, and ssh-agent will remember it for the session.
+# This prevents you from typing the passphrase every time you use SSH (e.g., pushing to GitHub, GitLab, or logging into a server)
+ssh-add ~/.ssh/id_rsa_08082024
+# This tests if you can connect to GitLab using SSH authentication.
+# If it works, you should see something like:
+ssh -T git@gitlab.com
+
+
+4th,
+permissions
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+
+5th,
+add know host?
+# This fetches the SSH public key of the server at 203.177.79.4 and adds it to ~/.ssh/known_hosts.
+# When you SSH into a new server for the first time, SSH asks:
+# If you already added the server’s key using ssh-keyscan, SSH won’t ask this question—it already "trusts" the server.
+ssh-keyscan -H 203.177.79.4 >> ~/.ssh/known_hosts
+
+
+
+
+
+4. Check SSH Config (if applicable)
+If you have multiple SSH keys or specific configurations, ensure your SSH config file (~/.ssh/config) is set up correctly:
+
+bash
+Copy code
+nano ~/.ssh/config
+Add the following configuration if it's not present:
+
+plaintext
+Copy code
+Host gitlab.com
+    HostName gitlab.com
+    User git
+    IdentityFile ~/.ssh/id_rsa
+    IdentitiesOnly yes
+
+
+
+---------------------------------
+
+having issues connecting with gitlab?
+this might be because of google dns. ping google.com if you can
+you might need to change your physical server dns
+
+devadmin@devadmin-VMware-Virtual-Platform:/var/www/gl_interactech_tasks_repo02$ git remote -v
+origin  git@gitlab.com:isicebu-group/gl_interactech_tasks_repo02.git (fetch)
+origin  git@gitlab.com:isicebu-group/gl_interactech_tasks_repo02.git (push)
+
+
+jan.cheng@MDCT11-LAP-002 MINGW64 ~/Documents/Visual Studio Code/Django/gl_interactech_tasks_repo02 (main)
+$ git remote -v
+github  https://github.com/jcheng-servicesolutions/interactech-tasks-repo01.git (fetch)
+github  https://github.com/jcheng-servicesolutions/interactech-tasks-repo01.git (push)
+origin  https://gitlab.com/isicebu-group/gl_interactech_tasks_repo02.git (fetch)
+origin  https://gitlab.com/isicebu-group/gl_interactech_tasks_repo02.git (push)
+
+
+https://kodekloud.com/blog/change-remote-origin-in-git/#:~:text=To%20change%20the%20remote%20origin%20URL%2C%20use%20the%20git%20remote,URL%20or%20an%20SSH%20URL.
+
+git remote set-url origin https://gitlab.com/isicebu-group/gl_interactech_tasks_repo02.git
+git remote set-url origin git@gitlab.com:isicebu-group/gl_interactech_tasks_repo02.git
+
+---------------------------------
+
+
+
+
+
+
+
+--- windows --------------------------------------------
+check if your local already have some ssh key setup using git bash
+> ls ~/.ssh
+👉 If you see id_rsa.pub, you already have an SSH key, and we just need to add it to GitHub.
+👉 If you don’t see anything or get an error, then you don’t have an SSH key, and we will need to generate one.
+
+
+If You Need to Generate a New SSH Key
+ssh-keygen -t rsa -b 4096 -C "youremail"
+ssh-keygen -t rsa -b 4096 -C "jcheng@servicesolutions.biz"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub
+
+
+if you want to push/access some private repo in github and want to use ssh
+- go to github > settings > ssh and gpg keys > add new ssh key > place the contents of _____.pub here
+- setup your git bash remote
+> $ git remote set-url origin git@github.com:jcheng-servicesolutions/hris01.git
+- check your remote
+> $ git remote -v
+- check connection
+> $ ssh -T git@github.com
+
+--------------------------------------------------------
+
+
+
+
+
+---  config -----------------------------------------------------
+# Personal GitHub account
+Host github-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_rsa_personal
+
+# Work GitHub account
+Host github-work
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_rsa_work
+
+
+then...
+git remote set-url origin git@github-work:jcheng-servicesolutions/hris01.git
+--------------------------------------------------------
