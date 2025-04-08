@@ -1,0 +1,903 @@
+python oop 
+
+
+
+---------------------------------------------------------------------------------
+
+intro
+
+object
+	- a bundle of related attributes(variables) and methods(functions)
+
+class
+	- a blueprint used to design the structure and layout of an object
+
+
+class Car:
+	def __init__(self, model, year, color, for_sale):
+		self.model = model
+		self.year = year
+		self.color = color
+		self.for_sale = for_sale
+
+	def drive(self):
+		print(f'You drive the {self.color} {self.model}')
+
+	def stop(self):
+		print(f'You stop the {self.color} {self.model}')
+
+	def describe(self):
+		print(f'{self.year} {self.color} {self.model}')
+
+
+car1 = Car("Mustang", 2024, "red", False)
+car2 = Car("Corvette", 2025, "blue", True)
+
+print(car1.model)
+car1.drive()
+car1.stop()
+car1.describe()
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+class variables 
+	- shared among all instances of a class
+	- defined outside the contructor
+	- allows you to share data among all objects created from that class
+
+
+class Student:
+	# class variable
+	class_year = 2024 	
+	num_students = 0
+
+	def __init__(self, name, age):
+		self.name = name
+		self.age = age
+		Student.num_students += 1
+
+
+student1 = Student("Spongebob", 30) 
+student2 = Student("Patrict", 30) 
+
+
+print(student1.name)
+print(student1.age)
+
+# good practice to access the class variable using class name
+print(Student.class_year) 	
+print(Student.num_students)
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+inheritance
+	- allows a class to inherit attributes and methods from another class
+	- helps with code reusability and extensibility
+
+
+class Animal:
+	def __init__(self, name):
+		self.name = name
+		self.is_alive = True
+
+	def eat(self):
+		print(f'{self.name} is eating')
+
+	def sleep(self):
+		print(f'{self.name} is sleeping')	
+
+
+# inherits Animal class
+class Dog(Animal): 		
+	def speak(self):
+		print('woof')
+
+class Cat(Animal):
+	def speak(self):
+		print('meow')
+
+class Mouse(Animal):
+	def speak(self):
+		print('squek')
+
+
+dog = Dog("Scooby")
+cat = Cat("Garfield")
+mouse = Mouse("Mikey")
+
+
+print(dog.name)
+print(dog.is_alive)
+dog.eat()
+dog.sleep()
+dog.speak()
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+multiple inheritance
+	- inherit from more than one parent class
+
+
+
+class Prey:
+	def flee(self):
+		print('This animal is fleeing')
+
+class Predator:
+	def hunt(self):
+		print('This animal is hunting')
+
+class Rabbit(Prey):
+	pass
+
+class Hawk(Predator):
+	pass
+
+# multiple inheritance
+class Fish(Prey, Predator): 		
+	pass
+
+
+
+
+rabbit = Rabbit()
+hawk = Hawk()
+fish = Fish()
+
+rabbit.flee()
+hawk.hunt()
+fish.flee()
+fish.hunt()
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+
+multilevel inheritance
+	- inherit from a parent which inherits from another parent
+
+
+class Animal():
+	def __init__(self, name):
+		self.name = name
+
+	def eat(self):
+		print(f'{self.name} is eating')
+
+	def sleep(self):
+		print(f'{self.name} is sleeping')
+
+
+class Prey(Animal):
+	def flee(self):
+		print('{self.name} is fleeing')
+
+class Predator(Animal):
+	def hunt(self):
+		print('{self.name} is hunting')
+
+
+class Rabbit(Prey):
+	pass
+
+class Hawk(Predator):
+	pass
+
+class Fish(Prey, Predator): 		
+	pass
+
+
+
+
+rabbit = Rabbit('Bugs')
+hawk = Hawk('Tony')
+fish = Fish('Nimo')
+
+rabbit.sleep()
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+
+abstract class
+	- a class that cannot be instantiated on its own
+	- meant to be subclass
+	- they can contain abstract methods which are declared but have no implementation
+	- benefits
+		- prevents instantiation of the class itself
+		- requires children to use inherited abstract method
+
+from abc import ABC, abstractmethod
+
+# make this class abstract by inherit ABC
+class Vehicle(ABC): 		
+	
+	# meaning child class needs to implement this
+	@abstractmethod 		
+	def go(self):
+		pass
+
+	@abstractmethod
+	def stop(self):
+		pass
+
+
+class Car(Vehicle):
+
+	def go(self):
+		print('You drive the car')
+
+	def stop(self):
+		print('You stop the car')
+
+
+class Motorcycle(Vehicle):
+
+	def go(self):
+		print('You ride the motorcycle')
+
+	def stop(self):
+		print('You stop the motorcycle')
+
+		
+motorcycle = Motorcycle()
+motorcycle.go()
+motorcycle.stop()
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+
+super() 
+	- is a function use in a child clas to call methods from a parent class(superclass)
+	- allows you to extend the functionality of the inherited methods
+
+
+class Shape():
+	def __init__(self, color, is_filled):
+		self.color = color
+		self.is_filled = is_filled
+
+	def describe(self):
+		print(f'It is {self.color} and {'filled' if self.is_filled else 'not filled'}')
+
+
+class Circle(Shape):
+	def __init__(self, color, is_filled, radius):
+		# inherit init of parent
+		super().__init__(color, is_filled) 			
+		self.radius = radius
+
+	def describe(self):
+		# this method will override parent method if you dont use super
+		super().describe()
+
+		print(f'It is a circle with an are of {3.14 * self.radius * self.radius}')
+
+class Square(Shape):
+	def __init__(self, color, is_filled, width):
+		super().__init__(color, is_filled)
+		self.width = width
+
+	def describe(self):
+		# this method will override parent method if you dont use super
+		super().describe()
+
+		print(f'It is a squre with an are of {self.width * self.width}cm^2')
+
+class Triangle(Shape):
+	def __init__(self, color, is_filled, width, height):
+		super().__init__(color, is_filled)
+		self.width = width
+		self.height = height
+
+	def describe(self):
+		# this method will override parent method if you dont use super
+		super().describe()
+
+		print(f'It is a rectangle with an are of {self.width * self.height / 2}cm^2')
+
+
+circle = Circle(color='red', is_filled=True, radius=5)
+squery = Square(color='blue', is_filled=False, width=6)
+
+
+print(circle.color)
+print(circle.is_filled)
+print(circle.radius)
+circle.describe()
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+
+polymorphism
+	- many form
+	- 2 ways to achieve polymorphism
+		- inheritance
+			- an object could be treated of the same type as a parent class
+		- duck typing
+			- object must have necessary attributes/methods
+
+# polymorphism inheritance style
+
+from abc import ABC, abstractmethod
+
+class Shape:
+	pass
+
+	@abstractmethod:
+	def area(self):
+		pass
+
+class Circle(Shape):
+	def __init__(self, radius):
+		self.radius = radius
+
+	def area(self):
+		return 3.14 * self.radius ** 2
+
+class Square(Shape):
+	def __init__(self, side):
+		self.side = side
+
+	def area(self):
+		return self.side ** 2
+
+class Triangle(Shape):
+	def __init__(self, base, height):
+		self.base = base
+		self.height = height
+
+	def area(self):
+		return self.base * self.height * 0.5
+
+
+# square = Square() 		# so square is a Square and a Shape
+
+
+shapes = [Circle(4), Square(5), Triangle(6, 7)]
+
+
+for shape in shapes:
+	print(shape.area())
+
+
+
+
+
+
+# another extended sample
+
+
+from abc import ABC, abstractmethod
+
+class Shape:
+	pass
+
+	@abstractmethod:
+	def area(self):
+		pass
+
+class Circle(Shape):
+	def __init__(self, radius):
+		self.radius = radius
+
+	def area(self):
+		return 3.14 * self.radius ** 2
+
+class Square(Shape):
+	def __init__(self, side):
+		self.side = side
+
+	def area(self):
+		return self.side ** 2
+
+class Triangle(Shape):
+	def __init__(self, base, height):
+		self.base = base
+		self.height = height
+
+	def area(self):
+		return self.base * self.height * 0.5
+
+class Pizza(Circle):
+	def __init__(self, topping, radius):
+		super().__init__(radius)
+		self.topping = topping
+		
+
+
+shapes = [Circle(4), Square(5), Triangle(6, 7), Pizza('pepperono', 15)]
+
+
+for shape in shapes:
+	print(shape.area())
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+duck typing
+	- another way to achieve polymorphism besides inheritance
+	- object must have the minimum necessary attributes/methods
+	- 'if it looks like a duck and quacks like a duck, it must be a duck'
+
+
+# polymorphism duck typing
+
+
+class Animal:
+	alive = True
+
+class Dog(Animal):
+	def speak(self):
+		print('woof')
+
+class Cat(Animal):
+	def speak(self):
+		print('meow')
+
+class Car:
+	alive = False
+	# since Car can also speak then it can be treated like the other like dogs or cats. It has the minimum methods to be considered an animal
+	def speak(self): 		
+		print('honk')
+
+animals = [Dog(), Cat(), Car()]
+
+for animal in animals:
+	animal.speak()
+	print(animal.alive)
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+Aggregation
+	- represents a relationship where one object (the whole)
+		contains reference to on or more INDEPENDENT objects (the parts)
+	- a relationship where one object contains references to other INDEPENDENT objects
+	- 'has-a' relationship
+
+
+# a library can exist without books
+# a book can exist without a library
+# a library can contain books
+# aggregation - the class involve can exist without each other
+
+
+class Library:
+	def __init__(self, name):
+		self.name = name
+		self.books = []
+
+	def add_book(self, book):
+		self.books.append(book)
+
+	def list_books(self):
+		return [f'{book.title} by {book.author}' for book in self.books]
+
+
+class Book:
+	def __init__(self, title, author):
+		self.title = title
+		self.author = author
+
+
+library = Library('New Year Public Library')
+
+book1 = Book('Harry Pooter', 'J.K. Rowling')
+book2 = Book('The Hobbit', 'J. R. R. Tokien')
+book2 = Book('The Colour of Magic', 'Terry Pratchet')
+
+library.add_book(book1)
+library.add_book(book2)
+library.add_book(book3)
+
+print(library.name)
+print(library.list_books())
+
+for book in library.list_books():
+	print(book)
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+Composition
+	- composed object directly owns its components, which cannot exist independently
+	- 'owns-a' relationship
+
+
+
+class Engine:
+	def __init__(self, horse_power):
+		self.horse_power = horse_power
+
+class Wheel:
+	def __init__(self, size):
+		self.size = size
+
+class Car:
+	def __init__(self, make, model, horse_power, wheel_size):
+		self.make = make
+		self.model = model
+
+		# considered composition style because we are creating Engine and Wheel inside Car class
+		self.engine = Engine(horse_power) 							
+		self.wheels = [Wheel(wheel_size) for wheel in range(4)]
+
+	def display_car(self):
+		return f'{self.make} {self.model} {self.engine.horse_power}(hp) {self.wheels[0]size}in'
+
+
+car1 = Car(make='Ford', model='Mustang', horse_power=500, wheel_size=18)
+car2 = Car(make='Chervolet', model='Corvette', horse_power=500, wheel_size=18)
+print(car1.display_car())
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+Nested class
+	- a class defined within another class
+		class Outer:
+			class Innter:
+	- benefits
+		- allows you to logically group classes that are closely related
+		- encapsulates private details that aren't relevant outside of the outer class
+		- keeps the namespace clear; reduces the possibility of naming conflicts
+
+
+class Company:
+	class Employee:
+		def __init__(self, name, position):
+			self.name = name
+			self.position = position
+
+		def get_details(self):
+			return f'{self.name} {self.position}'
+
+	def __init__(self, company_name):
+		self.company_name = company_name
+		self.employees = []
+
+	def add_employee(self, name, position):
+		new_employee = self.Employee(name, position)
+		self.employees.append(new_employee)
+
+	def list_employees(self):
+		return [employee.get_details() for employee in self.employees]
+
+company1 = Company('Kursty Krab')
+company2 = Company('Chum Bucket')
+
+company1.add_employee('Eugene', 'Manager')
+company1.add_employee('Spongbob', 'Cook')
+company1.add_employee('Squidward', 'Cashier')
+print(company1.list_employees())
+
+for employee in company1.list_employees():
+	print(employee)
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+Static methods
+	- a method that belongs to a class rather than any object from that class(instance)
+	- usually used for general utility functions
+
+# instance methods - best for operations on instances of the class (objects)
+# static methods - best for utility functions that do not need access to class data
+
+class Employee:
+	def __init__(self, name, position):
+		self.name = name
+		self.position = position
+
+	# instance method
+	def get_info(self): 		
+		return f'{self.name} = {self.positoin}'
+
+	# static method
+	@staticmethod
+	def is_valid_position(position): 		
+		valid_positions = ['Manager', 'Cashier', 'Cook', 'Janitor']
+		return position in valid_positions
+
+
+employee1 = Employee('Eugene', 'Manager')
+employee2 = Employee('Squidward', 'Cashier')
+
+
+# using static method
+print(empployee1.get_info()) 	
+
+print(Employee.is_valid_position('Cook'))
+
+
+
+
+Instance Methods VS Static Methods VS Class methods
+	- instance method 
+		- best for operations on instances of the class (objects)
+	- static method
+		- best for utility functions that do not need access to class data
+	- class method
+		- best for class-level data or require access to the class itself
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+Class methods
+	- allow operations related to the class itself
+	- take (cls) as the first parameter, which represents the class itself
+
+class Student:
+	count = 0
+	total_gpa = 0
+
+	def __init__(self, name, gpa):
+		self.name = name
+		self.gpa = gpa
+		Student.count += 1
+		Student.total_gpa += gpa
+
+	# instance method
+	def get_info(self):
+		return f'{self.name} {self.gpa}'
+
+	@classmethod
+	def get_count(cls):
+		return f'Total # of students: {cls.count}'
+
+	@classmethod
+	def get_average_gpa(cls):
+		if cls.count == 0:
+			return 0
+		else:
+			return f'{cls.total_gpa / cls.count}'
+
+
+student1 = Student('Spongebob', 3.2)
+student2 = Student('Patrick', 2.0)
+
+
+print(Student.get_count())
+print(Student.get_average_gpa())
+
+
+
+
+
+Instance Methods VS Static Methods VS Class methods
+	- instance method 
+		- best for operations on instances of the class (objects)
+	- static method
+		- best for utility functions that do not need access to class data
+	- class method
+		- best for class-level data or require access to the class itself
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+Magic methods
+	- dunder methods (double underscore)
+		- __init__, __str__, __eq__
+	- they are automatically called by many of pythons built-in operations
+	- they allow developers to define or customize the behavior of objects
+
+
+class Student:
+	def __init__(self, name, gpa):
+		self.name = name
+		self.gpa = gpa
+
+	def __str__(self):
+		return f'name: {self.name} gpa: {self.gpa}'
+
+	def __eq__(self, other):
+		return self.name == other.name
+
+	def __gt__(self, other):
+		return self.gpa > other.gpa
+
+
+student1 = Student('Spongbob', 3.2)
+student2 = Student('Patrick', 2.0)
+
+print(student1)
+print(student1 == student2)
+print(student1 > student2)
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+@property decorator
+	- use to define a method as a property (it can be accessed like an attribute)
+	- benefit
+		- add additional logic when read, write, or delete attributes
+	- gives you getter, setter, and deleter method
+
+
+class Rectangle:
+	def __init__(self, width, height):
+		# _ in _width tells developer it should not be access directly and should only be access inside the class
+		self._width = width 		
+		self._height = height
+
+	# not this access as getters
+	@property
+	def width(self): 				
+		return f'{self._width}'
+
+	# acts as setter
+	@width.setter 					
+	def width(self, new_width):
+		if new_width > 0:
+			self._width = new_width
+		else:
+			print('Width must be greater than zero')
+
+	@property
+	def height(self):
+		return f'{self._height}'
+
+	@height.setter
+	def height(self, new_height):
+		if new_height > 0:
+			self._height = new_height
+		else:
+			print('Height must be greater than zero')
+
+	# acts as deleter
+	@width.deleter 					
+	def width(self):
+		del self._width
+		print('Width has been deleted')
+
+
+rectangle = Rectangle(3, 4)
+
+rectangle.width = 5
+
+print(rectangle.width)
+print(rectangle.height)
+
+del rectangle.width
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
