@@ -1,0 +1,3615 @@
+
+
+--- basic start --------------------------------------------------------------------------
+
+- name of file and class should be same
+	
+	Main.java
+
+	public class Main {
+
+	}	
+
+
+
+
+
+- 
+	The main() method is required and you will see it in every Java program
+	Any code inside the main() method will be executed
+	main() serves like the 'entry point' of your program
+
+	public class Main {
+	  public static void main(String[] args) {
+	    System.out.println("Hello World");
+	  }
+	}	
+
+
+
+
+
+- compile your code
+	> javac Main.java
+		# will create Main.class
+
+
+
+
+
+
+- run your file
+	> java Main
+
+
+
+
+
+
+
+- 'String[] args' used in terminal
+	- If you run your Java program from terminal and pass extra inputs, they are stored inside that args array.
+	-
+		public class ArgsExample {
+		    public static void main(String[] args) {
+		        System.out.println("Number of arguments: " + args.length);
+
+		        for (String arg : args) {
+		            System.out.println("Argument: " + arg);
+		        }
+		    }
+		}	
+	-
+		> java ArgsExample hello world 123
+	-
+		Number of arguments: 3
+		Argument: hello
+		Argument: world
+		Argument: 123
+
+
+
+
+
+
+
+
+
+--- check version --------------------------------------------------------------------------
+
+cmd
+> java -version
+
+
+
+
+
+
+--- download java --------------------------------------------------------------------------
+
+https://www.oracle.com/java/technologies/downloads/#jdk22-windows
+
+
+
+
+
+
+--- declaring variables --------------------------------------------------------------------------
+
+-
+	type variableName = value;
+
+
+-
+	String 
+		- stores text, such as "Hello". String values are surrounded by double quotes
+
+		-
+			String name = "John";
+
+
+	int 
+		- stores integers (whole numbers), without decimals, such as 123 or -123
+
+		-
+			int myNum;
+			myNum = 15;
+
+
+	float 
+		- stores floating point numbers, with decimals, such as 19.99 or -19.99
+
+		-
+			float myFloatNum = 5.99f;
+
+	char 
+		- stores single characters, such as 'a' or 'B'. Char values are surrounded by single quotes
+
+		-
+			char myLetter = 'D';
+
+	boolean 
+		- stores values with two states: true or false
+
+		-
+			boolean myBool = true;
+
+
+
+
+
+--- final --------------------------------------------------------------------------
+-
+	this will declare the variable as "final" or "constant", which means unchangeable and read-only
+
+-
+	final int myNum = 15;
+
+
+
+
+
+
+
+
+--- generics --------------------------------------------------------------------------
+
+-
+	Generics let you specify what type of data the container (like a List) will hold.
+
+
+
+-
+	import java.util.ArrayList;
+	import java.util.List;
+
+	public class GenericsExample {
+	    public static void main(String[] args) {
+	        List<String> fruits = new ArrayList<>();
+	        fruits.add("Apple");
+	        fruits.add("Banana");
+	        // fruits.add(123);  // ERROR! Only Strings allowed
+
+	        for (String fruit : fruits) {
+	            System.out.println(fruit);
+	        }
+	    }
+	}
+
+
+
+
+
+
+
+
+
+--- comments --------------------------------------------------------------------------
+
+-
+	// This is a comment
+
+-
+	/* The code below will print the words Hello World
+	to the screen, and it is amazing */
+
+
+
+
+
+
+--- user input --------------------------------------------------------------------------
+
+
+-
+	The Scanner class is used to get user input, and it is found in the java.util package.
+
+
+-
+	nextBoolean()	
+		Reads a boolean value from the user
+	nextByte()	
+		Reads a byte value from the user
+	nextDouble()	
+		Reads a double value from the user
+	nextFloat()	
+		Reads a float value from the user
+	nextInt()	
+		Reads a int value from the user
+	nextLine()	
+		Reads a String value from the user
+	nextLong()	
+		Reads a long value from the user
+	nextShort()	
+		Reads a short value from the user
+
+
+-
+	import java.util.Scanner;
+
+	class Main {
+	  public static void main(String[] args) {
+	    Scanner myObj = new Scanner(System.in);
+
+	    System.out.println("Enter name, age and salary:");
+
+	    // String input
+	    String name = myObj.nextLine();
+
+	    // Numerical input
+	    int age = myObj.nextInt();
+	    double salary = myObj.nextDouble();
+	  }
+	}	
+
+
+
+
+
+
+
+
+
+
+--- output --------------------------------------------------------------------------
+
+-	
+	System.out.println("Hello World");
+
+
+
+-
+	int x = 5;
+	int y = 6;
+	System.out.println(x + y);	
+
+
+
+-
+    System.out.println("Name: " + name);
+    System.out.println("Age: " + age);
+    System.out.println("Salary: " + salary);
+
+
+
+-
+	String firstName = "John ";
+	String lastName = "Doe";
+	String fullName = firstName + lastName;
+	System.out.println(fullName);
+
+
+
+
+
+
+
+
+
+--- check type --------------------------------------------------------------------------
+
+
+-
+	if (variable instanceof SomeClass) {
+	    // do something
+	}
+
+
+	#
+
+
+	System.out.println(variable.getClass());
+
+
+
+
+
+-
+	String text = "hello";
+
+	if (text instanceof String) {
+	    System.out.println("It's a String!");
+	}
+
+
+	#
+
+
+	Integer number = 42;
+	System.out.println(number.getClass());
+	// Output: class java.lang.Integer
+
+
+
+
+
+- 
+
+	class MyCustomClass {
+	    // Your class properties or methods here
+	}
+
+	public class TypeCheckExample {
+	    public static void main(String[] args) {
+	        // Different variables
+	        Object text = "Hello World";
+	        Object number = 42;         // int is boxed into Integer
+	        Object decimal = 3.14f;      // float is boxed into Float
+	        Object letter = 'A';         // char is boxed into Character
+	        Object bool = true;          // boolean is boxed into Boolean
+	        Object myObj = new MyCustomClass(); // Your own class
+
+	        // Type checks
+	        if (text instanceof String) {
+	            System.out.println("text is a String");
+	        }
+
+	        if (number instanceof Integer) {
+	            System.out.println("number is an Integer");
+	        }
+
+	        if (decimal instanceof Float) {
+	            System.out.println("decimal is a Float");
+	        }
+
+	        if (letter instanceof Character) {
+	            System.out.println("letter is a Character");
+	        }
+
+	        if (bool instanceof Boolean) {
+	            System.out.println("bool is a Boolean");
+	        }
+
+	        if (myObj instanceof MyCustomClass) {
+	            System.out.println("myObj is an instance of MyCustomClass");
+	        }
+	    }
+	}
+
+
+
+
+
+
+
+--- typecasting --------------------------------------------------------------------------
+
+-
+	2 types of casting
+
+	- Widening Casting (automatically) 
+		- converting a smaller type to a larger type size
+		- byte -> short -> char -> int -> long -> float -> double
+
+	- Narrowing Casting (manually) 
+		- converting a larger type to a smaller size type
+		- double -> float -> long -> int -> char -> short -> byte
+
+
+
+- Widening Casting
+    int myInt = 9;
+    double myDouble = myInt; 		// Automatic casting: int to double
+    System.out.println(myInt);      // Outputs 9
+    System.out.println(myDouble);   // Outputs 9.0
+
+
+
+
+- Narrowing Casting
+    double myDouble = 9.78d;
+    int myInt = (int) myDouble; 	// Manual casting: double to int
+    System.out.println(myDouble);   // Outputs 9.78
+    System.out.println(myInt);      // Outputs 9
+
+
+
+
+
+- other
+
+	int			Integer.parseInt(string)
+	float		Float.parseFloat(string)
+	double		Double.parseDouble(string)
+	boolean		Boolean.parseBoolean(string)
+
+
+
+
+
+-
+	import java.util.Scanner;
+
+	public class CastExample {
+	    public static void main(String[] args) {
+	        Scanner scanner = new Scanner(System.in);
+
+	        System.out.print("Enter a number: ");
+	        String input = scanner.nextLine();
+
+	        // Cast String to int
+	        int number = Integer.parseInt(input);
+
+	        System.out.println("Your number + 10 is: " + (number + 10));
+	    }
+	}
+
+
+
+
+
+
+
+
+
+--- try catch --------------------------------------------------------------------------
+
+-
+	try {
+	    // Code that might throw exceptions
+	} catch (ExceptionType1 e1) {
+	    // Handle ExceptionType1
+	} catch (ExceptionType2 e2) {
+	    // Handle ExceptionType2
+	} catch (ExceptionType3 e3) {
+	    // Handle ExceptionType3
+	} finally {
+	    // Always runs (whether there was an error or not)
+	}
+
+
+
+
+- throw
+	throw new IllegalArgumentException("Invalid argument passed!");
+
+
+
+
+-
+
+    try {
+        int num = Integer.parseInt("abc");  
+        System.out.println("Parsed number: " + num); 
+    } catch (NumberFormatException e) {
+        System.out.println("Caught NumberFormatException: " + e.getMessage());
+    } catch (NullPointerException e) {
+        System.out.println("Caught NullPointerException: " + e.getMessage());
+    } catch (Exception e) { 		// Catch any other general exceptions
+        System.out.println("Caught some other Exception: " + e.getMessage());
+    } finally {
+        System.out.println("This always runs (finally block)");
+    }
+
+
+
+
+
+- throw
+	public class ThrowExample {
+		    public static void main(String[] args) {
+		        try {
+		            validateAge(15);  // Pass an invalid age
+		        } catch (IllegalArgumentException e) {
+		            System.out.println("Caught an error: " + e.getMessage());
+		        } finally {
+		            System.out.println("Finished checking age.");
+		        }
+		    }
+
+		    // Method that throws an error
+		    public static void validateAge(int age) {
+		        if (age < 18) {
+		            throw new IllegalArgumentException("Age must be 18 or older.");
+		        }
+		        System.out.println("Valid age: " + age);
+		    }
+		}
+
+
+
+
+
+
+
+--- if statements --------------------------------------------------------------------------
+
+
+
+
+-
+	if (x < 10) {
+	  // something
+	} else if (x < 18) {
+	  // something
+	} else {
+	  // something
+	}
+
+
+
+
+
+
+
+-
+	if (myNum % 2 == 0) {
+	  System.out.println(myNum + " is even");
+	} else {
+	  System.out.println(myNum + " is odd");
+	} 
+
+
+
+
+
+
+
+-
+    // AND example
+    if (a > 0 && b > 0) {
+        System.out.println("Both a and b are positive");
+    }
+
+    // OR example
+    if (a < 0 || b > 0) {
+        System.out.println("Either a is negative OR b is positive");
+    }
+
+    // NOT example
+    if (!isActive) {
+        System.out.println("isActive is false");
+    }
+
+
+
+
+
+
+
+
+
+--- ternary --------------------------------------------------------------------------
+
+
+
+-
+	variable = (condition) ? expressionTrue :  expressionFalse;
+
+
+
+
+-
+	String result = (time < 18) ? "Good day." : "Good evening.";
+
+
+
+
+
+
+
+
+
+
+--- switch --------------------------------------------------------------------------
+
+
+-
+	switch(expression) {
+	  case x:
+	    // code block
+	    break;
+	  case y:
+	    // code block
+	    break;
+	  default:
+	    // code block
+	}
+
+
+
+
+-
+	int day = 4;
+	switch (day) {
+	  case 6:
+	    System.out.println("Today is Saturday");
+	    break;
+	  case 7:
+	    System.out.println("Today is Sunday");
+	    break;
+	  default:
+	    System.out.println("Looking forward to the Weekend");
+	}
+
+
+
+
+
+
+
+
+
+--- while loop --------------------------------------------------------------------------
+
+
+
+
+-
+	int i = 0;
+	while (i < 5) {
+	  System.out.println(i);
+	  i++;
+	}
+
+
+-
+	int i = 0;
+	do {
+	  System.out.println(i);
+	  i++;
+	}
+	while (i < 5);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- for loop --------------------------------------------------------------------------
+
+
+-
+	for (statement 1; statement 2; statement 3) {
+	  // code block to be executed
+	}
+
+
+
+
+
+
+-
+	for (int i = 0; i < 5; i++) {
+	  System.out.println(i);
+	}
+
+
+
+
+
+-
+	for (int i = 0; i <= 10; i = i + 2) {
+	  System.out.println(i);
+	}
+
+
+
+
+
+
+- For-Each Loop - array
+	for (type variableName : arrayName) {
+	  // code block to be executed
+	}	
+
+	String[] cars = {"Volvo", "BMW", "Ford", "Mazda"};
+	for (String i : cars) {
+	  System.out.println(i);
+	}
+
+
+
+
+-
+    String text = "Hello World";
+    
+    for (char c : text.toCharArray()) {  // Convert String to char array
+        System.out.println(c);
+    }
+
+
+
+
+
+-
+
+	import java.util.Arrays;
+	import java.util.List;
+
+	public class ForLoopList {
+	    public static void main(String[] args) {
+	        List<Integer> numbers = Arrays.asList(1, 2, 3);
+
+	        for (int num : numbers) {
+	            System.out.println(num);
+	        }
+	    }
+	}
+
+
+
+
+
+
+
+
+
+
+
+--- string --------------------------------------------------------------------------
+
+
+	charAt()	
+		Returns the character at the specified index (position)	char
+	codePointAt()	
+		Returns the Unicode of the character at the specified index	int
+	codePointBefore()	
+		Returns the Unicode of the character before the specified index	int
+	codePointCount()	
+		Returns the number of Unicode values found in a string.	int
+	compareTo()	
+		Compares two strings lexicographically	int
+	compareToIgnoreCase()	
+		Compares two strings lexicographically, ignoring case differences	int
+	concat()	
+		Appends a string to the end of another string	String
+	contains()	
+		Checks whether a string contains a sequence of characters	boolean
+	contentEquals()	
+		Checks whether a string contains the exact same sequence of characters of the specified CharSequence or StringBuffer	boolean
+	copyValueOf()	
+		Returns a String that represents the characters of the character array	String
+	endsWith()	
+		Checks whether a string ends with the specified character(s)	boolean
+	equals()	
+		Compares two strings. Returns true if the strings are equal, and false if not	boolean
+	equalsIgnoreCase()	
+		Compares two strings, ignoring case considerations	boolean
+	format()	
+		Returns a formatted string using the specified locale, format string, and arguments	String
+	getBytes()	
+		Converts a string into an array of bytes	byte[]
+	getChars()	
+		Copies characters from a string to an array of chars	void
+	hashCode()	
+		Returns the hash code of a string	int
+	indexOf()	
+		Returns the position of the first found occurrence of specified characters in a string	int
+	intern()	
+		Returns the canonical representation for the string object	String
+	isEmpty()	
+		Checks whether a string is empty or not	boolean
+	join()	
+		Joins one or more strings with a specified separator	String
+	lastIndexOf()	
+		Returns the position of the last found occurrence of specified characters in a string	int
+	length()	
+		Returns the length of a specified string	int
+	matches()	
+		Searches a string for a match against a regular expression, and returns the matches	boolean
+	offsetByCodePoints()	
+		Returns the index within this String that is offset from the given index by codePointOffset code points	int
+	regionMatches()	
+		Tests if two string regions are equal	boolean
+	replace()	
+		Searches a string for a specified value, and returns a new string where the specified values are replaced	String
+	replaceAll()	
+		Replaces each substring of this string that matches the given regular expression with the given replacement	String
+	replaceFirst()	
+		Replaces the first occurrence of a substring that matches the given regular expression with the given replacement	String
+	split()	
+		Splits a string into an array of substrings	String[]
+	startsWith()	
+		Checks whether a string starts with specified characters	boolean
+	subSequence()	
+		Returns a new character sequence that is a subsequence of this sequence	CharSequence
+	substring()	
+		Returns a new string which is the substring of a specified string	String
+	toCharArray()	
+		Converts this string to a new character array	char[]
+	toLowerCase()	
+		Converts a string to lower case letters	String
+	toString()	
+		Returns the value of a String object	String
+	toUpperCase()	
+		Converts a string to upper case letters	String
+	trim()	
+		Removes whitespace from both ends of a string	String
+	valueOf()	
+		Returns the string representation of the specified value	String
+
+
+
+
+
+
+--- array --------------------------------------------------------------------------
+
+
+
+-
+	String[] cars = {"Volvo", "BMW", "Ford", "Mazda"};
+	int[] myNum = {10, 20, 30, 40};
+
+
+
+
+-
+	String[] cars = {"Volvo", "BMW", "Ford", "Mazda"};
+	System.out.println(cars[0]);
+
+
+
+
+-
+	String[] cars = {"Volvo", "BMW", "Ford", "Mazda"};
+	cars[0] = "Opel";
+	System.out.println(cars[0]);
+	// Now outputs Opel instead of Volvo
+
+
+
+
+-
+	String[] cars = {"Volvo", "BMW", "Ford", "Mazda"};
+	System.out.println(cars.length);
+	// Outputs 4
+
+
+
+
+
+-
+	int[][] myNumbers = { {1, 2, 3, 4}, {5, 6, 7} };
+	for (int[] row : myNumbers) {
+	  for (int i : row) {
+	    System.out.println(i);
+	  }
+	}
+
+
+
+
+-
+	int[][] myNumbers = { {1, 2, 3, 4}, {5, 6, 7} };
+	for (int i = 0; i < myNumbers.length; ++i) {
+	  for (int j = 0; j < myNumbers[i].length; ++j) {
+	    System.out.println(myNumbers[i][j]);
+	  }
+	}
+
+
+
+
+- compare python
+	Action						Python				Java
+	Access first				x[0]				array[0], string.charAt(0)
+	Access last					x[-1]				array[array.length-1], string.charAt(length-1)
+	Slice all					x[:]				string.substring(0) / array copy
+	Slice from index			x[2:]				string.substring(2) / copyOfRange(array, 2, array.length)
+	Slice between indices		x[1:4]				string.substring(1, 4) / copyOfRange(array, 1, 4)
+
+
+
+
+
+
+
+
+
+
+--- length --------------------------------------------------------------------------
+
+
+
+
+-
+	myString.length
+	myArray.length
+
+
+
+
+
+
+
+
+
+
+
+
+--- tuple --------------------------------------------------------------------------
+
+
+
+
+- java dont have tuple. You can create your own simple class
+
+
+
+
+
+
+
+
+--- function --------------------------------------------------------------------------
+
+
+
+- java dont have a regular function since all your function are inside class and its called methods of that class or methods of instance
+
+
+
+
+
+
+
+--- lambda --------------------------------------------------------------------------
+
+
+-
+	parameter -> expression
+	# 
+	(parameter1, parameter2) -> expression
+	# 
+	(parameter1, parameter2) -> { code block }
+
+
+-
+	import java.util.ArrayList;
+
+	public class Main {
+	  public static void main(String[] args) {
+	    ArrayList<Integer> numbers = new ArrayList<Integer>();
+	    numbers.add(5);
+	    numbers.add(9);
+	    numbers.add(8);
+	    numbers.add(1);
+	    numbers.forEach( (n) -> { System.out.println(n); } );
+	  }
+	}	
+
+
+
+
+
+
+
+
+
+
+--- class -  --------------------------------------------------------------------------
+
+
+
+public class Main {
+  int x = 5;
+  int y = 3;
+}
+
+
+
+
+
+
+
+
+
+--- class - attributes/fields --------------------------------------------------------------------------
+
+
+-
+	Instance Variable: A variable declared without the static keyword inside a class. Each object (instance) of the class will have its own copy of that variable.
+
+
+
+-
+	public class Main {
+	  int x = 5;  // attributes/fields = Instance variable. Attributes/fields are not class variables
+
+	  public static void main(String[] args) {
+	    Main obj1 = new Main();
+	    Main obj2 = new Main();
+
+	    obj1.x = 10;  // Changing obj1's x
+	    System.out.println(obj1.x);  // 10
+	    System.out.println(obj2.x);  // 5 (obj2's x is still 5)
+	  }
+	}
+
+
+
+
+
+
+
+-
+	public class Main {
+	  int x = 5;
+
+	  public static void main(String[] args) {
+	    Main myObj1 = new Main();  // Object 1
+	    Main myObj2 = new Main();  // Object 2
+	    myObj2.x = 25;
+	    System.out.println(myObj1.x);  // Outputs 5
+	    System.out.println(myObj2.x);  // Outputs 25
+	  }
+	}
+
+
+
+
+
+-
+	public class Main {
+	  String fname = "John";
+	  String lname = "Doe";
+	  int age = 24;
+
+	  public static void main(String[] args) {
+	    Main myObj = new Main();
+	    System.out.println("Name: " + myObj.fname + " " + myObj.lname);
+	    System.out.println("Age: " + myObj.age);
+	  }
+	}
+
+
+
+
+
+
+
+
+
+
+--- class - class variables(static) --------------------------------------------------------------------------
+
+-
+	use 'static' to make it a class variable
+
+
+
+
+
+
+
+-
+	public class Main {
+
+	    // Instance variable
+	    int instanceX = 5;
+
+	    // Class variable (static)
+	    static int classX = 5;
+
+	    public static void main(String[] args) {
+	        Main obj1 = new Main();
+	        Main obj2 = new Main();
+
+	        obj1.instanceX = 10; // Changes obj1's instance variable.
+	        obj2.instanceX = 15; // Changes obj2's instance variable.
+
+	        Main.classX = 20; // This affects both obj1 and obj2.
+	        Main.classX = 30; // This also affects both obj1 and obj2.
+
+	        System.out.println("obj1 instanceX: " + obj1.instanceX); // 10
+	        System.out.println("obj2 instanceX: " + obj2.instanceX); // 15
+	        System.out.println("classX: " + Main.classX); // 30 (shared)
+	        System.out.println("classX: " + Main.classX); // 30 (shared)
+	    }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - class method(static) --------------------------------------------------------------------------
+
+
+-
+	public class Main {
+	  static void myMethod() {
+	    // code to be executed
+	  }
+	}
+
+
+
+-
+	myMethod() is the name of the method
+	static means that the method belongs to the Main class and not an object of the Main class. You will learn more about objects and how to access methods through objects later in this tutorial.
+	void means that this method does not have a return value. You will learn more about return values later in this chapter
+
+
+
+
+-
+	public class Main {
+	  static void myMethod() {
+	    System.out.println("I just got executed!");
+	  }
+
+	  public static void main(String[] args) {
+	    myMethod(); // shorthand daw ni
+	    # or
+	    Main.myMethod
+	  }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - class methods parameters --------------------------------------------------------------------------
+
+
+-
+	public class Main {
+	  static void myMethod(String fname, int age) {
+	    System.out.println(fname + " is " + age);
+	  }
+
+	  public static void main(String[] args) {
+	    myMethod("Liam", 5);
+	    myMethod("Jenny", 8);
+	    myMethod("Anja", 31);
+	  }
+	}
+
+
+
+
+
+
+
+--- class - class method return value --------------------------------------------------------------------------
+
+
+
+-
+	public class Main {
+	  static int myMethod(int x, int y) {
+	    return x + y;
+	  }
+
+	  public static void main(String[] args) {
+	    int z = myMethod(5, 3);
+	    System.out.println(z);
+	  }
+	}
+
+
+
+
+
+- recursion
+	public class Main {
+	  public static void main(String[] args) {
+	    int result = sum(10);
+	    System.out.println(result);
+	  }
+	  public static int sum(int k) {
+	    if (k > 0) {
+	      return k + sum(k - 1);
+	    } else {
+	      return 0;
+	    }
+	  }
+	}
+
+
+
+
+
+
+
+
+
+--- class - class method overloading --------------------------------------------------------------------------
+
+
+static int plusMethod(int x, int y) {
+  return x + y;
+}
+
+static double plusMethod(double x, double y) {
+  return x + y;
+}
+
+public static void main(String[] args) {
+  int myNum1 = plusMethod(8, 5);
+  double myNum2 = plusMethod(4.3, 6.26);
+  System.out.println("int: " + myNum1);
+  System.out.println("double: " + myNum2);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - instance method --------------------------------------------------------------------------
+
+
+-
+	// Create a Main class
+	public class Main {
+	 
+	  // Create a fullThrottle() method
+	  public void fullThrottle() {
+	    System.out.println("The car is going as fast as it can!");
+	  }
+
+	  // Create a speed() method and add a parameter
+	  public void speed(int maxSpeed) {
+	    System.out.println("Max speed is: " + maxSpeed);
+	  }
+
+	  // Inside main, call the methods on the myCar object
+	  public static void main(String[] args) {
+	    Main myCar = new Main();   // Create a myCar object
+	    myCar.fullThrottle();      // Call the fullThrottle() method
+	    myCar.speed(200);          // Call the speed() method
+	  }
+	}
+
+
+
+
+
+- in multiple classes
+	Main.java
+		public class Main {
+		  public void fullThrottle() {
+		    System.out.println("The car is going as fast as it can!");
+		  }
+
+		  public void speed(int maxSpeed) {
+		    System.out.println("Max speed is: " + maxSpeed);
+		  }
+		}
+
+
+	Second.java
+		class Second {
+		  public static void main(String[] args) {
+		    Main myCar = new Main();     // Create a myCar object
+		    myCar.fullThrottle();      // Call the fullThrottle() method
+		    myCar.speed(200);          // Call the speed() method
+		  }
+		}
+
+
+
+
+
+
+
+
+
+--- class - constructor --------------------------------------------------------------------------
+
+
+-
+	public class Animal {
+	    // Instance variables
+	    String name;
+	    int age;
+
+	    // Constructor: Initializes the object with a name and age
+	    public Animal(String name, int age) {
+	        this.name = name; // Initialize the instance variable 'name'
+	        this.age = age; // Initialize the instance variable 'age'
+	    }
+
+	    // Method to display animal's information
+	    public void displayInfo() {
+	        System.out.println("Name: " + this.name + ", Age: " + this.age);
+	    }
+
+	    public static void main(String[] args) {
+	        // Creating an object of Animal using the constructor
+	        Animal animal1 = new Animal("Lion", 5); // Calls the constructor
+	        Animal animal2 = new Animal("Tiger", 3); // Calls the constructor
+
+	        // Displaying the animal info
+	        animal1.displayInfo(); // Output: Name: Lion, Age: 5
+	        animal2.displayInfo(); // Output: Name: Tiger, Age: 3
+	    }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - using this --------------------------------------------------------------------------
+
+
+- 1. Distinguishing Between Instance Variables and Parameters (Constructor)
+	public class Animal {
+	    String name;  // Instance variable
+	    int age;      // Instance variable
+
+	    // Constructor
+	    public Animal(String name, int age) {
+	        this.name = name;  // 'this.name' refers to the instance variable, 'name' is the parameter
+	        this.age = age;    // 'this.age' refers to the instance variable, 'age' is the parameter
+	    }
+	}
+
+
+
+
+
+
+- 2. Accessing Instance Variables and Methods
+	public class Animal {
+	    String name;
+
+	    // Constructor
+	    public Animal(String name) {
+	        this.name = name; // 'this' makes it explicit that we're referring to the instance variable
+	    }
+
+	    public void printName() {
+	        System.out.println(this.name); // 'this' is optional here, but it's clearer
+	    }
+	}
+
+
+
+
+
+
+- 3. Calling Another Constructor (Constructor Chaining)
+	public class Animal {
+	    String name;
+	    int age;
+
+	    // Constructor with name and age
+	    public Animal(String name, int age) {
+	        this.name = name;
+	        this.age = age;
+	    }
+
+	    // Constructor with only name, defaults age to 0
+	    public Animal(String name) {
+	        this(name, 0);  // Calling the constructor with name and age
+	    }
+	}
+
+
+
+
+
+
+- 4. Passing the Current Object
+	public class Animal {
+	    String name;
+	    int age;
+
+	    // Constructor
+	    public Animal(String name, int age) {
+	        this.name = name;
+	        this.age = age;
+	    }
+
+	    // Method that takes an Animal object
+	    public void makeFriend(Animal otherAnimal) {
+	        System.out.println(this.name + " is now friends with " + otherAnimal.name);
+	    }
+
+	    public static void main(String[] args) {
+	        Animal lion = new Animal("Lion", 5);
+	        Animal tiger = new Animal("Tiger", 3);
+
+	        lion.makeFriend(tiger);  // Passing 'tiger' as an argument
+	    }
+	}
+
+
+
+
+
+
+- 5. Referring to the Current Object in Non-Static Context
+	public class Animal {
+	    String name;
+
+	    public Animal(String name) {
+	        this.name = name;
+	    }
+
+	    public void greet() {
+	        System.out.println("Hello, I am " + this.name);
+	    }
+
+	    public static void main(String[] args) {
+	        Animal animal = new Animal("Leo");
+	        animal.greet();  // Output: Hello, I am Leo
+	    }
+	}
+
+
+
+
+
+
+
+
+
+
+
+--- class - Access Modifiers --------------------------------------------------------------------------
+
+
+
+- For classes
+	- public
+		- The class is accessible by any other class	
+	- default
+		- The class is only accessible by classes in the same package. This is used when you don't specify a modifier. You will learn more about packages in the Packages chapter	
+
+
+- For attributes, methods and constructors
+	- public	
+		- The code is accessible for all classes	
+	- private	
+		- The code is only accessible within the declared class	
+	- default	
+		- The code is only accessible in the same package. This is used when you don't specify a modifier. You will learn more about packages in the Packages chapter	
+	- protected	
+		- The code is accessible in the same package and subclasses. You will learn more about subclasses and superclasses in the Inheritance chapter
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - Non-Access Modifiers --------------------------------------------------------------------------
+
+
+- For classes
+	- final	
+		- The class cannot be inherited by other classes (You will learn more about inheritance in the Inheritance chapter)	
+	- abstract	
+		- The class cannot be used to create objects (To access an abstract class, it must be inherited from another class. You will learn more about inheritance and abstraction in the Inheritance and Abstraction chapters)	
+
+
+- For attributes and methods
+	- final
+		- Attributes and methods cannot be overridden/modified
+	- static
+		- Attributes and methods belongs to the class, rather than an object
+	- abstract
+		- Can only be used in an abstract class, and can only be used on methods. The method does not have a body, for example abstract void run();. The body is provided by the subclass (inherited from). You will learn more about inheritance and abstraction in the Inheritance and Abstraction chapters
+	- transient
+		- Attributes and methods are skipped when serializing the object containing them
+	- synchronized
+		- Methods can only be accessed by one thread at a time
+	- volatile
+		- The value of an attribute is not cached thread-locally, and is always read from the "main memory"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - Encapsulation - getters setters --------------------------------------------------------------------------
+
+- 
+	public class Person {
+	  private String name; // private = restricted access
+
+	  // Getter
+	  public String getName() {
+	    return name;
+	  }
+
+	  // Setter
+	  public void setName(String newName) {
+	    this.name = newName;
+	  }
+	}
+
+
+
+	public class Main {
+	  public static void main(String[] args) {
+	    Person myObj = new Person();
+	    myObj.setName("John"); // Set the value of the name variable to "John"
+	    System.out.println(myObj.getName());
+	  }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - Packages --------------------------------------------------------------------------
+
+- A package in Java is used to group related classes. 
+- We use packages to avoid name conflicts, and to write a better maintainable code. 
+
+Packages are divided into two categories:
+	- Built-in Packages (packages from the Java API)
+	- User-defined Packages (create your own packages)
+
+
+
+
+
+-
+	import package.name.Class;   // Import a single class
+	import package.name.*;   // Import the whole package
+	import java.util.Scanner;
+
+
+
+
+- 
+	import java.util.Scanner;
+
+	class MyClass {
+	  public static void main(String[] args) {
+	    Scanner myObj = new Scanner(System.in);
+	    System.out.println("Enter username");
+
+	    String userName = myObj.nextLine();
+	    System.out.println("Username is: " + userName);
+	  }
+	}
+
+
+
+
+
+- User-defined Packages
+	
+	> mkdir mypack
+
+
+	MyPackageClass.java
+	# this should be inside mypack folder
+
+
+	package mypack;
+	class MyPackageClass {
+	  public static void main(String[] args) {
+	    System.out.println("This is my package!");
+	  }
+	}	
+
+	> javac mypack/MyPackageClass.java
+	> javac -d . mypack/MyPackageClass.java
+	> java mypack.MyPackageClass
+
+
+
+
+
+
+
+
+-
+
+	YourProjectFolder/
+	  ├── mypackage/
+	  │     └── MyClass.java
+	  └── Main.java
+
+
+
+
+
+	// File: mypackage/MyClass.java
+	package mypackage;
+
+	public class MyClass {
+
+	    // A simple method to greet a user
+	    public void greet(String name) {
+	        System.out.println("Hello, " + name + "!");
+	    }
+
+	    // A method to add two numbers
+	    public int add(int a, int b) {
+	        return a + b;
+	    }
+
+	    // A method to return a message
+	    public String getMessage() {
+	        return "This is a message from MyClass.";
+	    }
+	}
+
+
+
+
+
+	// File: Main.java
+	import mypackage.MyClass; // Import the class from the 'mypackage' package
+
+	public class Main {
+	    public static void main(String[] args) {
+	        // Create an instance of MyClass
+	        MyClass myObj = new MyClass();
+
+	        // Call the 'greet' method
+	        myObj.greet("Liam");
+
+	        // Call the 'add' method and print the result
+	        int sum = myObj.add(5, 10);
+	        System.out.println("Sum: " + sum);
+
+	        // Call the 'getMessage' method and print the returned message
+	        String message = myObj.getMessage();
+	        System.out.println(message);
+	    }
+	}
+
+
+
+
+
+	> javac mypackage/MyClass.java
+	> javac Main.java
+	> java Main
+
+
+
+
+
+
+
+
+--- class - Inheritance --------------------------------------------------------------------------
+
+- use the extends keyword
+- subclass (child) 
+	- the class that inherits from another class
+- superclass (parent) 
+	- the class being inherited from
+
+
+
+
+
+-
+	class Vehicle {
+	  protected String brand = "Ford";        // Vehicle attribute
+	  public void honk() {                    // Vehicle method
+	    System.out.println("Tuut, tuut!");
+	  }
+	}
+
+	class Car extends Vehicle {
+	  private String modelName = "Mustang";    // Car attribute
+	  public static void main(String[] args) {
+
+	    // Create a myCar object
+	    Car myCar = new Car();
+
+	    // Call the honk() method (from the Vehicle class) on the myCar object
+	    myCar.honk();
+
+	    // Display the value of the brand attribute (from the Vehicle class) and the value of the modelName from the Car class
+	    System.out.println(myCar.brand + " " + myCar.modelName);
+	  }
+	}	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - super --------------------------------------------------------------------------
+
+
+
+- 
+	// Base class Shape
+	public class Shape {
+	    protected String color;
+	    protected boolean isFilled;
+
+	    // Constructor
+	    public Shape(String color, boolean isFilled) {
+	        this.color = color;
+	        this.isFilled = isFilled;
+	    }
+
+	    // Method to describe the shape
+	    public void describe() {
+	        System.out.println("It is " + color + " and " + (isFilled ? "filled" : "not filled"));
+	    }
+	}
+
+	// Child class Circle
+	class Circle extends Shape {
+	    private double radius;
+
+	    // Constructor
+	    public Circle(String color, boolean isFilled, double radius) {
+	        super(color, isFilled); // Call the parent constructor
+	        this.radius = radius;
+	    }
+
+	    @Override  // <- tells both Java and other programmers that this method is meant to override a method from a parent class or interface.
+	    public void describe() {
+	        super.describe(); // Call parent's describe()
+	        System.out.println("It is a circle with an area of " + (3.14 * radius * radius));
+	    }
+	}
+
+	// Child class Square
+	class Square extends Shape {
+	    private double width;
+
+	    public Square(String color, boolean isFilled, double width) {
+	        super(color, isFilled);
+	        this.width = width;
+	    }
+
+	    @Override
+	    public void describe() {
+	        super.describe();
+	        System.out.println("It is a square with an area of " + (width * width) + "cm^2");
+	    }
+	}
+
+	// Child class Triangle
+	class Triangle extends Shape {
+	    private double width;
+	    private double height;
+
+	    public Triangle(String color, boolean isFilled, double width, double height) {
+	        super(color, isFilled);
+	        this.width = width;
+	        this.height = height;
+	    }
+
+	    @Override
+	    public void describe() {
+	        super.describe();
+	        System.out.println("It is a triangle with an area of " + (width * height / 2) + "cm^2");
+	    }
+	}
+
+	// Main class to test
+	class Main {
+	    public static void main(String[] args) {
+	        Circle circle = new Circle("Red", true, 5);
+	        Square square = new Square("Blue", false, 6);
+
+	        System.out.println(circle.color);
+	        System.out.println(circle.isFilled);
+	        System.out.println(circle.radius);  // Note: This will throw error if radius is private! 
+	                                            // We'll need a getter if you want this to work properly.
+
+	        circle.describe();
+	        square.describe();
+	    }
+	}
+
+
+
+
+
+
+Without @Override 									| 				With @Override
+Mistyped method names are accepted silently 		| 					Mistyped method names cause a compile-time error
+Java assumes you are making a new method 			| 					Java expects you to override an existing method
+No safety 											| 					Full safety
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - Abstract Classes and Methods --------------------------------------------------------------------------
+
+- Abstract class: 
+	- is a restricted class that cannot be used to create objects (to access it, it must be inherited from another class).
+- Abstract method: 
+	- can only be used in an abstract class, and it does not have a body. The body is provided by the subclass (inherited from).
+
+
+
+
+-
+	// Abstract class
+	abstract class Animal {
+	  // Abstract method (does not have a body)
+	  public abstract void animalSound();
+	  // Regular method
+	  public void sleep() {
+	    System.out.println("Zzz");
+	  }
+	}
+
+	// Subclass (inherit from Animal)
+	class Pig extends Animal {
+	  public void animalSound() {
+	    // The body of animalSound() is provided here
+	    System.out.println("The pig says: wee wee");
+	  }
+	}
+
+	class Main {
+	  public static void main(String[] args) {
+	    Pig myPig = new Pig(); // Create a Pig object
+	    myPig.animalSound();
+	    myPig.sleep();
+	  }
+	}
+
+
+
+
+
+
+
+
+
+--- class - Interfaces --------------------------------------------------------------------------
+
+- An interface is a completely "abstract class" that is used to group related methods with empty bodies:
+
+
+
+-
+	// Interface
+	interface Animal {
+	  public void animalSound(); // interface method (does not have a body)
+	  public void sleep(); // interface method (does not have a body)
+	}
+
+	// Pig "implements" the Animal interface
+	class Pig implements Animal {
+	  public void animalSound() {
+	    // The body of animalSound() is provided here
+	    System.out.println("The pig says: wee wee");
+	  }
+	  public void sleep() {
+	    // The body of sleep() is provided here
+	    System.out.println("Zzz");
+	  }
+	}
+
+	class Main {
+	  public static void main(String[] args) {
+	    Pig myPig = new Pig();  // Create a Pig object
+	    myPig.animalSound();
+	    myPig.sleep();
+	  }
+	}
+
+
+
+
+
+
+
+
+- Multiple Interfaces
+
+	interface FirstInterface {
+	  public void myMethod(); // interface method
+	}
+
+	interface SecondInterface {
+	  public void myOtherMethod(); // interface method
+	}
+
+	class DemoClass implements FirstInterface, SecondInterface {
+	  public void myMethod() {
+	    System.out.println("Some text..");
+	  }
+	  public void myOtherMethod() {
+	    System.out.println("Some other text...");
+	  }
+	}
+
+	class Main {
+	  public static void main(String[] args) {
+	    DemoClass myObj = new DemoClass();
+	    myObj.myMethod();
+	    myObj.myOtherMethod();
+	  }
+	}
+
+
+
+
+
+
+
+
+
+
+--- class - Multiple Inheritance by interface --------------------------------------------------------------------------
+
+
+
+-
+	// Define two interfaces
+	interface Prey {
+	    void flee();
+	}
+
+	interface Predator {
+	    void hunt();
+	}
+
+	// Implement classes
+	class Rabbit implements Prey {
+	    public void flee() {
+	        System.out.println("This animal is fleeing");
+	    }
+	}
+
+	class Hawk implements Predator {
+	    public void hunt() {
+	        System.out.println("This animal is hunting");
+	    }
+	}
+
+	// Multiple inheritance via interfaces
+	class Fish implements Prey, Predator {
+	    public void flee() {
+	        System.out.println("Fish is fleeing");
+	    }
+	    public void hunt() {
+	        System.out.println("Fish is hunting");
+	    }
+	}
+
+	// Main class to run
+	public class Main {
+	    public static void main(String[] args) {
+	        Rabbit rabbit = new Rabbit();
+	        Hawk hawk = new Hawk();
+	        Fish fish = new Fish();
+
+	        rabbit.flee();
+	        hawk.hunt();
+	        fish.flee();
+	        fish.hunt();
+	    }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - Multilevel Inheritance --------------------------------------------------------------------------
+
+
+-
+	// Base class
+	class Animal {
+	    String name;
+
+	    Animal(String name) {
+	        this.name = name;
+	    }
+
+	    void eat() {
+	        System.out.println(this.name + " is eating");
+	    }
+
+	    void sleep() {
+	        System.out.println(this.name + " is sleeping");
+	    }
+	}
+
+	// Prey inherits Animal
+	class Prey extends Animal {
+	    Prey(String name) {
+	        super(name);
+	    }
+
+	    void flee() {
+	        System.out.println(this.name + " is fleeing");
+	    }
+	}
+
+	// Predator inherits Animal
+	class Predator extends Animal {
+	    Predator(String name) {
+	        super(name);
+	    }
+
+	    void hunt() {
+	        System.out.println(this.name + " is hunting");
+	    }
+	}
+
+	// Rabbit inherits Prey
+	class Rabbit extends Prey {
+	    Rabbit(String name) {
+	        super(name);
+	    }
+	}
+
+	// Hawk inherits Predator
+	class Hawk extends Predator {
+	    Hawk(String name) {
+	        super(name);
+	    }
+	}
+
+	// Fish cannot extend both Prey and Predator (Java limitation!)
+	// So we have to redesign: maybe using interfaces
+	// For now we skip Fish here or use composition
+
+	// Main class to run
+	public class Main {
+	    public static void main(String[] args) {
+	        Rabbit rabbit = new Rabbit("Bugs");
+	        Hawk hawk = new Hawk("Tony");
+
+	        rabbit.sleep();
+	        rabbit.eat();
+	        rabbit.flee();
+
+	        hawk.hunt();
+	    }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - Polymorphism --------------------------------------------------------------------------
+
+
+
+-
+	class Animal {
+	  public void animalSound() {
+	    System.out.println("The animal makes a sound");
+	  }
+	}
+
+	class Pig extends Animal {
+	  public void animalSound() {
+	    System.out.println("The pig says: wee wee");
+	  }
+	}
+
+	class Dog extends Animal {
+	  public void animalSound() {
+	    System.out.println("The dog says: bow wow");
+	  }
+	}
+
+	class Main {
+	  public static void main(String[] args) {
+	    Animal myAnimal = new Animal();  // Create a Animal object
+	    Animal myPig = new Pig();  // Create a Pig object
+	    Animal myDog = new Dog();  // Create a Dog object
+	    myAnimal.animalSound();
+	    myPig.animalSound();
+	    myDog.animalSound();
+	  }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - aggregation --------------------------------------------------------------------------
+
+-
+
+	// Employee class
+	class Employee {
+	    String name;
+	    
+	    Employee(String name) {
+	        this.name = name;
+	    }
+
+	    void work() {
+	        System.out.println(name + " is working...");
+	    }
+	}
+
+	// Company class (Aggregation: has Employees)
+	class Company {
+	    String companyName;
+	    Employee employee;  // Company HAS an Employee
+
+	    Company(String companyName, Employee employee) {
+	        this.companyName = companyName;
+	        this.employee = employee;
+	    }
+
+	    void showInfo() {
+	        System.out.println(companyName + " employs " + employee.name);
+	    }
+	}
+
+	// Main class
+	public class Main {
+	    public static void main(String[] args) {
+	        Employee emp1 = new Employee("Alice");  // Employee exists independently
+	        Company company = new Company("Tech Corp", emp1);
+
+	        company.showInfo();
+	        emp1.work();  // Employee can work even without company logic
+	    }
+	}
+
+
+
+
+
+
+
+
+
+
+--- class - composition --------------------------------------------------------------------------
+
+
+-
+	// Room class
+	class Room {
+	    String name;
+	    
+	    Room(String name) {
+	        this.name = name;
+	    }
+
+	    void describe() {
+	        System.out.println("This is the " + name + " room.");
+	    }
+	}
+
+	// House class (Composition: owns Rooms)
+	class House {
+	    String houseName;
+	    Room livingRoom;
+	    Room bedroom;
+
+	    House(String houseName) {
+	        this.houseName = houseName;
+	        // Rooms are created inside the House: strong dependency
+	        this.livingRoom = new Room("Living");
+	        this.bedroom = new Room("Bedroom");
+	    }
+
+	    void showHouse() {
+	        System.out.println(houseName + " has the following rooms:");
+	        livingRoom.describe();
+	        bedroom.describe();
+	    }
+	}
+
+	// Main class
+	public class Main {
+	    public static void main(String[] args) {
+	        House house = new House("Dream House");
+	        house.showHouse();
+	    }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - nested --------------------------------------------------------------------------
+
+
+-
+	public class Company {
+	    private String companyName;
+
+	    // Constructor for Company class
+	    public Company(String companyName) {
+	        this.companyName = companyName;
+	    }
+
+	    // Getter method for companyName
+	    public String getCompanyName() {
+	        return companyName;
+	    }
+
+	    // Non-static nested class: Employee
+	    public class Employee {
+	        private String name;
+	        private int employeeId;
+
+	        // Constructor for Employee class
+	        public Employee(String name, int employeeId) {
+	            this.name = name;
+	            this.employeeId = employeeId;
+	        }
+
+	        // Getter method for Employee's name
+	        public String getName() {
+	            return name;
+	        }
+
+	        // Getter method for Employee's ID
+	        public int getEmployeeId() {
+	            return employeeId;
+	        }
+
+	        // Method to print employee details along with company name
+	        public void printEmployeeDetails() {
+	            System.out.println("Company: " + companyName + ", Employee: " + name + ", Employee ID: " + employeeId);
+	        }
+	    }
+
+	    // Method to create a new Employee
+	    public Employee createEmployee(String name, int employeeId) {
+	        return new Employee(name, employeeId);
+	    }
+
+	    // Main method to run the program
+	    public static void main(String[] args) {
+	        // Create a company instance
+	        Company company = new Company("TechCorp");
+
+	        // Create an employee instance by calling the method from the Company class
+	        Company.Employee employee = company.createEmployee("Alice", 101);
+
+	        // Call a method of the Employee class
+	        employee.printEmployeeDetails();
+	    }
+	}
+
+
+
+
+
+
+
+-
+	import java.util.ArrayList;
+	import java.util.List;
+
+	public class Company {
+	    private String companyName;
+	    private List<Employee> employees;
+
+	    // Constructor for Company
+	    public Company(String companyName) {
+	        this.companyName = companyName;
+	        this.employees = new ArrayList<>();
+	    }
+
+	    // Method to add employee
+	    public void addEmployee(String name, String position) {
+	        Employee newEmployee = new Employee(name, position);
+	        employees.add(newEmployee);
+	    }
+
+	    // Method to list employee details
+	    public List<String> listEmployees() {
+	        List<String> employeeDetails = new ArrayList<>();
+	        for (Employee employee : employees) {
+	            employeeDetails.add(employee.getDetails());
+	        }
+	        return employeeDetails;
+	    }
+
+	    // Inner (nested) class Employee
+	    public class Employee {
+	        private String name;
+	        private String position;
+
+	        // Constructor for Employee
+	        public Employee(String name, String position) {
+	            this.name = name;
+	            this.position = position;
+	        }
+
+	        // Method to get employee details
+	        public String getDetails() {
+	            return name + " " + position;
+	        }
+	    }
+
+	    // Main method to run
+	    public static void main(String[] args) {
+	        Company company1 = new Company("Krusty Krab");
+	        Company company2 = new Company("Chum Bucket");
+
+	        company1.addEmployee("Eugene", "Manager");
+	        company1.addEmployee("SpongeBob", "Cook");
+	        company1.addEmployee("Squidward", "Cashier");
+
+	        // Print all employee details
+	        System.out.println(company1.listEmployees());
+
+	        // Or print them one by one
+	        for (String employee : company1.listEmployees()) {
+	            System.out.println(employee);
+	        }
+	    }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- class - Enums --------------------------------------------------------------------------
+
+
+
+-
+
+	enum Level {
+	  LOW,
+	  MEDIUM,
+	  HIGH
+	}
+
+	public class Main {
+	  public static void main(String[] args) {
+	    Level myVar = Level.MEDIUM;
+
+	    switch(myVar) {
+	      case LOW:
+	        System.out.println("Low level");
+	        break;
+	      case MEDIUM:
+	         System.out.println("Medium level");
+	        break;
+	      case HIGH:
+	        System.out.println("High level");
+	        break;
+	    }
+	  }
+	}
+
+
+
+
+
+
+
+
+
+--- class -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- class -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- class -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc - ArrayList --------------------------------------------------------------------------
+
+
+- a resizable array
+- Use an ArrayList for storing and accessing data, and LinkedList to manipulate data.
+	- ArrayList is more efficient as it is common to need access to random items in the list
+
+
+
+
+- 
+	import java.util.ArrayList; // import the ArrayList class
+	ArrayList<String> cars = new ArrayList<String>(); // Create an ArrayList object
+
+
+
+
+
+
+
+-
+	import java.util.ArrayList;
+
+	public class Main {
+	  public static void main(String[] args) {
+	    ArrayList<String> cars = new ArrayList<String>();
+	    cars.add("Volvo");
+	    cars.add("BMW");
+	    cars.add("Ford");
+	    cars.add("Mazda");
+	    System.out.println(cars);
+	  }
+	}
+
+
+
+
+
+
+
+
+-
+	ArrayList<Integer> myNumbers = new ArrayList<Integer>();
+
+
+
+
+
+
+
+
+
+-
+
+    ArrayList<String> cars = new ArrayList<String>();
+    cars.add("Volvo");
+    cars.add("BMW");
+    cars.add("Ford");
+    cars.add(0, "Mazda"); // Insert element at the beginning of the list (0)
+    System.out.println(cars);
+
+
+
+
+
+- get first item
+	cars.get(0);
+
+
+
+
+
+
+- change item
+	cars.set(0, "Opel");
+
+
+
+
+
+
+
+- 
+	cars.remove(0);
+
+
+
+
+
+
+
+-
+	cars.clear();
+
+
+
+
+
+
+
+-
+	cars.size();
+
+
+
+
+
+
+
+- loop 1
+    for (int i = 0; i < cars.size(); i++) {
+      System.out.println(cars.get(i));
+    }
+
+
+
+
+
+
+
+
+- loop 2
+    for (String i : cars) {
+      System.out.println(i);
+    }
+
+
+
+
+
+
+
+- sorting
+	import java.util.ArrayList;
+	import java.util.Collections;  // Import the Collections class
+
+	public class Main {
+	  public static void main(String[] args) {
+	    ArrayList<String> cars = new ArrayList<String>();
+	    cars.add("Volvo");
+	    cars.add("BMW");
+	    cars.add("Ford");
+	    cars.add("Mazda");
+	    Collections.sort(cars);  // Sort cars
+	    for (String i : cars) {
+	      System.out.println(i);
+	    }
+	  }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+--- data struc - LinkedList --------------------------------------------------------------------------
+
+
+- Use an ArrayList for storing and accessing data, and LinkedList to manipulate data.
+	- ArrayList is more efficient as it is common to need access to random items in the list
+
+
+
+
+
+- LinkedList provides several methods to do certain operations more efficiently
+	- addFirst()	
+		- Adds an item to the beginning of the list	
+	- addLast()	
+		- Add an item to the end of the list	
+	- removeFirst()	
+		- Remove an item from the beginning of the list	
+	- removeLast()	
+		- Remove an item from the end of the list	
+	- getFirst()	
+		- Get the item at the beginning of the list	
+	- getLast()	
+		- Get the item at the end of the list
+
+
+
+
+
+-
+	import java.util.LinkedList;
+
+	public class Main {
+	  public static void main(String[] args) {
+	    LinkedList<String> cars = new LinkedList<String>();
+	    cars.add("Volvo");
+	    cars.add("BMW");
+	    cars.add("Ford");
+	    cars.add("Mazda");
+	    System.out.println(cars);
+	  }
+	}
+
+
+
+
+
+
+--- data struc - HashMap --------------------------------------------------------------------------
+
+
+- store items in "key/value" pairs, and you can access them by an index of another type (e.g. a String).
+
+
+
+
+
+
+- Create a HashMap object called capitalCities that will store String keys and String values:
+	import java.util.HashMap; // import the HashMap class
+	HashMap<String, String> capitalCities = new HashMap<String, String>();
+
+
+
+
+
+
+- put items in
+	// Import the HashMap class
+	import java.util.HashMap;
+
+	public class Main {
+	  public static void main(String[] args) {
+	    // Create a HashMap object called capitalCities
+	    HashMap<String, String> capitalCities = new HashMap<String, String>();
+
+	    // Add keys and values (Country, City)
+	    capitalCities.put("England", "London");
+	    capitalCities.put("Germany", "Berlin");
+	    capitalCities.put("Norway", "Oslo");
+	    capitalCities.put("USA", "Washington DC");
+	    System.out.println(capitalCities);
+	  }
+	}
+
+
+
+
+
+-
+	capitalCities.get("England");
+
+
+
+
+
+
+- 
+	capitalCities.remove("England");
+
+
+
+
+
+- 
+	capitalCities.clear();
+
+
+
+
+
+
+-
+	capitalCities.size();
+
+
+
+
+
+-
+	// Print keys
+	for (String i : capitalCities.keySet()) {
+	  System.out.println(i);
+	}
+
+
+
+
+
+
+-
+	// Print values
+	for (String i : capitalCities.values()) {
+	  System.out.println(i);
+	}
+
+
+
+
+
+-
+	for (String i : capitalCities.keySet()) {
+	  System.out.println("key: " + i + " value: " + capitalCities.get(i));
+	}
+
+
+
+
+
+
+-
+	// Import the HashMap class
+	import java.util.HashMap;
+
+	public class Main {
+	  public static void main(String[] args) {
+
+	    // Create a HashMap object called people
+	    HashMap<String, Integer> people = new HashMap<String, Integer>();
+
+	    // Add keys and values (Name, Age)
+	    people.put("John", 32);
+	    people.put("Steve", 30);
+	    people.put("Angie", 33);
+
+	    for (String i : people.keySet()) {
+	      System.out.println("key: " + i + " value: " + people.get(i));
+	    }
+	  }
+	}
+
+
+
+
+
+
+
+
+
+
+--- data struc - HashSet  --------------------------------------------------------------------------
+
+- HashSet is a collection of items where every item is unique, and it is found in the java.util package
+
+
+
+-
+	import java.util.HashSet; // Import the HashSet class
+	HashSet<String> cars = new HashSet<String>();
+
+
+
+
+
+-
+	// Import the HashSet class
+	import java.util.HashSet;
+
+	public class Main {
+	  public static void main(String[] args) {
+	    HashSet<String> cars = new HashSet<String>();
+	    cars.add("Volvo");
+	    cars.add("BMW");
+	    cars.add("Ford");
+	    cars.add("BMW");
+	    cars.add("Mazda");
+	    System.out.println(cars);
+	  }
+	}
+
+
+
+
+
+
+- check if exist
+	cars.contains("Mazda");
+
+
+
+
+
+-
+	cars.remove("Volvo");
+
+
+
+
+
+-
+	cars.clear();
+
+
+
+
+
+-
+	cars.size();
+
+
+
+
+-
+	for (String i : cars) {
+	  System.out.println(i);
+	}
+
+
+
+
+
+
+
+--- data struc - Iterator --------------------------------------------------------------------------
+
+
+-
+	// Import the ArrayList class and the Iterator class
+	import java.util.ArrayList;
+	import java.util.Iterator;
+
+	public class Main {
+	  public static void main(String[] args) {
+
+	    // Make a collection
+	    ArrayList<String> cars = new ArrayList<String>();
+	    cars.add("Volvo");
+	    cars.add("BMW");
+	    cars.add("Ford");
+	    cars.add("Mazda");
+
+	    // Get the iterator
+	    Iterator<String> it = cars.iterator();
+
+	    // Print the first item
+	    System.out.println(it.next());
+	  }
+	}
+
+
+
+
+
+
+-
+	while(it.hasNext()) {
+	  System.out.println(it.next());
+	}
+
+
+
+
+-
+    ArrayList<Integer> numbers = new ArrayList<Integer>();
+    numbers.add(12);
+    numbers.add(8);
+    numbers.add(2);
+    numbers.add(23);
+    Iterator<Integer> it = numbers.iterator();
+    while(it.hasNext()) {
+      Integer i = it.next();
+      if(i < 10) {
+        it.remove();
+      }
+    }
+    System.out.println(numbers);
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+--- data struc -  --------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- --------------------------------------------------------------------------
