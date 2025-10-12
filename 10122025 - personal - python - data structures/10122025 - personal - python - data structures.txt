@@ -1,0 +1,147 @@
+data structure
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+list
+
+# Example: storing employee names fetched from DB
+employees = ["Alice", "Bob", "Charlie"]
+employees.append("Diana")       			# add new employee
+employees.remove("Bob")         			# remove one
+print(employees)  							# ['Alice', 'Charlie', 'Diana']
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+tuple
+
+# Example: store an employee’s full name as constant
+full_name = ("Alice", "Smith")
+print(full_name[0])  						# Alice
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+dictionary
+
+
+# Example: employee record
+employee = {
+    "name": "Alice",
+    "role": "Developer",
+    "salary": 50000
+}
+print(employee["name"])  					# Alice
+employee["salary"] += 5000
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+set
+
+# Example: find all unique departments from employees
+departments = {"HR", "IT", "Finance", "IT"}
+print(departments)  						# {'Finance', 'HR', 'IT'}
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+stack - lifo - last in first out
+
+
+stack = []
+stack.append("Task1")
+stack.append("Task2")
+stack.pop()   								# removes Task2
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+Queue (FIFO) — First In, First Out
+
+from collections import deque
+
+queue = deque()
+queue.append("Job1")
+queue.append("Job2")
+queue.popleft()  							# Job1 removed first
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+
+Counter — quick frequency count
+
+from collections import Counter
+
+roles = ["Dev", "HR", "Dev", "QA"]
+role_count = Counter(roles)
+print(role_count)  							# {'Dev': 2, 'HR': 1, 'QA': 1}
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+Heap / PriorityQueue
+
+A heap is not just sorting, but a data structure that always gives you the smallest (or largest) item quickly — without sorting the whole list.
+
+import heapq
+
+tasks = [(2, "Low"), (1, "High"), (3, "Very Low")]
+heapq.heapify(tasks)
+print(heapq.heappop(tasks))  				# (1, 'High')
+
+
+---
+
+
+import heapq
+
+tasks = []
+heapq.heappush(tasks, (2, "Write report"))   # priority 2
+heapq.heappush(tasks, (1, "Fix urgent bug")) # priority 1
+heapq.heappush(tasks, (3, "Clean inbox"))    # priority 3
+
+# Get the most urgent task
+priority, task = heapq.heappop(tasks)
+print(priority, task)  # 1 Fix urgent bug
+
+
+---
+
+import heapq
+
+salaries = [55000, 72000, 48000, 91000, 61000]
+top3 = heapq.nlargest(3, salaries)
+print(top3)  								# [91000, 72000, 61000]
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------
+
+
+Deque — double-ended queue (both sides)
+
+from collections import deque
+
+recent_actions = deque(maxlen=3)
+recent_actions.extend(["Login", "Edit", "Logout"])
+recent_actions.append("Login again")
+print(recent_actions)  						# keeps last 3 only
