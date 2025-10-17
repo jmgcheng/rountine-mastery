@@ -1,10 +1,40 @@
-data structure
+data structure 2
 
-
----------------------------------------------------------------------------------------------------------------------
+https://www.geeksforgeeks.org/python/python-data-structures
 
 
 list
+dictionary
+tuple
+set
+frozenset
+string
+Bytearray
+Counter
+OrderedDict
+defaultdict
+ChainMap
+namedtuple
+deque
+UserDict
+UserList
+UserString
+Linked List
+stack
+LifoQueue
+queue.Queue
+PriorityQueue
+heapq
+binary tree
+graph
+
+
+
+
+
+-----------------------------------------------------------------------------
+
+list - mutable
 
 # Example: storing employee names fetched from DB
 employees = ["Alice", "Bob", "Charlie"]
@@ -13,23 +43,10 @@ employees.remove("Bob")         			# remove one
 print(employees)  							# ['Alice', 'Charlie', 'Diana']
 
 
-
----------------------------------------------------------------------------------------------------------------------
-
-
-tuple
-
-# Example: store an employee’s full name as constant
-full_name = ("Alice", "Smith")
-print(full_name[0])  						# Alice
+-----------------------------------------------------------------------------
 
 
-
----------------------------------------------------------------------------------------------------------------------
-
-
-dictionary
-
+dictionary - mutable
 
 # Example: employee record
 employee = {
@@ -41,35 +58,294 @@ print(employee["name"])  					# Alice
 employee["salary"] += 5000
 
 
+-----------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------------------------
+
+tuple 
+	- immutable
+	- elements in the tuple cannot be added or removed once created
+
+# Example: store an employee’s full name as constant
+full_name = ("Alice", "Smith")
+print(full_name[0])  						# Alice
 
 
-set
+-----------------------------------------------------------------------------
 
-# Example: find all unique departments from employees
+
+set - mutable
+
 departments = {"HR", "IT", "Finance", "IT"}
 print(departments)  						# {'Finance', 'HR', 'IT'}
+for i in departments: 
+    print(i, end =" ")
+if 'DEV' not in departments:
+	raise ValuesError('...') 
+
+
+-----------------------------------------------------------------------------
+
+
+frozenset - immutable
+
+frozen_set = frozenset(["e", "f", "g"])
+
+print("\nFrozen Set")
+print(frozen_set)
+
+# Uncommenting below line would cause error as
+# we are trying to add element to a frozen set
+# frozen_set.add("h")
+
+
+-----------------------------------------------------------------------------
+
+
+String 
+	- immutable
+		- name[0] = "M"  # Error: 'str' object does not support item assignment
+		- If you "change" a string, Python actually creates a new string in memory.
+
+
+-----------------------------------------------------------------------------
+
+
+bytearray 
+	- mutable
+	- basically a list of numbers (0–255), but each number represents a single byte (a piece of raw binary data).
+	- Because sometimes, you need to handle raw binary data — not text or numbers
+	- Useful in: image processing, file patching, or reverse-engineering tools.
+
+# Creating bytearray
+a = bytearray((12, 8, 25, 2))
+print("Creating Bytearray:")
+print(a)
+
+# accessing elements
+print("\nAccessing Elements:", a[1])
+
+# modifying elements 
+a[1] = 3
+print("\nAfter Modifying:")
+print(a)
+
+# Appending elements
+a.append(30)
+print("\nAfter Adding Elements:")
+print(a)
+
+
+---
+
+
+with open("photo.jpg", "rb") as f:
+    data = bytearray(f.read())   # now mutable binary data
+
+data[0] = 255   # change the first byte
+data[1] = 0
+
+with open("photo_modified.jpg", "wb") as f:
+    f.write(data)
+
+
+---
+
+
+text = "Hello"
+data = bytearray(text, 'utf-8')
+print(data)  # bytearray(b'Hello')
+
+# Change first letter from 'H' → 'h'
+data[0] = ord('h')
+print(data)          # bytearray(b'hello')
+print(data.decode()) # hello
+
+
+---
+
+# Networking example — sending packets
+
+packet = bytearray(b"PING")
+packet[0] = ord('B')   # change it to "BING"
+# send(packet)
 
 
 
----------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 
-stack - lifo - last in first out
+Counter -
+
+from collections import Counter
+
+roles = ["Dev", "HR", "Dev", "QA"]
+role_count = Counter(roles)
+print(role_count)  							# {'Dev': 2, 'HR': 1, 'QA': 1}
 
 
-stack = []
-stack.append("Task1")
-stack.append("Task2")
-stack.pop()   								# removes Task2
+-----------------------------------------------------------------------------
+
+
+OrderedDict -
+	- it remembers the order in which the keys were inserted 
+	- like a queue in front of a door — people enter in order, and you can still move someone to the back or front if needed (VIP handling).
+	- notes
+		- (since version 3.7+) already remembers the order in which you insert items.
+		- So in modern Python, this works exactly like your OrderedDict
+			- you might not feel it now because 'That’s because Python’s dict is now insertion-ordered by default.'
+	- BUT
+		- But OrderedDict exists because it has extra ordering powers that a normal dict doesn’t have.
+			- move_to_end
+			- It can compare based on insertion order
+			- It’s handy when order itself has meaning
 
 
 
----------------------------------------------------------------------------------------------------------------------
 
 
-Queue (FIFO) — First In, First Out
+from collections import OrderedDict
+
+attendance = OrderedDict()
+attendance["Alice"] = "8:05 AM"
+attendance["Bob"] = "8:10 AM"
+attendance["Charlie"] = "8:12 AM"
+
+# Show who came first to last
+for name, time in attendance.items():
+    print(name, "checked in at", time)
+
+# Alice checked in at 8:05 AM
+# Bob checked in at 8:10 AM
+# Charlie checked in at 8:12 AM
+
+attendance.move_to_end("Alice")  # move Alice to the end
+print(list(attendance.keys()))   # ['Bob', 'Charlie', 'Alice']
+attendance.move_to_end("Alice", last=False)
+print(list(attendance.keys()))   # ['Alice', 'Bob', 'Charlie']
+
+
+---
+
+from collections import OrderedDict
+
+a = OrderedDict([("x", 1), ("y", 2)])
+b = OrderedDict([("y", 2), ("x", 1)])
+
+print(a == b)  # False  (because order is different)
+
+# But for normal dicts:
+print(dict(a) == dict(b))  # True (order doesn’t matter)
+
+
+
+---
+
+from collections import OrderedDict
+
+attendance = OrderedDict()
+attendance['Michael'] = '08:00am'
+attendance['Miguel'] = '07:50am'
+attendance['John'] = '08:10am'
+
+# Step 1: sort by the time value
+sorted_items = sorted(attendance.items(), key=lambda x: x[1])
+
+# Step 2: create a new OrderedDict from the sorted items
+attendance = OrderedDict(sorted_items)
+
+# Step 3: show results
+for name, time in attendance.items():
+    print(name, 'login', time)
+
+
+
+
+-----------------------------------------------------------------------------
+
+
+defaultdict -
+	- used to provide some default values for the key that does not exist and never raises a KeyError
+
+from collections import defaultdict
+
+projects = defaultdict(list)
+projects["Alice"].append("Website")
+projects["Alice"].append("QA")
+projects["Bob"].append("API")
+print(projects) # defaultdict(<class 'list'>, {'Alice': ['Website', 'QA'], 'Bob': ['API']})
+print(projects['Alice']) # ['Website', 'QA']
+
+---
+
+shortcut
+
+projects['Michael'].append('website')
+
+VS
+
+if 'Michael' not in projects:
+    projects['Michael'] = []
+projects['Michael'].append('website')
+
+
+---
+
+# normal dict
+# projects = {}
+# projects['Michael'].append('website')  # ❌ ERROR!
+# Because 'Michael' doesn’t exist yet — you’d get:
+# KeyError: 'Michael'
+
+
+-----------------------------------------------------------------------------
+
+
+ChainMap -
+	- encapsulates many dictionaries into a single unit and returns a list of dictionaries
+	- When a key is needed to be found then all the dictionaries are searched one by one until the key is found 
+
+from collections import ChainMap
+    
+    
+d1 = {'a': 1, 'b': 2}
+d2 = {'c': 3, 'd': 4}
+d3 = {'e': 5, 'f': 6}
+    
+# Defining the chainmap
+c = ChainMap(d1, d2, d3)
+print(c)
+
+print(c['a'])
+print(c['g']) # error
+
+
+-----------------------------------------------------------------------------
+
+
+namedtuple - 
+
+from collections import namedtuple
+    
+# Declaring namedtuple()
+Student = namedtuple('Student',['name','age','DOB'])
+    
+# Adding values
+S = Student('Nandini','19','2541997')
+    
+# Access using index
+print ("The Student age using index is : ",end ="")
+print (S[1]) # 19
+    
+# Access using name
+print ("The Student name using keyname is : ",end ="")
+print (S.name) # Nandini
+
+
+-----------------------------------------------------------------------------
+
+
+deque - 
+
 
 from collections import deque
 
@@ -79,27 +355,439 @@ queue.append("Job2")
 queue.popleft()  							# Job1 removed first
 
 
-
----------------------------------------------------------------------------------------------------------------------
-
+---
 
 
-Counter — quick frequency count
+from collections import deque
 
-from collections import Counter
-
-roles = ["Dev", "HR", "Dev", "QA"]
-role_count = Counter(roles)
-print(role_count)  							# {'Dev': 2, 'HR': 1, 'QA': 1}
-
+recent_actions = deque(maxlen=3)
+recent_actions.extend(["Login", "Edit", "Logout"])
+recent_actions.append("Login again")
+print(recent_actions)  						# keeps last 3 only
 
 
----------------------------------------------------------------------------------------------------------------------
+---
 
 
-Heap / PriorityQueue
+# importing "collections" for deque operations
+import collections
 
-A heap is not just sorting, but a data structure that always gives you the smallest (or largest) item quickly — without sorting the whole list.
+# initializing deque
+de = collections.deque([1,2,3])
+
+# using append() to insert element at right end
+# inserts 4 at the end of deque
+de.append(4)
+
+# printing modified deque
+print("The deque after appending at right is : ")
+print(de)
+
+# using appendleft() to insert element at left end
+# inserts 6 at the beginning of deque
+de.appendleft(6)
+
+# printing modified deque
+print("The deque after appending at left is : ")
+print(de)
+
+# using pop() to delete element from right end
+# deletes 4 from the right end of deque
+de.pop()
+
+# printing modified deque
+print("The deque after deleting from right is : ")
+print(de)
+
+# using popleft() to delete element from left end
+# deletes 6 from the left end of deque
+de.popleft()
+
+# printing modified deque
+print("The deque after deleting from left is : ")
+print(de)
+
+
+-----------------------------------------------------------------------------
+
+
+UserDict - 
+
+from collections import UserDict
+
+# Creating a Dictionary where
+# deletion is not allowed
+class MyDict(UserDict):
+    
+    # Function to stop deletion
+    # from dictionary
+    def __del__(self):
+        raise RuntimeError("Deletion not allowed")
+        
+    # Function to stop pop from
+    # dictionary
+    def pop(self, s = None):
+        raise RuntimeError("Deletion not allowed")
+        
+    # Function to stop popitem
+    # from Dictionary
+    def popitem(self, s = None):
+        raise RuntimeError("Deletion not allowed")
+    
+# Driver's code
+d = MyDict({'a':1,
+    'b': 2,
+    'c': 3})
+
+print("Original Dictionary")
+print(d)
+
+d.pop(1)
+
+
+-----------------------------------------------------------------------------
+
+
+UserList - 
+
+# Python program to demonstrate
+# userlist
+
+
+from collections import UserList
+
+
+# Creating a List where
+# deletion is not allowed
+class MyList(UserList):
+    
+    # Function to stop deletion
+    # from List
+    def remove(self, s = None):
+        raise RuntimeError("Deletion not allowed")
+        
+    # Function to stop pop from
+    # List
+    def pop(self, s = None):
+        raise RuntimeError("Deletion not allowed")
+    
+# Driver's code
+L = MyList([1, 2, 3, 4])
+
+print("Original List")
+print(L)
+
+# Inserting to List"
+L.append(5)
+print("After Insertion")
+print(L)
+
+# Deleting From List
+L.remove()
+
+
+-----------------------------------------------------------------------------
+
+
+UserString - 
+
+from collections import UserString
+
+# Creating a Mutable String
+class Mystring(UserString):
+    
+    # Function to append to
+    # string
+    def append(self, s):
+        self.data += s
+        
+    # Function to remove from
+    # string
+    def remove(self, s):
+        self.data = self.data.replace(s, "")
+    
+# Driver's code
+s1 = Mystring("Geeks")
+print("Original String:", s1.data)
+
+# Appending to string
+s1.append("s")
+print("String After Appending:", s1.data)
+
+# Removing from string
+s1.remove("e")
+print("String after Removing:", s1.data)
+
+
+-----------------------------------------------------------------------------
+
+
+Linked List - 
+
+# A simple Python program to introduce a linked list
+
+# Node class
+class Node:
+
+    # Function to initialise the node object
+    def __init__(self, data):
+        self.data = data # Assign data
+        self.next = None # Initialize next as null
+
+
+# Linked List class contains a Node object
+class LinkedList:
+
+    # Function to initialize head
+    def __init__(self):
+        self.head = None
+
+
+# Code execution starts here
+if __name__=='__main__':
+
+    # Start with the empty list
+    list = LinkedList()
+
+    list.head = Node(1)
+    second = Node(2)
+    third = Node(3)
+
+    '''
+    Three nodes have been created.
+    We have references to these three blocks as head,
+    second and third
+
+    list.head     second             third
+        |             |                 |
+        |             |                 |
+    +----+------+     +----+------+     +----+------+
+    | 1 | None |     | 2 | None |     | 3 | None |
+    +----+------+     +----+------+     +----+------+
+    '''
+
+    list.head.next = second; # Link first node with second
+
+    '''
+    Now next of first Node refers to second. So they
+    both are linked.
+
+    list.head     second             third
+        |             |                 |
+        |             |                 |
+    +----+------+     +----+------+     +----+------+
+    | 1 | o-------->| 2 | null |     | 3 | null |
+    +----+------+     +----+------+     +----+------+
+    '''
+
+    second.next = third; # Link second node with the third node
+
+    '''
+    Now next of second Node refers to third. So all three
+    nodes are linked.
+
+    list.head     second             third
+        |             |                 |
+        |             |                 |
+    +----+------+     +----+------+     +----+------+
+    | 1 | o-------->| 2 | o-------->| 3 | null |
+    +----+------+     +----+------+     +----+------+
+    '''
+
+
+---
+
+
+# A simple Python program for traversal of a linked list
+
+# Node class
+class Node:
+
+    # Function to initialise the node object
+    def __init__(self, data):
+        self.data = data # Assign data
+        self.next = None # Initialize next as null
+
+
+# Linked List class contains a Node object
+class LinkedList:
+
+    # Function to initialize head
+    def __init__(self):
+        self.head = None
+
+    # This function prints contents of linked list
+    # starting from head
+    def printList(self):
+        temp = self.head
+        while (temp):
+            print (temp.data)
+            temp = temp.next
+
+
+# Code execution starts here
+if __name__=='__main__':
+
+    # Start with the empty list
+    list = LinkedList()
+
+    list.head = Node(1)
+    second = Node(2)
+    third = Node(3)
+
+    list.head.next = second; # Link first node with second
+    second.next = third; # Link second node with the third node
+
+    list.printList()
+
+
+-----------------------------------------------------------------------------
+
+
+stack - 
+
+stack = []
+stack.append("Task1")
+stack.append("Task2")
+stack.pop()   								# removes Task2
+
+
+-----------------------------------------------------------------------------
+
+
+LifoQueue - 
+
+from queue import LifoQueue
+
+# Initializing a stack
+stack = LifoQueue(maxsize = 3)
+
+# qsize() show the number of elements
+# in the stack
+print(stack.qsize())
+
+# put() function to push
+# element in the stack
+stack.put('g')
+stack.put('f')
+stack.put('g')
+
+print("Full: ", stack.full())
+print("Size: ", stack.qsize())
+
+# get() function to pop
+# element from stack in
+# LIFO order
+print('\nElements popped from the stack')
+print(stack.get())
+print(stack.get())
+print(stack.get())
+
+print("\nEmpty: ", stack.empty())
+
+
+-----------------------------------------------------------------------------
+
+
+Queue - 
+	- is a linear data structure that stores items in a First In First Out (FIFO) manner
+	implementations
+		list
+		collections.deque
+		queue.Queue
+
+queue.Queue
+
+from queue import Queue
+
+# Initializing a queue
+q = Queue(maxsize = 3)
+
+# qsize() give the maxsize
+# of the Queue
+print(q.qsize())
+
+# Adding of element to queue
+q.put('g')
+q.put('f')
+q.put('g')
+
+# Return Boolean for Full
+# Queue
+print("\nFull: ", q.full())
+
+# Removing element from queue
+print("\nElements dequeued from the queue")
+print(q.get())
+print(q.get())
+print(q.get())
+
+# Return Boolean for Empty
+# Queue
+print("\nEmpty: ", q.empty())
+
+q.put(1)
+print("\nEmpty: ", q.empty())
+print("Full: ", q.full())
+
+# This would result into Infinite
+# Loop as the Queue is empty.
+# print(q.get())
+
+
+-----------------------------------------------------------------------------
+
+
+PriorityQueue
+	- each data/value in the queue has a certain priority
+
+# A simple implementation of Priority Queue
+# using Queue.
+class PriorityQueue(object):
+    def __init__(self):
+        self.queue = []
+
+    def __str__(self):
+        return ' '.join([str(i) for i in self.queue])
+
+    # for checking if the queue is empty
+    def isEmpty(self):
+        return len(self.queue) == 0
+
+    # for inserting an element in the queue
+    def insert(self, data):
+        self.queue.append(data)
+
+    # for popping an element based on Priority
+    def delete(self):
+        try:
+            max = 0
+            for i in range(len(self.queue)):
+                if self.queue[i] > self.queue[max]:
+                    max = i
+            item = self.queue[max]
+            del self.queue[max]
+            return item
+        except IndexError:
+            print()
+            exit()
+
+if __name__ == '__main__':
+    myQueue = PriorityQueue()
+    myQueue.insert(12)
+    myQueue.insert(1)
+    myQueue.insert(14)
+    myQueue.insert(7)
+    print(myQueue)            
+    while not myQueue.isEmpty():
+        print(myQueue.delete())
+
+
+-----------------------------------------------------------------------------
+
+
+heapq
+	- A heap is not just sorting, but a data structure that always gives you the smallest (or largest) item quickly — without sorting the whole list.
 
 import heapq
 
@@ -132,16 +820,17 @@ top3 = heapq.nlargest(3, salaries)
 print(top3)  								# [91000, 72000, 61000]
 
 
+-----------------------------------------------------------------------------
 
 
----------------------------------------------------------------------------------------------------------------------
+binary tree
 
 
-Deque — double-ended queue (both sides)
+-----------------------------------------------------------------------------
 
-from collections import deque
 
-recent_actions = deque(maxlen=3)
-recent_actions.extend(["Login", "Edit", "Logout"])
-recent_actions.append("Login again")
-print(recent_actions)  						# keeps last 3 only
+graph
+
+
+-----------------------------------------------------------------------------
+
