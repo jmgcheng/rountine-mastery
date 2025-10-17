@@ -1,0 +1,304 @@
+python - classic coding problems
+
+
+----------------------------------------------------------------
+
+1. Factorial (Recursive + Iterative)
+
+# Recursive
+def factorial(n):
+    if n == 0 or n == 1:
+        return 1
+    return n * factorial(n - 1)
+
+# Iterative
+def factorial_iter(n):
+    result = 1
+    for i in range(2, n + 1):
+        result *= i
+    return result
+
+print(factorial(5))       # 120
+print(factorial_iter(5))  # 120
+
+
+
+
+----------------------------------------------------------------
+
+2. Fibonacci Sequence
+
+# Recursive (simple)
+def fib(n):
+    if n <= 1:
+        return n
+    return fib(n-1) + fib(n-2)
+
+# Iterative (efficient)
+def fib_iter(n):
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+
+# Memoized (faster recursive)
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib_memo(n):
+    if n <= 1:
+        return n
+    return fib_memo(n-1) + fib_memo(n-2)
+
+print(fib_iter(10))  # 55
+
+
+
+
+----------------------------------------------------------------
+
+3. FizzBuzz (or “FooBar”)
+
+def fizzbuzz(n):
+    for i in range(1, n + 1):
+        if i % 15 == 0:
+            print("FizzBuzz")
+        elif i % 3 == 0:
+            print("Fizz")
+        elif i % 5 == 0:
+            print("Buzz")
+        else:
+            print(i)
+
+fizzbuzz(15)
+
+
+
+
+----------------------------------------------------------------
+
+4. Palindrome Check
+
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+
+print(is_palindrome("Madam"))  # True
+
+
+
+
+----------------------------------------------------------------
+
+5. Prime Number Check
+
+def is_prime(n):
+    if n <= 1:
+        return False
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+print(is_prime(17))  # True
+
+
+
+
+----------------------------------------------------------------
+
+6. Hashing Example (Using Python’s hash() and Dictionaries)
+
+# Simple hash usage
+print(hash("python"))  # Example hash (varies per run)
+
+# Using a dict for key-value hashing
+users = {"alice": "123", "bob": "456"}
+print("bob" in users)          # True
+print(users.get("alice"))      # 123
+
+
+
+
+----------------------------------------------------------------
+
+7. Reverse a String / List
+
+def reverse_string(s):
+    return s[::-1]
+
+print(reverse_string("hello"))  # olleh
+
+
+
+
+----------------------------------------------------------------
+
+8. Count Characters in a String
+
+from collections import Counter
+
+def char_count(s):
+    return Counter(s)
+
+print(char_count("banana"))  # {'b': 1, 'a': 3, 'n': 2}
+
+
+
+
+----------------------------------------------------------------
+
+9. Find Missing Number in a Sequence
+
+def find_missing(nums):
+    n = len(nums) + 1
+    expected_sum = n * (n + 1) // 2
+    return expected_sum - sum(nums)
+
+print(find_missing([1, 2, 4, 5]))  # 3
+
+
+----------------------------------------------------------------
+
+10. List Deduplication (Using set)
+
+def remove_duplicates(lst):
+    return list(set(lst))
+
+print(remove_duplicates([1, 2, 2, 3, 4, 4, 5]))  # [1, 2, 3, 4, 5]
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
