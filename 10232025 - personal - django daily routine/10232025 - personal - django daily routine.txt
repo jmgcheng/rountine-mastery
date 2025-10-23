@@ -1,0 +1,1076 @@
+django daily routine
+
+
+
+--- install/run ---------------------------------------------------------------
+
+pip install django
+pip install django-crispy-forms
+pip install crispy-bootstrap5
+django-admin startproject core .
+code .
+python manage.py startapp page
+python manage.py startapp account
+python manage.py startapp post
+pip freeze > requirements.txt
+pip install -r requirements.txt
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+gunicorn --bind 0.0.0.0:8000 --workers=4 --threads=2 core.wsgi:application
+pip install django-environ
+
+
+
+
+
+--- settings.py ---------------------------------------------------------------
+
+...
+import os
+import environ
+env = environ.Env()
+SECRET_KEY = env("SECRET_KEY")
+ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*']
+INSTALLED_APPS = [
+    ...
+    'core',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'page',
+    'post',
+    'account'
+]
+TEMPLATES = [
+    {
+    	...
+        'DIRS': [
+            BASE_DIR / 'templates'
+        ],
+        ...
+    },
+]
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'post-list'
+LOGOUT_REDIRECT_URL = 'post-list'
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=["http://localhost", "http://127.0.0.1"])
+# CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1"]
+...
+
+
+
+
+
+
+--- templates directory ---------------------------------------------------------------
+
+core
+	templates
+		base.html
+page
+	template
+		page
+			about.html
+account
+	template
+		account
+			login.html
+			register.html
+			profile.html
+			profile_form.html
+			password_reset.html
+			password_reset_done.html
+			password_reset_confirm.html
+			password_reset_complete.html
+post
+	template
+		post
+			post_list.html
+			post_form.html
+			post_detail.html
+
+
+---
+
+
+powershell
+
+# Run this from your project root
+$files = @(
+  "core/templates/base.html",
+  "page/templates/page/about.html",
+  "account/templates/account/login.html",
+  "account/templates/account/register.html",
+  "account/templates/account/profile.html",
+  "account/templates/account/profile_form.html",
+  "account/templates/account/password_reset.html",
+  "account/templates/account/password_reset_confirm.html",
+  "account/templates/account/password_reset_complete.html",
+  "account/templates/account/password_reset_done.html",
+  "post/templates/post/post_list.html",
+  "post/templates/post/post_detail.html",
+  "post/templates/post/post_form.html",
+  "post/templates/post/post_confirm_delete.html",
+  "account/forms.py",
+  "post/forms.py",
+  "page/urls.py",
+  "post/urls.py"
+)
+
+foreach ($file in $files) {
+  New-Item -ItemType File -Path $file -Force | Out-Null
+}
+
+
+
+---
+
+
+
+linux
+
+# Run this from your project root
+files=(
+  "core/templates/base.html"
+  "page/templates/page/about.html"
+  "account/templates/account/login.html"
+  "account/templates/account/register.html"
+  "account/templates/account/profile.html"
+  "account/templates/account/profile_form.html"
+  "account/templates/account/password_reset.html"
+  "account/templates/account/password_reset_confirm.html"
+  "account/templates/account/password_reset_complete.html"
+  "account/templates/account/password_reset_done.html"
+  "post/templates/post/post_list.html"
+  "post/templates/post/post_detail.html"
+  "post/templates/post/post_form.html"
+  "post/templates/post/post_confirm_delete.html"
+  "account/forms.py"
+  "post/forms.py"
+  "page/urls.py"
+  "post/urls.py"    
+)
+
+for file in "${files[@]}"; do
+  mkdir -p "$(dirname "$file")"
+  touch "$file"
+done
+
+
+
+
+
+--- imports ---------------------------------------------------------------
+
+django
+	forms
+django.contrib
+	admin
+	messages
+django.contrib.auth.models
+	User
+django.contrib.auth.forms
+	UserCreationForm
+django.contrib.auth.views
+	LoginView
+	LogoutView
+	PasswordResetView
+	PasswordResetDoneView
+	PasswordResetConfirmView
+	PasswordResetCompleteView
+django.contrib.auth.decorator
+	login_required
+django.contrib.auth.mixins 
+	LoginRequiredMixin
+	UserPassesTestMixin
+django.db
+	models
+django.urls
+	path
+	include
+	reverse_lazy
+django.http
+	HttpResponse
+django.shortcuts
+	render
+	redirect
+	reverse
+	HttpResponseRedirect
+	get_object_or_404
+django.utils.timezone
+	now
+datetime
+	date
+app.views
+	post_list
+	PostListView
+	register
+	profile
+app.models
+	Post
+app.forms
+	PostForm
+django.views.generic
+	ListView, DetailView, CreateView, UpdateView, DeleteView
+rest_framework 
+	serializers, generics, permissions
+rest_framework.exceptions
+	PermissionDenied
+app.serializers
+	EntrySerializer
+
+
+
+
+
+
+
+--- core/urls.py ---------------------------------------------------------------
+
+from django.contrib import admin
+from django.urls import path, include
+from account.views import register, profile, profile_update
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetConfirmView, PasswordResetCompleteView, PasswordResetDoneView
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path("register/", register, name="register"),
+    path("profile/", profile, name="profile"),
+    path("profile/update/", profile_update, name="profile_update"),
+    path("login/", LoginView.as_view(template_name="account/login.html"), name="login"),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path("password-reset/", PasswordResetView.as_view(template_name="account/password_reset.html"), name="password_reset"),
+    path("password-reset-confirm/<uidb64>/<token>/", PasswordResetConfirmView.as_view(template_name="account/password_reset_confirm.html"), name="password_reset_confirm"),
+    path("password-reset-complete/", PasswordResetCompleteView.as_view(template_name="account/password_reset_complete.html"), name="password_reset_complete"),
+    path("password-reset/done/", PasswordResetDoneView.as_view(template_name="account/password_reset_done.html"), name="password_reset_done"),
+    path("posts/", include("post.urls")),
+    path('', include('page.urls')),
+
+    ...
+    path('api/', include('entry.api_urls')),
+]
+
+
+
+
+
+
+
+--- page/urls.py ---------------------------------------------------------------
+
+from django.urls import path
+from page.views import index, about
+
+urlpatterns = [
+    path('', index, name='homepage'),
+    path('about-us', about, name='about-us'),
+]
+
+
+
+
+
+
+
+--- post/urls.py ---------------------------------------------------------------
+
+from django.urls import path
+from post.views import post_list, post_create, post_update, post_detail, post_delete
+
+urlpatterns = [
+    path("", post_list, name="post-list"),
+    path("<int:pk>/", post_detail, name="post-detail"),
+    path("create/", post_create, name="post-create"),
+    path("<int:pk>/update/", post_update, name="post-update"),
+    path("<int:pk>/delete/", post_delete, name="post-delete"),
+]
+
+
+
+
+
+
+--- entry/api_urls.py ---------------------------------------------------------------
+
+from .api_views import (
+    EntryListAPIView,
+    EntryDetailAPIView,
+    EntryCreateAPIView,
+    EntryUpdateAPIView,
+    EntryDeleteAPIView,
+)
+
+urlpatterns = [
+    path('entries/', EntryListAPIView.as_view(), name='entry-list'),
+    path('entries/<int:pk>/', EntryDetailAPIView.as_view(), name='entry-detail'),
+    path('entries/create/', EntryCreateAPIView.as_view(), name='entry-create'),
+    path('entries/<int:pk>/update/', EntryUpdateAPIView.as_view(), name='entry-update'),
+    path('entries/<int:pk>/delete/', EntryDeleteAPIView.as_view(), name='entry-delete'),
+]
+
+
+
+
+
+
+
+
+
+
+
+
+--- post/models.py ---------------------------------------------------------------
+
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils.timezone import now
+
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+
+
+
+
+
+
+
+
+
+
+
+--- account/forms.py ---------------------------------------------------------------
+
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    class Meta:
+        model = User
+        fields = ["username", "email", "password1", "password2"]
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["username", "email", "first_name", "last_name"]
+
+
+
+
+
+
+--- post/forms.py ---------------------------------------------------------------
+
+from django import forms
+from post.models import Post
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ["title", "content"]
+
+
+
+
+
+
+--- entry/serializers.py ---------------------------------------------------------------
+
+from rest_framework import serializers
+from entry.models import Entry
+
+class EntrySerializer(serializers.ModelSerializer):
+    author_name = serializers.CharField(source='author.username', read_only=True)
+    blog_name = serializers.CharField(source='blog.name', read_only=True)
+
+    class Meta:
+        model = Entry
+        fields = [
+            'id',
+            'title',
+            'content',
+            'author',
+            'author_name',
+            'blog',
+            'blog_name',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['author', 'created_at', 'updated_at']
+
+
+
+
+
+
+
+
+
+
+
+
+--- page/views.py ---------------------------------------------------------------
+
+from django.shortcuts import HttpResponseRedirect, reverse, render
+
+def index(request):
+    return HttpResponseRedirect(reverse('post-list'))
+    
+def about(request):
+    return render(request, "page/about.html")
+
+
+
+
+
+
+
+--- account/views.py ---------------------------------------------------------------
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from account.forms import RegisterForm, ProfileUpdateForm
+
+def register(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Account created successfully! You can now log in.")
+            return redirect("login")
+    else:
+        form = RegisterForm()
+    return render(request, "account/register.html", {"form": form})
+
+@login_required
+def profile(request):
+    return render(request, "account/profile.html")
+
+@login_required
+def profile_update(request):
+    if request.method == "POST":
+        form = ProfileUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your profile has been updated!")
+            return redirect("profile")
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+    return render(request, "account/profile_form.html", {"form": form})
+
+
+
+
+
+
+
+--- post/views.py ---------------------------------------------------------------
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from post.models import Post
+from post.forms import PostForm
+
+def post_list(request):
+    posts = Post.objects.all().order_by("-created_at")
+    return render(request, "post/post_list.html", {"posts": posts})
+
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    return render(request, "post/post_detail.html", {"post": post})
+
+@login_required
+def post_create(request):
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            messages.success(request, "Post created successfully!")
+            return redirect("post-list")
+    else:
+        form = PostForm()
+    return render(request, "post/post_form.html", {"form": form})
+
+@login_required
+def post_update(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if post.author != request.user:
+        messages.error(request, "You are not allowed to edit this post.")
+        return redirect("post-list")
+    if request.method == "POST":
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Post updated successfully!")
+            return redirect("post-detail", pk=pk)
+    else:
+        form = PostForm(instance=post)
+    return render(request, "post/post_form.html", {"form": form})
+
+@login_required
+def post_delete(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if post.author != request.user:
+        messages.error(request, "You are not allowed to delete this post.")
+        return redirect("post-list")
+    post.delete()
+    messages.success(request, "Post deleted successfully!")
+    return redirect("post-list")
+
+
+
+
+
+
+
+
+--- class base view ---------------------------------------------------------------
+
+class EntryListView(ListView):
+    model = Entry
+    template_name = 'entry/entry_list.html'
+    context_object_name = 'entries'
+    ordering = ['-created_at']  # optional
+
+class EntryDetailView(DetailView):
+    model = Entry
+    template_name = 'entry/entry_detail.html'
+    context_object_name = 'entry'
+
+class EntryCreateView(LoginRequiredMixin, CreateView):
+    model = Entry
+    form_class = EntryForm
+    template_name = 'entry/entry_create.html'
+    success_url = reverse_lazy('entry-list')
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        messages.success(self.request, 'Entry created successfully.')
+        return super().form_valid(form)
+
+class EntryUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Entry
+    form_class = EntryForm
+    template_name = 'entry/entry_update.html'
+    success_url = reverse_lazy('entry-list')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Entry updated successfully.')
+        return super().form_valid(form)
+
+    def test_func(self):
+        entry = self.get_object()
+        return self.request.user == entry.author
+
+class EntryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Entry
+    template_name = 'entry/entry_confirm_delete.html'
+    success_url = reverse_lazy('entry-list')
+
+    def test_func(self):
+        entry = self.get_object()
+        return self.request.user == entry.author
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Entry deleted successfully.')
+        return super().delete(request, *args, **kwargs)
+
+
+
+
+
+
+
+--- entry/api_views.py ---------------------------------------------------------------
+
+from rest_framework import generics, permissions
+from rest_framework.exceptions import PermissionDenied
+from entry.models import Entry
+from entry.serializers import EntrySerializer
+
+
+class EntryListAPIView(generics.ListAPIView):
+    queryset = Entry.objects.all().order_by('-created_at')
+    serializer_class = EntrySerializer
+    permission_classes = [permissions.AllowAny]
+
+class EntryDetailAPIView(generics.RetrieveAPIView):
+    queryset = Entry.objects.all()
+    serializer_class = EntrySerializer
+    permission_classes = [permissions.AllowAny]
+
+class EntryCreateAPIView(generics.CreateAPIView):
+    queryset = Entry.objects.all()
+    serializer_class = EntrySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+class EntryUpdateAPIView(generics.UpdateAPIView):
+    queryset = Entry.objects.all()
+    serializer_class = EntrySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_update(self, serializer):
+        entry = self.get_object()
+        if entry.author != self.request.user:
+            raise PermissionDenied("You are not allowed to edit this entry.")
+        serializer.save()
+
+class EntryDeleteAPIView(generics.DestroyAPIView):
+    queryset = Entry.objects.all()
+    serializer_class = EntrySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        if instance.author != self.request.user:
+            raise PermissionDenied("You are not allowed to delete this entry.")
+        instance.delete()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- orm create ---------------------------------------------------------------
+
+e = Entry(title='New Entry', Content='Entry content')
+e.save()
+e.title = 'New post title'
+
+b1 = Blog.objects.create(name='Angular')
+e.category = b1
+e.save()
+
+
+a1 = Author.objects.create(name='Author 1')
+a2 = Author.objects.create(name='Author 2')
+a3 = Author.objects.create(name='Author 3')
+e.authors.add(a1, a2, a3)
+
+
+
+
+
+
+--- orm get ---------------------------------------------------------------
+
+e = Entry.objects.get(pk=1)
+e = Entry.objects.get(id=1)
+b = Blog.objects.get(name='Angular')
+posts = Entry.objects.all()
+Entry.objects.all()[:5]
+Entry.objects.all()[5:10]
+
+Entry.objects.get(title__contains='gula')
+
+Entry.objects.filter(title__contains="ular")
+Entry.objects.fitler(pub_date__lte=datetime.date.today)
+q1 = Entry.objects.filter(blog__name__contains='ular')
+q2 = q1.exclude(pub_date__year__lte = 2006)
+
+Entry.objects.filter(pub_date__lte='2001-03-14')
+Blog.objects.filter(pk__in=[1, 4, 7])
+
+
+
+Poll.objects.get(
+	Q(question__startswith="Who"),
+	Q(pub_date=date(2005, 5, 2) | Q(pub_date=date(2005, 5, 6)))
+)
+
+Q(question__startswith="Who"), ~Q(pub_date__year=2005)
+
+
+Entry.objects.order_by('title')
+
+
+
+Entry.objects.filter(blog__name='Angular')
+Blog.objects.filter(entry__authors__name__isnull=True)
+
+
+Entry.objects.get(pk=1).delete()
+
+
+Entry.objects.filter(title='Post Tilte').update(title='Updated Title')
+
+
+
+
+
+
+
+--- orm select related ---------------------------------------------------------------
+
+e = Entry.objects.select_related('blog').get(id=5)
+b = e.blog
+
+
+b = Book.objects.select_related(author__hometown).get(id=4)
+a = b.author
+h = b.hometown
+
+
+
+
+
+--- orm prefetch related ---------------------------------------------------------------
+
+class Topping(models.Model)
+	name = models.CharField(max_length=30)
+
+class Pizza(models.Model)
+	name = models.CharField(max_length=30)
+	toppings = models.ManyToManyField(Topping)
+
+class Restaurant(models.Model)
+	pizzas = models.ManyToManyField(Pizza, related_name='restaurants')
+	best_pizza = models.ForeignKey(
+		Pizza, related_name='champoined_by', on_delete=models.CASCADE
+	)
+
+
+Pizza.objects.prefetch_related('toppings')
+
+Restaurant.objects.prefetch_related('pizzas__toppings')
+
+
+
+
+--- orm prefetch ---------------------------------------------------------------
+
+Restaurant.objects.prefetch_related(
+	prefetch('pizzas_toppings')
+)
+
+Restaurant.objects.prefetch_related(
+	prefetch('pizzas_toppings'), 
+	queryset=Topping.objects.order_by('name')
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--- base.html ---------------------------------------------------------------
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+    <header class="p-3 mb-3 border-bottom">
+        <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+            <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+            </a>
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="{% url 'homepage' %}" class="nav-link px-2 link-secondary">Home</a></li>
+            <li><a href="{% url 'about-us' %}" class="nav-link px-2">About</a></li>
+            </ul>
+            {% if user.is_authenticated %}
+            <div class="dropdown text-end">
+                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://github.com/jmgcheng.png" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small">
+                <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="dropdown-item">
+                        Logout
+                    </button>
+                    </form>
+                </li>
+                </ul>
+            </div>
+            {% else %}
+            <div class="text-end">
+                <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
+            </div>
+            {% endif %}
+        </div>
+        </div>
+    </header>
+    <div class="row">
+        <div class="col">
+        {% block content %}
+        {% endblock %}
+        </div>
+    </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+--- login.html ---------------------------------------------------------------
+
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h2>Login</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form | crispy }}
+    <hr>
+    <button class="btn btn-primary btn-block" type="submit">Login</button>
+    <a href="{% url 'password_reset' %}" class="btn btn-secondary">Forgot Password?</a>
+</form>
+{% endblock %}
+
+
+
+
+
+
+--- register.html ---------------------------------------------------------------
+
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h2>Register</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form | crispy }}
+    <hr>
+    <button class="btn btn-primary btn-block" type="submit">Register</button>
+</form>
+{% endblock %}
+
+
+
+
+
+
+--- profile.html ---------------------------------------------------------------
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Profile</h2>
+<p>Username: {{ user.username }}</p>
+<p>Email: {{ user.email }}</p>
+<p><a href="{% url 'profile_update' %}">Update Profile</a></p>
+{% endblock %}
+
+
+
+
+
+
+--- profile_form.html ---------------------------------------------------------------
+
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h2>Update Profile</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form | crispy }}
+    <hr>
+    <button class="btn btn-primary btn-block" type="submit">Save Changes</button>
+</form>
+{% endblock %}
+
+
+
+
+
+
+--- password_reset.html ---------------------------------------------------------------
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Reset Password</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Reset Password</button>
+</form>
+{% endblock %}
+
+
+
+
+--- password_reset_done.html ---------------------------------------------------------------
+
+{% extends "base.html" %}
+{% block content %}
+<p>An email has been sent with instructions to reset your password.</p>
+{% endblock %}
+
+
+
+
+--- password_reset_confirm.html ---------------------------------------------------------------
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Set New Password</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Reset Password</button>
+</form>
+{% endblock %}
+
+
+
+
+
+--- password_reset_complete.html ---------------------------------------------------------------
+
+{% extends "base.html" %}
+{% block content %}
+<p>Your password has been successfully reset. You may now <a href="{% url 'login' %}">login</a>.</p>
+{% endblock %}
+
+
+
+
+--- post_list.html ---------------------------------------------------------------
+
+{% extends "base.html" %}
+{% block content %}
+<h2>All Posts</h2>
+<a href="{% url 'post-create' %}">Create New Post</a>
+<ul>
+    {% for post in posts %}
+        <li>
+            <a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a> by {{ post.author.username }} | {{ post.created_at }}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
+
+
+
+
+
+--- post_detail.html ---------------------------------------------------------------
+
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h2>{{ post.title }}</h2>
+<p>{{ post.content }}</p>
+<p><small>By {{ post.author.username }} on {{ post.created_at }}</small></p>
+{% if post.author == request.user %}
+    <form action="{% url 'post-delete' post.pk %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <a href="{% url 'post-update' post.pk %}" class="btn btn-primary">Edit</a>
+        <button class="btn btn-danger" type="submit">Delete</button>
+    </form>
+{% endif %}
+<a href="{% url 'post-list' %}" class="btn btn-secondary">Back to Posts</a>
+{% endblock %}
+
+
+
+
+
+
+--- post_form.html ---------------------------------------------------------------
+
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h2>{% if form.instance.pk %}Edit Post{% else %}Create Post{% endif %}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form | crispy }}
+    <hr>
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a href="{% url 'post-list' %}" class="btn btn-secondary">Back to Posts</a>
+</form>
+{% endblock %}
+
+
+
+
+
+--- post_confirm_delete.html ---------------------------------------------------------------
+
+wala ko copy..., ngita sa lain repo kaw
+
+
+
