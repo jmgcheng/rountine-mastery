@@ -1,0 +1,189 @@
+nvm - a conda for node
+	nvm = node
+	conda = python
+
+
+
+
+# install
+
+windows and linux have difference installers
+
+
+
+
+# check version
+
+nvm version
+
+
+
+
+
+# install specific version for later reuse
+
+nvm install 18
+
+
+
+
+# use spedific version
+
+nvm use 18
+or specific
+nvm use 18.20.8
+
+node --version
+
+
+
+
+📜 list versions
+
+# List all installed Node versions
+nvm list
+
+# or shorter
+nvm ls
+
+
+
+
+
+
+
+📜 delete versions
+
+
+# Uninstall a specific Node version
+nvm uninstall 18
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+🚀 New Angular project flow
+
+
+# Step 1: Choose your Node version (e.g., 18)
+nvm install 18
+nvm use 18
+
+# Step 2: Install Angular CLI globally (only once per Node version)
+npm install -g @angular/cli
+
+# Step 3: Create your new project
+ng new myapp
+
+# Step 4: Run it
+cd myapp
+ng serve
+
+✅ This creates a folder structure and installs dependencies under myapp/node_modules.
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+👥 Flow for existing project (teammate setup)
+
+When your teammate joins the project, here’s what they do:
+
+
+# Step 1: Install nvm
+# Step 2: Use same Node version
+nvm install 18
+nvm use 18
+
+# Step 3: Clone the repo
+git clone https://github.com/you/your-angular-app.git
+cd your-angular-app
+
+# Step 4: Install dependencies
+npm install
+
+# Step 5: Run the app
+ng serve
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+!!!different Node versions side-by-side
+I tried this in windows but the 1st project has its node version switch to the 2nd one so its not possible in windows unless
+	🧩 Option 1 — Use One Project at a Time
+		For most devs, this is fine:
+
+		nvm use 20
+		cd projectA
+		ng serve
+
+		then stop it, switch:
+
+		nvm use 22
+		cd projectB
+		ng serve
+	🧩 Option 2 — Use Docker for Project Isolation
+	🧩 Option 3 — Use WSL (Windows Subsystem for Linux)
+	🧩 Option 4 — Install Node via Volta (alternative tool)
+
+
+	!!! This whole “Node version switching breaks other terminals” problem is only a Windows (NVM for Windows) issue.
+		Not yet tested
+
+
+
+🪟 Terminal 1 — Project A
+cd C:\projects\angular-v15
+nvm use 15
+npm install
+ng serve
+
+🪟 Terminal 2 — Project B
+cd C:\projects\angular-v18
+nvm use 18
+npm install
+ng serve	
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
