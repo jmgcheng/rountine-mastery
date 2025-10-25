@@ -1,0 +1,1927 @@
+angular routine
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+installation, generation, startup
+
+
+nvm install 18
+nvm ls
+nvm use 18
+npm install -g @angular/cli
+ng new myapp
+cd myapp
+
+ng generate component heroes
+ng generate service hero
+ng generate interface <name>
+ng generate pipe <name>
+ng generate module app-routing --flat --module=app
+
+ng serve
+ng build --prod
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+templates - bindings
+
+
+interpolation
+	// ts
+		pageTitle: string = 'Home Page';
+	// html
+		{{pageTitle}}
+
+
+
+
+property binding
+	// ts
+		itemImageUrl = '../assets/phone.png';
+	// html
+		<img [src]="itemImageUrl">
+
+
+
+
+event binding
+	// ts
+		toggleImage(){}
+	// html
+		<button (click)='toggleImage()'>
+
+
+
+
+two way binding
+	// ts
+		name: string = 'michael';
+	// html
+		{{name}}
+		<input [(ngModel)]='name'>
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+templates - directives structural
+
+
+
+ngIf
+	<div *ngIf="product">
+		<h3>{{ product.name }}</h3>
+	</div>	
+
+
+
+
+ngFor
+	<ul>
+	  <li *ngFor="let item of items">{{item}}</li>
+	</ul>
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+templates - pipes
+
+{{ product.price | currency }}
+{{ birthday | date | uppercase}}
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+pipes - custom
+
+	// ts
+		import { Pipe, PipeTransform } from "@angular/core";
+		@Pipe({
+		  name: 'convertToSpaces'
+		})
+		export class ConvertToSpacesPipe implements PipeTransform {
+		  transform(value: string, character: string): string {
+		    return value.replace(character, ' ');
+		  }
+		}	
+	// module
+		import { ConvertToSpacesPipe } from '../shared/convert-to-spaces.pipe';
+		...
+		@NgModule({
+		  declarations: [
+		    ...
+		    ConvertToSpacesPipe
+		  ]
+		})
+		export class ...Module { }
+	// html
+		{{product.productCode | convertToSpaces: '-'}}
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+interface type
+
+	// src/app/hero.ts
+		export interface Hero {
+		  id: number;
+		  name: string;
+		}		
+	// src/app/heroes/heroes.component.ts
+		...
+		import { Hero } from '../hero';
+		...
+		export class HeroesComponent implements OnInit {
+			hero: Hero = {
+				id: 1,
+				name: 'Windstorm'
+			};
+		}
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+imports
+
+@angular
+	platform-browser
+		BrowserModule
+	common
+		CommonModule
+		http
+			HttpClientModule
+	forms
+		FormsModule
+		ReactiveFormsModule
+	router
+		RouterModule
+	core
+		Pipe
+		PipeTransfrom
+		NgModule
+		Component
+		OnInit
+		Input
+		Output
+		EventEmitter
+		Injectable
+
+
+rxjs
+	operators
+		catchError
+		map
+		tap
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+modules - basic - app.module.ts
+
+	import { NgModule } from '@angular/core';
+	import { BrowserModule } from '@angular/platform-browser';
+	import { AppComponent } from './app.component';
+	@NgModule({
+	  declarations: [
+	    AppComponent
+	  ],
+	  imports: [
+	    BrowserModule
+	  ],
+	  providers: [],
+	  bootstrap: [AppComponent]
+	})
+	export class AppModule { }
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+component - basic - app.component.ts
+
+	// src/app/heroes/heroes.component.ts
+		import { Component, OnInit } from '@angular/core';
+		@Component({
+		  selector: 'app-heroes',
+		  templateUrl: './heroes.component.html',
+		  styleUrls: ['./heroes.component.css']
+		})
+		export class HeroesComponent implements OnInit {
+		  pageTitle: string = 'My Heroes';
+		  constructor() { }
+		  ngOnInit() {
+		  }
+		}
+	// src/app/heroes/heroes.component.html
+		<h2>{{pageTitle}}</h2>
+	// src/app/heroes/heroes.component.css
+		/* HeroesComponent's private CSS styles */
+		h2 {color: blue}
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+component - basic - parent to child
+
+	// hero-detail.component.ts - i'm part of the child
+		import { Component, Input } from '@angular/core';
+		@Component({
+		  selector: 'app-hero-detail',
+		  templateUrl: './hero-detail.component.html',
+		  styleUrls: [ './hero-detail.component.css' ]
+		})
+		export class HeroDetailComponent {
+			@Input() hero: Hero; 										// @Input means hero value came from this component's parent
+		}
+	// heroes.component.html - i'm part of the parent
+		<app-hero-detail [hero]="selectedHero"></app-hero-detail> 		// if [hero] value selectedHero is updated, child data is also updated above	
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+component - basic - child to parent
+
+	// product-alerts.component.ts 													// child ts
+		import { Output, EventEmitter } from '@angular/core';
+		...
+		export class ProductAlertsComponent {
+			...
+			@Output() notify = new EventEmitter(); 									// @Output() allows this child to emit an event to parent component when value of notify changes
+		}
+	// product-alerts.component.html 												// child html
+		<button (click)="notify.emit()">Notify Me</button> 							// click this to trigger @Output() notify above
+	// product-list.component.html 													// parent html
+		<app-product-alerts ... (notify)="onNotify()"></app-product-alerts>
+	// product-list.component.ts 													// parent ts
+		onNotify() {
+			window.alert('You will be notified when the product goes on sale');
+		}	
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+services - create manually - sync
+
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor() { }
+		  getHeroes(): Hero[] {
+			return HEROES; 											// depends on what you return. Here its just constants
+		  }
+		}
+	// heroes.component.ts
+		import { HeroService } from '../hero.service';
+		...
+		export class HeroesComponent {
+			constructor(private heroService: HeroService) {}
+			getHeroes(): void {
+			  this.heroes = this.heroService.getHeroes();
+			}			
+		}
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+services - observable - convert service to Observable data AND subscribe - async
+
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { Observable, of } from 'rxjs';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+			getHeroes(): Observable<Hero[]> {
+			  const heroes = of(HEROES); 							// of method is from rxjs. Its like await of promise
+			  return heroes;
+			}
+		}
+	// heroes.component.ts
+		import { HeroService } from '../hero.service';
+		...
+		export class HeroesComponent {
+			constructor(private heroService: HeroService) {}
+			getHeroes(): void {
+			  this.heroService.getHeroes()
+			      .subscribe(heroes => this.heroes = heroes);  		// callback inside .subscribe triggers if of method finish in service
+			}
+		}
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+services - observable - optional observable object next, error, complete
+
+	// heroes.component.ts
+		import { HeroService } from '../hero.service';
+		...
+		export class HeroesComponent {
+			constructor(private heroService: HeroService) {}
+			getHeroes(): void {
+			  this.heroService.getHeroes()
+			      .subscribe({										// callback inside .subscribe triggers if of method finish in service
+			      	next: heroes => this.heroes = heroes, 			// next, error, complete. These object are optional
+			      	error: err => this.errorMessage = err 			// occurs if there is error
+			      });
+			}
+		}
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+http - sync
+
+	// app.module.ts
+		import { HttpClientModule } from '@angular/common/http';
+		...
+		@NgModule({
+		  imports: [
+		    ...
+		    HttpClientModule,
+		    ...
+		  ],
+		  ...
+		})
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor(private http: HttpClient) {}
+		  getHeroes(): Hero[] {
+			return this.http.get(this.heroesUrl);
+		  }
+		}
+	// heroes.component.ts
+		import { HeroService } from '../hero.service';
+		...
+		export class HeroesComponent {
+			constructor(private heroService: HeroService) {}
+			getHeroes(): void {
+			  this.heroes = this.heroService.getHeroes();
+			}			
+		}
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+http - observable
+
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor(private http: HttpClient) {}
+		  getHeroes(): Observable<Hero[]> {
+		    return this.http.get<Hero[]>(this.heroesUrl)
+		  }
+		}
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+http - pipe - tap
+
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor(private http: HttpClient) {}
+		  getHeroes(): Observable<Hero[]> {
+		    return this.http.get<Hero[]>(this.heroesUrl)
+			    .pipe(
+			      tap(_ => this.log('fetched heroes'))
+			    );
+		  }
+		}
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+http - pipe - catchError
+
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor(private http: HttpClient) {}
+		  getHeroes(): Observable<Hero[]> {
+		    return this.http.get<Hero[]>(this.heroesUrl)
+			    .pipe(
+			      tap(_ => this.log('fetched heroes')),
+		      	  catchError(this.handleError<Hero[]>('getHeroes', []))
+			    );
+		  }
+		}
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+http - get by id
+
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  constructor(private http: HttpClient) {}
+		  getHero(id: number): Observable<Hero> {
+		    const url = `${this.heroesUrl}/${id}`;
+		    return this.http.get<Hero>(url)
+			    .pipe(
+			      tap(_ => this.log(`fetched hero id=${id}`)),
+			      catchError(this.handleError<Hero>(`getHero id=${id}`))
+			    );
+		  }
+		}
+	// src/app/hero-detail/hero-detail.component.ts
+		getHero(): void {
+		const id = parseInt(this.route.snapshot.paramMap.get('id')!, 10);
+		this.heroService.getHero(id)
+		  .subscribe(hero => this.hero = hero);
+		}
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+http - update
+
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  	constructor(private http: HttpClient) {}
+			httpOptions = {
+				headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+			};		
+			updateHero(hero: Hero): Observable<any> {
+				return this.http.put(this.heroesUrl, hero, this.httpOptions)
+					.pipe(
+						tap(_ => this.log(`updated hero id=${hero.id}`)),
+						catchError(this.handleError<any>('updateHero'))
+					);
+			}
+		}
+	// src/app/hero-detail/hero-detail.component.ts
+		save(): void {
+		  this.heroService.updateHero(this.hero)
+		    .subscribe(() => this.goBack());
+		}
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+http - add new
+
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  	constructor(private http: HttpClient) {}
+			httpOptions = {
+				headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+			};		
+			addHero(hero: Hero): Observable<Hero> {
+			  return this.http.post<Hero>(this.heroesUrl, hero, this.httpOptions)
+				  .pipe(
+				    tap((newHero: Hero) => this.log(`added hero w/ id=${newHero.id}`)),
+				    catchError(this.handleError<Hero>('addHero'))
+				  );
+			}
+		}
+	// src/app/heroes/heroes.component.ts
+		add(name: string): void {
+		  name = name.trim();
+		  if (!name) { return; }
+		  this.heroService.addHero({ name } as Hero)
+		    .subscribe(hero => {
+		      this.heroes.push(hero);
+		    });
+		}
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+http - delete by id
+
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  	constructor(private http: HttpClient) {}
+			httpOptions = {
+				headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+			};		
+			deleteHero(hero: Hero | number): Observable<Hero> {
+			  const id = typeof hero === 'number' ? hero : hero.id;
+			  const url = `${this.heroesUrl}/${id}`;
+			  return this.http.delete<Hero>(url, this.httpOptions)
+				  .pipe(
+				    tap(_ => this.log(`deleted hero id=${id}`)),
+				    catchError(this.handleError<Hero>('deleteHero'))
+				  );
+			}
+		}
+	// src/app/heroes/heroes.component.ts
+		delete(hero: Hero): void {
+		  this.heroes = this.heroes.filter(h => h !== hero);
+		  this.heroService.deleteHero(hero).subscribe();
+		}
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+http - search by name
+
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  	constructor(private http: HttpClient) {}
+			searchHeroes(term: string): Observable<Hero[]> {
+				if (!term.trim()) {
+					// if not search term, return empty hero array.
+					return of([]);
+				}
+				return this.http.get<Hero[]>(`${this.heroesUrl}/?name=${term}`)
+					.pipe(
+						tap(x => x.length ?
+							this.log(`found heroes matching "${term}"`) :
+							this.log(`no heroes matching "${term}"`)),
+						catchError(this.handleError<Hero[]>('searchHeroes', []))
+					);
+			}
+		}
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rxjs - catch and replace strategy - eg 1. service - procedural
+
+	getProducts(): Observable<Product[]>{
+		return this.http.get<Product[]>(this.productstUrl)
+			.pipe(
+				catchError(err => { 								// if retrieve is unsuccessful, fall back to a locally safe set of items or return an empty set
+					console.error(err);
+					return of([{id: 1, productName: 'cart'},
+								{id: 2, productName: 'hammer'}]);
+				})
+			);
+	}	
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rxjs - catch and rethrow strategry - eg 1. service - procedural
+
+	getProducts(): Observable<Product[]>{
+		return this.http.get<Product[]>(this.productstUrl)
+			.pipe(
+				catchError(err => {
+					console.error(err);
+					return throwError(err);
+				})
+			);
+	}	
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rxjs - declarative pattern
+
+	- eg. declarative pattern
+		products$ = this.http.get<Product[]>(this.productsUrl);  // declare an observable property and assign it directly to the result of the http.get
+	- eg. declarative pattern - with error handling
+		products$ = this.http.get<Product[]>(this.productsUrl)
+			.pipe(
+				catchError(this.handleError)
+			);	
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rxjs - common data retrieval pattern VS reactive
+
+
+	// common observable pattern
+		// ts
+			products: Product[] = [];
+			constructor(private productService: ProductService){}
+			ngOnInit(){
+				this.productService.getProducts()
+					.subscribe(
+						products => this.products = products,
+						err => this.errorMessage = err
+					);
+			}
+		// html
+			<div *ngIf="products">
+				<table>
+					<tr *ngFor="let product of products">
+						<td>{{product.productName}}</td>
+						<td>{{product.productCode}}</td>
+					</tr>
+				</table>
+			</div>
+
+
+	// reactive
+		// ts
+			products$: Observable<Product[]>; 							// by convention, we add a dollar sign to the variable name to indicate that it is an observable and not a simple array
+			constructor(private productService: ProductService){}
+			ngOnInit(){
+				this.products$ = this.productService.getProducts()	 	// since the asyc pipe handles our subscription, we no longer need to subscribe in our component code
+					.pipe(
+						catchError(err => {
+							this.errorMessage = err;
+							return EMPTY;
+						})
+					);
+			}
+		// html
+			<div *ngIf="products$ | async as products"> 				// this automatically subscribes for us and handles unsubscribing
+																		// we using the "as" clause to assign each emitted item to a variable
+																			// products$ is the observable
+																			// products is the array of products emitted from that observable
+				<table>
+					<tr *ngFor="let product of products"> 					// products array is used here
+						<td>{{product.productName}}</td>
+						<td>{{product.productCode}}</td>
+					</tr>
+				</table>
+			</div>
+
+
+	// reactive - declarative
+		// ts
+			products$ = this.productService.products$;
+	// reactive - declarative - error handling
+		// ts
+			products$ = this.productService.products$
+				.pipe(
+					catchError(err => {
+						this.errorMessage = err;
+						return EMPTY;
+					})
+				);
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rxjs - Mapping Returned Data
+
+	products$ = this.http.get<Product[]>(this.productsUrl)
+		.pipe(
+			map(products =>  					// this map is from RxJS operator
+				products.map(product => ({ 		// this map is from array method
+					...product,
+					price: product.price * 1.5,
+					searchKey: [product.productName]
+				} as Product)) 
+				/*
+					- ({})
+						- an arrow function assumes curly braces define a function body
+						- we instead want an object literal, so we add parentheses around the curly braces
+				*/
+			),
+			tap(data => console.log('Products: ', JSON.stringify(data))),
+			catchError(this.handleError)
+		);
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rxjs - Combining Streams
+
+	// product-category.service.ts
+		productCategories$ = this.http.get<ProductCategory[]>(this.productCategoriesUrl)
+			.pipe(
+				tap(data => console.log('categories', JSON.stringify(data))),
+				catchError(this.handleError)
+			);	
+	// product-service.ts
+		products$ = this.http.get<Product[]>(this.productsUrl)
+			.pipe(
+				tap(data => console.log('Products: ', JSON.stringify(data))),
+				catchError(this.handleError)
+			);
+		productsWithCategory$ = combineLatest([
+			this.products$,
+			this.productCategoryService.productCategories$
+		])
+			.pipe(
+				map(([products, categories]) => 		// destruct
+					products.map(product => ({
+						...product,
+						price: product.price * 1.5,
+						category: categories.find(c => product.categoryId === c.id).name,
+						searchKey: [product.productName]
+					} as Product))
+				)
+			);
+	// product-list.component.ts
+		products$ = this.productService.productsWithCategory$
+			.pipe(
+				catchError(err => {
+					this.errorMessage = err;
+					return EMPTY;
+				})
+			);
+	// product-list.component.html
+		<div *ngIf="products$ | async as products">
+			<table>
+				<tr *ngFor="let product of products">
+					<td>{{product.productName}}</td>
+					<td>{{product.productCode}}</td>
+					<td>{{product.category}}</td>
+				</tr>
+			</table>
+		</div>
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rxjs - Reacting to Actions - 3 key steps to reacting to actions
+
+	- Create an action stream (Subject/BehaviorSubject)
+		selSubject = new Subject<number>();
+		// selSubject = new BehaviorSubject<number>(0);  		// BehaviorSubject works the same way as Subject but provides an initial default value passed to the constructor
+		selectedAction$ = this.selSubject.asObservable();
+	- Combine the action and data streams
+		products$ = combineLatest([
+			this.productService.products$,
+			this.selectedAction$								// by combining our data stream with our new action stream, an item is emitted every time the user selects a category
+		])
+			.pipe(...);
+	- Emit a value to the action stream when an action occurs
+		onSelected(id): void {
+			this.selSubject.next(+id); 							// since the Subject is an observer, we can call next, error, or complete on the subject instance
+																// so when the user selects a different category, we emit the selected category ID to the action stream
+		}
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rxjs - Reacting to Actions
+
+	// product-list.component.ts
+		private categorySelectedSubject = new BehaviorSubject<number>(0);
+		categorySelectedAction$ = this.categorySelectedSubject.asObservable();
+		products$ = combineLatest([
+			this.productService.productsWithCategory$,
+			this.categorySelectedAction$
+		])
+			.pipe(
+				map(([products, selectedCategoryId]) =>
+					products.filter(product =>
+					selectedCategoryId ? product.categoryId === selectedCategoryId : true
+				)),
+				catchError(err => {
+					this.errorMessage = err;
+					return EMPTY;
+				})
+			);
+		categories$ = this.productCategoryService.productCategories$
+			.pipe(
+				catchError(err => {
+					this.errorMessage = err;
+					return EMPTY;
+				})
+			);
+		onSelected(categoryId: string): void {
+			this.categorySelectedSubject.next(+categoryId);
+		}
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rxjs - Reacting to Actions: Examples - select operation
+
+	// product.service.ts
+		private productSelectedSubject = new BehaviorSubject<number>(0); 					
+		productSelectedAction$ = this.productSelectedSubject.asObservable(); 				// action stream
+		selectedProduct$ = combineLatest([ 													// combining data stream to action stream
+			this.productsWithCategory$,
+			this.productSelectedAction$
+		])
+			.pipe(
+				map(([products, selectedProductId]) =>
+					products.find(product => product.id === selectedProductId)
+				),
+				tap(product => console.log('selectedProduct', product))
+			);
+		selectedProductChanged(selectedProductId: number): void {
+			this.productSelectedSubject.next(selectedProductId);
+		}
+	// product-list-alt.component.ts
+		@Component({
+			...
+			changeDetection: ChangeDetectionStrategy.OnPush
+		})
+		export class ProductListAltComponent {
+			products$ = this.productService.productsWithCategory$
+				.pipe(
+					catchError(err => {
+						this.errorMessageSubject.next(err);
+						return EMPTY;
+					})
+				);
+			selectedProduct$ = this.productService.selectedProduct$;
+			onSelected(productId: number): void {
+				this.productService.selectedProductChanged(productId);
+			}
+		}
+	// product-list-alt.component.html
+		<div *ngIf="products$ | async as products">
+			<button
+				*ngFor='let product of products'
+				[ngClass]="{'active': product?.id === (selectedProduct$ | async)?.id}"
+				(click)='onSelected(product.id)'>
+				{{ product.productName }} ({{ product.category }})
+			</button>
+		</div>
+	// product-detail.component.ts
+		@Component({
+			...
+			changeDetection: ChangeDetectionStrategy.OnPush
+		})
+		export class ProductDetailComponent {
+			product$ = this.productService.selectedProduct$
+				.pipe(
+					catchError(err => {
+						this.errorMessageSubject.next(err);
+						return EMPTY;
+					})
+				);
+		}
+	// product-detail.component.html
+		<div *ngIf="product$ | async as product"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rxjs - Reacting to Actions: Examples - add operation
+
+	// product.service.ts
+		private productInsertedSubject = new Subject<Product>();
+		productInsertedAction$ = this.productInsertedSubject.asObservable();
+		productsWithAdd$ = merge( 		// we use the merge creation function to merge our data stream and our action stream
+			this.productsWithCategory$,
+			this.productInsertedAction$
+		)
+			.pipe(
+				scan((acc: Product[], value: Product) => [...acc, value])
+			);
+		addProduct(newProduct?: Product) {
+			newProduct = newProduct || this.fakeProduct();
+			this.productInsertedSubject.next(newProduct);
+		}
+		private fakeProduct() {
+			return {
+				id: 42,
+				productName: 'Another One',
+				productCode: 'TBX-0042',
+				description: 'Our new product',
+				price: 8.9,
+				categoryId: 3,
+				category: 'Toolbox',
+				quantityInStock: 30
+			};
+		}
+	// product-list.component.ts
+		private categorySelectedSubject = new BehaviorSubject<number>(0);
+		categorySelectedAction$ = this.categorySelectedSubject.asObservable();
+		products$ = combineLatest([
+			this.productService.productsWithAdd$,
+			this.categorySelectedAction$
+		])
+			.pipe(
+				map(([products, selectedCategoryId]) =>
+					products.filter(product =>
+					selectedCategoryId ? product.categoryId === selectedCategoryId : true
+				)),
+				catchError(err => {
+					this.errorMessageSubject.next(err);
+					return EMPTY;
+				})
+			);
+		onAdd(): void {
+			this.productService.addProduct();
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rxjs - Caching Observables
+
+	eg. 1 - declarative caching patter
+		products$ = this.http.get<Product[]>(this.productsUrl)
+			.pipe(
+				shareReplay(1), 					// this caches and shared the resulting observable
+													// 1 here is not a boolean but a certain value. But i did not understand her explaination
+														// we might need to go to angular documentation to get the specific value for specific purposes
+				catchError(this.handleError)
+			);
+	eg. 2 
+		productCategories$ = this.http.get<ProductCategory[]>(this.productCategoriesUrl)
+			.pipe(
+				tap(data => console.log('categories', JSON.stringify(data))),
+				shareReplay(1),
+				catchError(this.handleError)
+			);	
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+routing - basic
+
+	// app.module.ts
+		import { RouterModule } from "@angular/router";
+		@NgModule({
+		  imports: [
+		    RouterModule.forRoot([
+		      { path: 'products/:productId', component: ProductDetailsComponent },
+		    ])
+		  ]
+		  })
+	// product-list.component.html
+		<a [routerLink]="['/products', product.id]"> {{ product.name }} </a>
+
+
+
+
+
+	// base path
+		<base href="/">
+	// app.module.ts
+		@NgModule({
+			imports: [
+				RouterModule.forRoot([ 				// forRoot should be use one time only, forChild for feature routes
+					{path: 'welcome', component: WelcomeComponent},
+					{path: '', redirectTo: 'welcome', pathMatch: 'full' },
+					{path: '**', component: PageNotFoundCompnent},
+													/*
+														- path should have no leading slash
+														- ** for default
+														- order matters
+															- imported module with routes also go first
+													*/
+				])
+			]
+		})
+	// html - RouterOutlet directive
+		<router-outlet></router-outlet>
+	// html - to activate
+		<a [routerLink]="['/welcome']">Home</a> 	
+													/*
+														- 1st element is the root URL segment
+														- other elements are route parameters or additional URL segments
+													*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+routing - routing features
+
+	// feature module
+		@NgModule({
+			imports: [
+				RouterModule.forChild([ 				
+					{path: 'products', component: ProductListComponent}
+				])
+			]
+		})
+	// ts
+		this.router.navigate(['/welcome']);
+													/*
+														- 1st element is the root URL segment
+														- other elements are route parameters or additional URL segments
+													*/
+	// ts - other syntax
+		this.router.navigate(['/welcome']);  		// standard syntax
+		this.router.navigate(/welcome); 			// shortcut syntax
+		this.router.navigateByUrl('/welcome'); 		// complete url path. Mostly not used
+	// app-routing.module.ts - routing module
+		- https://app.pluralsight.com/course-player?clipId=9e7de267-7630-4b42-b22d-cc68ed8aef28	
+			- better organization
+			- easier to find
+			- seperation of concerns
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+routing - extract router param
+
+	// product-details.component.ts
+		import { ActivatedRoute } from '@angular/router';
+		export class ProductDetailsComponent implements OnInit {
+			product;
+			constructor(private route: ActivatedRoute){}
+			ngOnInit() {
+				const routeParams = this.route.snapshot.paramMap;
+				const productIdFromRoute = Number(routeParams.get('productId'));
+				this.product = products.find(product => product.id === productIdFromRoute);
+			}
+		}
+	// product-details.component.html
+		<div *ngIf="product">
+			<h3>{{ product.name }}</h3>
+			<h4>{{ product.price | currency }}</h4>
+			<p>{{ product.description }}</p>
+		</div>	
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+routing - route parameters
+
+	// configure
+		{path: 'products/:id', component: ProductDetailComponent}
+		{path: 'products/:id/edit', component: ProductDetailComponent}
+	// html
+		<a [routerLink]="['/products', product.id]">{{name}}</a>
+		<a [routerLink]="['/products', product.id, 'edit']">Edit</a>
+		<a [routerLink]="['/products', 0, 'edit']">Add Product</a>
+	// ts
+		this.router.navigate(['/products', this.product.id]);
+	// ts - read parameter - snapshot
+		this.route.snapshot.paramMap.get('id');
+	// ts - read parameter - observable
+		this.route.paramMap.subscribe(
+			params => {
+				const id = params.get('id');
+			}
+		);
+		/*
+			- the observable keeps a watch on the parameters and recieves a notification every time the parameters change
+		*/
+	// optional parameters - configure
+		{path: 'products', component: ProductDetailComponent}  // no need to configure
+	// optional parameters - html
+		<a [routerLink]="['/products', {start: startDate, end: endDate}">...</a>
+	// optional parameters - ts
+		this.router.navigate(['/products', {start: startDate, end: endDate}]);
+	// optional parameters - read
+		this.route.snapshot.paramMap.get('start');
+	// query parameters - configure
+		{path: 'products', component: ProductDetailComponent}  // no need to configure
+	// query parameters - html
+		<a 	[routerLink]="['/products']"
+			[queryParams]="{filterBy: 'x', showImage: true}">...</a>
+	// query parameters preserve - html
+		<a 	[routerLink]="['/products']"
+			queryParamsHandling="preserve" 						// preserve query in url when back button is clicked
+		>Back</>
+	// query parameters - ts
+		this.router.navigate(['/products', {
+								queryParams: {filterBy: 'x', showImage: true}
+		}]);
+	// query parameters - read
+		this.route.snapshot.queryParamMap.get('filterBy') || '';
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+routing - router-outlet and routerlink
+
+	<a routerLink="/heroes">Heroes</a>
+	<router-outlet></router-outlet>	
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+routing - location
+
+	// hero-detail.component.ts
+		import { Location } from '@angular/common';
+		@Component({
+		  selector: 'app-hero-detail',
+		  templateUrl: './hero-detail.component.html',
+		  styleUrls: [ './hero-detail.component.css' ]
+		})
+		export class HeroDetailComponent {
+		  constructor(
+		    private location: Location
+		  ) {}
+		  goBack(): void {
+		    this.location.back();
+		  }
+		}
+	// hero-detail.component.html
+		<button (click)="goBack()">go back</button>
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+routing - prefetching data using route resolvers
+
+	// routes data property - module
+		@NgModule(
+			imports: [
+				RouterModule.forChild([
+					{
+						path: 'products',
+						component: ProductListComponent,
+						data: {pageTitle: 'Product List'}, // routes data property
+					}
+				])
+			]
+		);
+	// routes data property - ts
+		this.pageTitle = this.route.snapshot.data['pageTitle'];
+	// resolver - service
+		import {Injectable} from '@angular/core';
+		import {Resolve, ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular/router';
+		import {Observable} from 'rxjs';
+		import {Product} from './product';
+		import {ProductService} from './product.service';
+		@Injectable({
+			providedIn: 'root'
+		})
+		export class ProductResolver implements Resolve<Product> {
+			constructor(private productService: ProductService){}
+			resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):Observable<Product>{
+				const id = +route.paramMap.get('id');
+				return this.productService.getProduct(id);
+			}
+		}
+	// resolver - module
+		{
+			path: 'products/:id',
+			component: ProductDetailComponent,
+			resolve: {resolvedData: ProductResolver}
+		}
+		{
+			path: 'products/:id/edit',
+			component: ProductDetailComponent,
+			resolve: {resolvedData: ProductResolver,
+						categories: CategoryResolver}
+		}
+	// resolver - ts - snapshot - if the route never change while on the page
+		const resolvedData: ProductResolved = this.route.snapshot.data['resolvedData'];
+		this.errorMessage = resolvedData.error;
+		this.onProductRetrieved(resolvedData.produt);
+		onProductRetrieved(product: Product): void {...}
+	// resolver - ts - observable - if the route could change 
+		this.route.data.subscribe(data => {
+			const resolvedData: ProductResolved = data['resolvedData'];
+			this.errorMessage = resolvedData.error;
+			this.onProductRetriedved(resolvedData.product);
+		});
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+routing - child routes
+
+	// html - child
+		<router-outlet></router-outlet>
+	// html - activate
+		<a [routerLink]="'/products', product.id, 'edit', 'info'">Info</a> 		// absolute path - using absolute path ties the route activation to the current route hierarchy
+		<a [routerLink]="['info']">Info</a> 									// relative path - better option. does not begin with a slash and is relative to the current url segment. If the ancestor route segments ever change, this path is unaffected
+	// ts 
+		this.router.navigate(['/products', this.product.id, 'edit', 'info']); 	// absolute
+		this.router.navigate(['info'], {relativeTo: this.route}); 				// relative
+	// read - product data service
+		this.productService.getProduct(id).subscribe(product => this.product = product);
+	// read - child route resolver
+		this.product = this.route.snapshot.data['product'];
+	// read - parent route resolver
+		this.product = this.route.parent.snapshot.data['product'];
+	// ts - read - snapshot
+		this.product = this.route.snapshot.data['product'];
+	// ts - read - observable
+		this.route.data.subscribe(data => this.product = data['product']);
+		this.route.parent.data.subscribe(data => {this.product = data['resolveData'].product});
+	// ts @ViewChild
+		- https://app.pluralsight.com/course-player?clipId=174d12b0-1444-4dc3-a2f6-c52a2c613c11
+			- recheck this for explanation
+			- this is like when you edit a form and browse to other tab then the error edit is still there
+		export class ProductEditInfoComponent implements OnInit {
+			@ViewChild(NgForm, {static: false}) productForm: NgForm;
+			ngOnInit(): void {
+				this.route.parent.data.subscribe(data => {
+					if(this.productForm){
+						this.productForm.reset();
+					}
+					this.product = data['resolvedData'].product;
+				});
+			}
+		}
+	// html @ViewChild
+		<form novalidate #productForm="ngForm">
+		</form>
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+routing - grouping and componentless routes
+
+	// module
+		RouterModule.forChild([
+			{
+				path: 'products', 				
+												/*
+													- this 1st layer object has no component property hence its a componentless parent route. 
+													- The child component below now will appear in a parent <outlet>. https://app.pluralsight.com/course-player?clipId=ed835294-e72f-4c38-987f-0049b188fea0
+												*/
+				children: [
+					{
+						path: '',
+						component: ProductDetailComponent
+					}
+					{
+						path: ':id',
+						component: ProductDetailComponent,
+						resolve: {product: ProductResolver}
+					},
+					{
+						path: ':id/edit',
+						component: ProductEditComponent,
+						resolve: {product: ProductResolver},
+						children: [...]
+					}
+				]
+			}
+		]);
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+routing - secondary routes: named router outlet
+
+	// html
+		<router-outlet></router-outlet>
+		<router-outlet name='popup'></router-outlet>
+	// module
+		RouterModule.forChild([
+			{
+				path: 'messages',
+				component: MessageComponent,
+				outlet: 'popup'
+			}
+		])
+	// html - activate
+		<a [routerLink]="[{outlets:{popup:['messages']}}]">Messages</a>
+		// localhost:4200/products(popup:messages)
+	// ts - activate
+		this.router.navigate([{outlets:{popup:['messages']}}]);
+	// html - clear
+		<a [routerLink]="[{outlets:{popup:['null']}}]">Messages</a>
+	// ts - clear
+		this.router.navigate([{outlets:{popup:['null']}}]);	
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+routing - route guards
+
+	// service
+		// much better to generate this using cli
+		// ng g g user/auth
+		import {Injectable} from '@angular/core';
+		import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree} from '@angular/router';
+		import {Observable} from 'rxjs';
+		@Injectable({
+			providedIn: 'root'
+		})
+		export class AuthGuard implements CanActivate {
+			constructor(private authService: AuthService,
+						private router: Router) {}
+			canActivate(
+				next: ActivatedRouteSnapshot,
+				state: RouterStateShanpshot
+			): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+				return this.checkLoggedIn();
+			}
+			checkLoggedIn(): boolean {
+				if(this.authService.isLoggedIn){
+					return true;
+				}
+				this.router.navigate(['/login']);
+				return false;
+			}
+		}
+	// modules
+		{
+			path: 'products',
+			canActivate: [AuthGuard]
+		}
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+routing - lazy loading
+
+	// module
+		import {RouterModule, PreloadAllModules} from '@angular/router';
+		RouterModule.forRoot([
+			{
+				path: 'products',
+				loadChildren: () => import(./products/product.module) 		
+										.then(m => m.ProductModule)			
+															            /*
+															              - import
+															                - the imports expression and returns a promise
+															              - .then
+															                - when the request of import is complete, the promise is resolved
+															                - and we specify the angular module to load from that file              
+															              - loadChildren
+															                - this property tells the router to fetch the bundle containing this module 
+															                  - only when the user navigates to a products route
+															                  - it compiles this module, then merge the route configuration defined in this module with the application route configuration
+															                  - lastly it activates the requested component and display that components template              
+															            */
+			}
+			], {preloadingStrategy: PreloadAllModules})
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+form - html - normal VS template driven VS reactive
+
+
+	// normal
+		<form>
+			<div>
+				<label for="firstNameId">First Name</label>
+				<input id="firstNameId" type="text" 
+						placeholder="First Name (required)"
+						required
+						minlength="3" />
+			</div>
+			<button type="submit">Save</button>
+		</form>
+
+
+	// template driven
+		<form (ngSubmit)="save()">
+			<div>
+				<label for="firstNameId">First Name</label>
+				<input id="firstNameId" type="text" 
+						placeholder="First Name (required)"
+						required
+						minlength="3" 
+						[(ngModel)]="customer.firstName"
+						name="firstName"
+						#firstNameVar="ngModel"
+						[ngClass]="{'is-invalid': firstNameVar.touched && !firstNameVar.valid }" />
+				<span *ngIf="firstNameVar.errors">
+					Please enter your first name.
+				</span>
+			</div>
+			<button type="submit">Save</button>
+		</form>
+
+
+	// reactive form
+		<form (ngSubmit)="save()" [formGroup]="signupForm">
+			<div>
+				<label for="firstNameId">First Name</label>
+				<input id="firstNameId" type="text" 
+						placeholder="First Name (required)"
+						formControlName="firstName"
+						[ngClass]="{'is-invalid': formError.firstName }" />
+				<span *ngIf="formError.firstName">
+					{{formError.firstName}}
+				</span>
+			</div>
+			<button type="submit">Save</button>
+		</form>
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+form - reactive form - access form model properties
+
+	customerForm.control.firstName.valid
+	// or
+	customerForm.get('firstName').valid
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+form - reactive form - FormGroup style
+
+	this.customerForm = new FormGroup({
+		firstName: new FormControl(),
+		lastName: new FormControl(),
+		email: new FormControl(),
+		sendCatalog: new FormControl(true)
+	});
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+form - reactive form - FormBuilder style
+
+	//
+		this.customerForm = this.fb.group({
+			firstName: '',
+			sendCatalog: true
+		});
+	//
+		this.customerForm = this.fb.group({
+			firstName: {value: 'n/a', disabled: true},
+			sendCatalog: {value: true, disabled: false}
+		});
+	//
+		this.customerForm = this.fb.group({
+			firstName: [''],
+			sendCatalog: [true]
+		});
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+form - reactive form - validation rules
+
+	//
+		this.customerForm = this.fb.group({
+			firstName: ['', Validators.required],
+			sendCatalog: true
+		});
+	//
+		this.customerForm = this.fb.group({
+			firstName: ['', Validators.required, Validators.minLength(3)],
+			sendCatalog: true
+		});
+	//
+		emailGroup: this.fb.group({
+			email: ['', [Validators.required, Validators.email]],
+			confirmEmail: ['', Validators.required],
+		}, { validator: emailMatcher }),
+	//
+		rating: [null, ratingRange(1, 5)],
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+form - reactive form - set validation rules runtime
+
+	//
+		myControl.setValidators(Validators.required);
+	//
+		myControl.setValidators([Validators.required, Validators.maxLength(30)]);
+	//
+		myControl.clearValidators();
+	//
+		myControl.updateValueAndValidity();
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+form - reactive form - custom validator
+
+	function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
+		const emailControl = c.get('email');
+		const confirmControl = c.get('confirmEmail');
+		if (emailControl.pristine || confirmControl.pristine) {
+			return null;
+		}
+		if (emailControl.value === confirmControl.value) {
+			return null;
+		}
+		return { match: true };
+	}
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+form - reactive form - custom validator with arguments
+
+	function ratingRange(min: number, max: number): ValidatorFn {
+		return (c: AbstractControl): { [key: string]: boolean } | null => {
+			if (c.value !== null && (isNaN(c.value) || c.value < min || c.value > max)) {
+				return { range: true };
+			}
+			return null;
+		};
+	}
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+form - reactive form - Observable Property
+
+	this.myFormControl.valueChanges.subscribe(value => console.log(value));
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+form - reactive form - Reactive transformations
+
+	this.myFormControl.valueChanges.pipe(
+		debounceTime(1000)
+	).subscribe(
+		value => console.log(value)
+	);
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+form - form builder
+
+	// cart.component.ts
+		import { FormBuilder } from '@angular/forms';
+		export class CartComponent {
+		  items = this.cartService.getItems();
+		  constructor( ..., private formBuilder: FormBuilder, ) {}
+		  checkoutForm = this.formBuilder.group({
+		    name: '',
+		    address: ''
+		  });
+		  onSubmit(): void {
+		    this.items = this.cartService.clearCart();
+		    console.warn('Your order has been submitted', this.checkoutForm.value);
+		    this.checkoutForm.reset();
+		  }
+		}
+	// cart.component.html
+		<form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()>
+		  <div>
+		    <label for="name">
+		      Name
+		    </label>
+		    <input id="name" type="text" formControlName="name">
+		  </div>
+		  <div>
+		    <label for="address">
+		      Address
+		    </label>
+		    <input id="address" type="text" formControlName="address">
+		  </div>	
+		  <button class="button" type="submit">Purchase</button>
+		</form>	
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+form - form builder - Using the FormBuilder service to generate controls
+
+	// ts
+		import { Component } from '@angular/core';
+		import { FormBuilder } from '@angular/forms';
+		@Component({
+		  selector: 'app-profile-editor',
+		  templateUrl: './profile-editor.component.html',
+		  styleUrls: ['./profile-editor.component.css']
+		})
+		export class ProfileEditorComponent {
+		  profileForm = this.fb.group({
+		    firstName: [''],
+		    lastName: [''],
+		    address: this.fb.group({
+		      street: [''],
+		      city: [''],
+		      state: [''],
+		      zip: ['']
+		    }),
+		  });
+		  constructor(private fb: FormBuilder) { }
+		}
+
+
+
