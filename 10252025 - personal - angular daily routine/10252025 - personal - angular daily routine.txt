@@ -112,6 +112,71 @@ templates - pipes
 
 
 
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+imports
+
+@angular
+	common
+		CommonModule
+		http
+			HttpClientModule
+	core
+		Component
+		EventEmitter
+		Injectable
+		Input
+		NgModule
+		OnInit
+		Output
+		Pipe
+		PipeTransfrom
+	forms
+		FormsModule
+		ReactiveFormsModule
+	platform-browser
+		BrowserModule
+	router
+		RouterModule
+
+
+rxjs
+	operators
+		catchError
+		map
+		tap
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+modules - basic - app.module.ts
+
+	import { NgModule } from '@angular/core';
+	import { BrowserModule } from '@angular/platform-browser';
+	import { AppComponent } from './app.component';
+	@NgModule({
+	  declarations: [
+	    AppComponent
+	  ],
+	  imports: [
+	    BrowserModule
+	  ],
+	  providers: [],
+	  bootstrap: [AppComponent]
+	})
+	export class AppModule { }
+
+
+
+
+
+
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 pipes - custom
@@ -166,69 +231,6 @@ interface type
 			};
 		}
 
-
-
-
-
-
-
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-imports
-
-@angular
-	platform-browser
-		BrowserModule
-	common
-		CommonModule
-		http
-			HttpClientModule
-	forms
-		FormsModule
-		ReactiveFormsModule
-	router
-		RouterModule
-	core
-		Pipe
-		PipeTransfrom
-		NgModule
-		Component
-		OnInit
-		Input
-		Output
-		EventEmitter
-		Injectable
-
-
-rxjs
-	operators
-		catchError
-		map
-		tap
-
-
-
-
-
-
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-modules - basic - app.module.ts
-
-	import { NgModule } from '@angular/core';
-	import { BrowserModule } from '@angular/platform-browser';
-	import { AppComponent } from './app.component';
-	@NgModule({
-	  declarations: [
-	    AppComponent
-	  ],
-	  imports: [
-	    BrowserModule
-	  ],
-	  providers: [],
-	  bootstrap: [AppComponent]
-	})
-	export class AppModule { }
 
 
 
@@ -559,40 +561,6 @@ http - get by id
 
 
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-http - update
-
-	// src/app/hero.service.ts
-		import { Injectable } from '@angular/core';
-		import { Hero } from './hero'; 								// interface
-		import { catchError, map, tap } from 'rxjs/operators';
-		@Injectable({
-		  providedIn: 'root',
-		})
-		export class HeroService {
-		  	constructor(private http: HttpClient) {}
-			httpOptions = {
-				headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-			};		
-			updateHero(hero: Hero): Observable<any> {
-				return this.http.put(this.heroesUrl, hero, this.httpOptions)
-					.pipe(
-						tap(_ => this.log(`updated hero id=${hero.id}`)),
-						catchError(this.handleError<any>('updateHero'))
-					);
-			}
-		}
-	// src/app/hero-detail/hero-detail.component.ts
-		save(): void {
-		  this.heroService.updateHero(this.hero)
-		    .subscribe(() => this.goBack());
-		}
-
-
-
-
-
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -628,6 +596,49 @@ http - add new
 		      this.heroes.push(hero);
 		    });
 		}
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+http - update
+
+	// src/app/hero.service.ts
+		import { Injectable } from '@angular/core';
+		import { Hero } from './hero'; 								// interface
+		import { catchError, map, tap } from 'rxjs/operators';
+		@Injectable({
+		  providedIn: 'root',
+		})
+		export class HeroService {
+		  	constructor(private http: HttpClient) {}
+			httpOptions = {
+				headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+			};		
+			updateHero(hero: Hero): Observable<any> {
+				return this.http.put(this.heroesUrl, hero, this.httpOptions)
+					.pipe(
+						tap(_ => this.log(`updated hero id=${hero.id}`)),
+						catchError(this.handleError<any>('updateHero'))
+					);
+			}
+		}
+	// src/app/hero-detail/hero-detail.component.ts
+		save(): void {
+		  this.heroService.updateHero(this.hero)
+		    .subscribe(() => this.goBack());
+		}
+
+
+
+
 
 
 
