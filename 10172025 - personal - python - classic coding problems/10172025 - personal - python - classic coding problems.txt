@@ -172,7 +172,50 @@ print(remove_duplicates([1, 2, 2, 3, 4, 4, 5]))  # [1, 2, 3, 4, 5]
 
 ----------------------------------------------------------------
 
+11. Balance, ImBalance (LifoQueue)
 
+from collections import LifoQueue
+
+def is_balanced(s: str) -> bool:
+    pairs = {
+                ')': '(', 
+                ']': '[', 
+                '}': '{'
+    }
+    stack = LifoQueue()
+
+    for char in s:
+        if char in '([{':
+            stack.put(char)  # push
+        elif char in ')]}':
+            if stack.empty() or stack.get() != pairs[char]:
+                return False
+
+    return stack.empty()
+
+
+print(is_balanced("([{}])"))   # ✅ True
+print(is_balanced("}{[()]"))   # ❌ False
+print(is_balanced("(([]){})")) # ✅ True
+print(is_balanced("(([])"))    # ❌ False
+
+
+
+----------------------------------------------------------------
+
+12. manual get exponent
+
+
+def get_exp(number, exponent):
+    # base case
+    if exponent == 0:
+        return 1
+    elif exponent < 0:
+        # handle negative exponents
+        return 1 / get_exp(number, -exponent)
+    else:
+        # recursive case
+        return number * get_exp(number, exponent - 1)
 
 
 
@@ -292,11 +335,6 @@ print(remove_duplicates([1, 2, 2, 3, 4, 4, 5]))  # [1, 2, 3, 4, 5]
 
 ----------------------------------------------------------------
 
-
-
-
-
-----------------------------------------------------------------
 
 
 
