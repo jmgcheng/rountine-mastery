@@ -221,6 +221,21 @@ def get_exp(number, exponent):
 
 ----------------------------------------------------------------
 
+13. guess the number
+
+import random
+
+def play_guess_game():
+    secret = random.randint(1, 100)
+    while True:
+        guess = int(input("Enter your guess: "))
+        if guess < secret:
+            print("higher")
+        elif guess > secret:
+            print("lower")
+        else:
+            print("you win!")
+            break
 
 
 
@@ -334,6 +349,7 @@ def get_exp(number, exponent):
 
 
 ----------------------------------------------------------------
+
 
 
 
