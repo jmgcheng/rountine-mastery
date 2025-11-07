@@ -174,7 +174,7 @@ print(remove_duplicates([1, 2, 2, 3, 4, 4, 5]))  # [1, 2, 3, 4, 5]
 
 11. Balance, ImBalance (LifoQueue)
 
-from collections import LifoQueue
+from queue import LifoQueue
 
 def is_balanced(s: str) -> bool:
     pairs = {
@@ -334,6 +334,7 @@ def get_exp(number, exponent):
 
 
 ----------------------------------------------------------------
+
 
 
 
