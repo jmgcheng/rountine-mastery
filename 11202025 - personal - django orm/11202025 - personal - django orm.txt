@@ -1,0 +1,1650 @@
+Django ORM
+
+--------------------------------------------------------------------------
+Models - Reference
+class Blog(models.Model):
+    name = models.CharField(max_length=200)
+
+class Author(models.Model):
+    name = models.CharField(max_length=200)
+
+class Entry(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    authors = models.ManyToManyField(Author)
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
+--------------------------------------------------------------------------
+
+
+
+
+1. Basic QuerySet Operations
+ORM Feature	Simple Description
+
+-------------------------------------------------------------
+.all()	Get all records.
+-------------------------------------------------------------
+Blog.objects.all()
+Entry.objects.all()
+Entry.objects.all()[:5]
+Entry.objects.all()[5:15]
+
+
+
+-------------------------------------------------------------
+.get()	Get one record; error if none or more than one.
+-------------------------------------------------------------
+Author.objects.get(id=1)
+Blog.objects.get(name="Tech Blog")
+Entry.objects.get(pk=1)
+
+
+
+-------------------------------------------------------------
+.filter()	Get records that match conditions.
+-------------------------------------------------------------
+Entry.objects.filter(title__icontains="django")
+Entry.objects.filter(created_at__year=2024)
+Entry.objects.filter(blog_id=1)
+
+
+
+-------------------------------------------------------------
+.exclude()	Get records that do NOT match conditions.
+-------------------------------------------------------------
+Entry.objects.exclude(blog_id=1)
+Author.objects.exclude(name__startswith="A")
+
+
+
+-------------------------------------------------------------
+.order_by()	Sort results (ASC or DESC).
+-------------------------------------------------------------
+Entry.objects.order_by("-created_at")  # Newest first
+Entry.objects.order_by("blog", "title")
+
+
+
+-------------------------------------------------------------
+.first() / .last()	Return the first/last object (or None).
+-------------------------------------------------------------
+Entry.objects.first()
+Entry.objects.order_by("-created_at").last()
+
+
+
+-------------------------------------------------------------
+.reverse()	Reverse the order of a queryset.
+-------------------------------------------------------------
+Entry.objects.order_by("created_at").reverse()
+Entry.objects.reverse()
+
+
+
+-------------------------------------------------------------
+.values()	Return dicts instead of model instances.
+-------------------------------------------------------------
+# Returns dicts instead of objects.
+Entry.objects.values("id", "title")
+
+# Include related fields:
+Entry.objects.values("title", "blog__name")
+
+
+
+-------------------------------------------------------------
+.distinct()	Remove duplicate rows.
+-------------------------------------------------------------
+# List unique blog IDs:
+Entry.objects.values("blog").distinct()
+
+# Unique creation dates:
+Entry.objects.values("created_at__date").distinct()
+
+
+
+-------------------------------------------------------------
+.values_list()	Return tuples instead of model instances.
+-------------------------------------------------------------
+# Returns tuples.
+Entry.objects.values_list("id", "title")
+Entry.objects.values_list("title", flat=True)  # list of titles only
+
+
+
+-------------------------------------------------------------
+.exists()	Quickly check if any record exists.
+-------------------------------------------------------------
+# Check if ANY record exists (fast).
+Entry.objects.filter(blog_id=1).exists()
+
+# Check if an author exists:
+Author.objects.filter(name="John").exists()
+
+
+
+-------------------------------------------------------------
+.count()	Count number of rows (SQL COUNT).
+-------------------------------------------------------------
+Entry.objects.count()
+Entry.objects.filter(blog_id=1).count()
+
+
+
+-------------------------------------------------------------
+.earliest() / .latest()	Grab earliest or latest by date field.
+-------------------------------------------------------------
+Entry.objects.earliest("created_at")
+Entry.objects.latest("updated_at")
+
+
+
+-------------------------------------------------------------
+.bulk_create()	Create many objects efficiently.
+-------------------------------------------------------------
+#
+blogs = [
+    Blog(name="Tech"),
+    Blog(name="Food"),
+    Blog(name="Travel"),
+]
+Blog.objects.bulk_create(blogs)
+
+#
+authors = [Author(name=f"Author {i}") for i in range(10)]
+Author.objects.bulk_create(authors)
+
+
+
+-------------------------------------------------------------
+.bulk_update()	Update many objects efficiently.
+-------------------------------------------------------------
+# Update multiple objects fast (1 SQL query).
+entries = Entry.objects.filter(blog_id=1)
+for e in entries:
+    e.title = e.title + " (Updated)"
+Entry.objects.bulk_update(entries, ["title"])
+
+# Update multiple fields:
+Entry.objects.bulk_update(entries, ["title", "updated_at"])
+
+
+
+-------------------------------------------------------------
+.iterator()	Stream results without loading all in memory.
+-------------------------------------------------------------
+# Fetch results in chunks (memory-friendly).
+for entry in Entry.objects.iterator():
+    print(entry.title)
+
+# Chunk size (default is 2000):
+for entry in Entry.objects.iterator(chunk_size=100):
+    process(entry)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2. Query Conditions (Lookups)
+
+
+-------------------------------------------------------------
+field=value	Exact match.
+-------------------------------------------------------------
+Blog.objects.filter(name="Tech Blog")
+
+
+
+-------------------------------------------------------------
+field__iexact=value	Case-insensitive exact.
+-------------------------------------------------------------
+# Matches: “John Doe”, “JOHN DOE”, etc.
+Author.objects.filter(name__iexact="john doe")
+
+
+
+-------------------------------------------------------------
+field__contains=value	case-sensitive substring
+-------------------------------------------------------------
+Entry.objects.filter(title__contains="Django")
+
+
+
+-------------------------------------------------------------
+field__icontains=value	Case-insensitive contains.
+-------------------------------------------------------------
+Entry.objects.filter(title__icontains="django")
+
+
+
+-------------------------------------------------------------
+field__in=[…]	Value is inside a list.
+-------------------------------------------------------------
+Blog.objects.filter(id__in=[1, 3, 5])
+Blog.objects.filter(pk__in=[1, 3, 5])
+
+
+
+-------------------------------------------------------------
+field__gt, __gte	Greater than / >=
+-------------------------------------------------------------
+Entry.objects.filter(created_at__gt="2025-01-01")
+Entry.objects.filter(created_at__gte="2025-01-01")
+
+
+
+-------------------------------------------------------------
+field__lt, __lte	Less than / <=
+-------------------------------------------------------------
+Entry.objects.filter(created_at__lt="2025-01-01")
+
+
+
+-------------------------------------------------------------
+field__range=(a, b)	Between A and B.
+-------------------------------------------------------------
+Entry.objects.filter(created_at__range=("2025-01-01", "2025-01-31"))
+
+
+
+-------------------------------------------------------------
+field__startswith / __istartswith	Starts with…
+-------------------------------------------------------------
+# Case-sensitive:
+Author.objects.filter(name__startswith="A")
+
+# Case-insensitive:
+Author.objects.filter(name__istartswith="a")
+
+
+
+-------------------------------------------------------------
+field__endswith / __iendswith	Ends with…
+-------------------------------------------------------------
+Entry.objects.filter(title__endswith="Guide")
+Entry.objects.filter(title__iendswith="guide")
+
+
+
+-------------------------------------------------------------
+date__year, date__month, date__day	Filter by date parts.
+-------------------------------------------------------------
+Entry.objects.filter(created_at__year=2025)
+
+# Entries created in March:
+Entry.objects.filter(created_at__month=3)
+
+
+
+-------------------------------------------------------------
+isnull=True
+-------------------------------------------------------------
+Entry.objects.filter(blog__isnull=True)
+Author.objects.filter(name__isnull=False)
+
+
+
+-------------------------------------------------------------
+regex / iregex	Match regex.
+-------------------------------------------------------------
+# Titles that start with a number:
+Entry.objects.filter(title__regex=r'^[0-9]')
+
+# Case-insensitive regex:
+Entry.objects.filter(title__iregex=r'django.*guide')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3. Creating, Updating, Deleting
+
+-------------------------------------------------------------
+.create()	Create object and save.
+-------------------------------------------------------------
+#
+Blog.objects.create(name="Tech Blog")
+
+#
+Author.objects.create(name="John Doe")
+
+#
+Entry.objects.create(
+    title="Django Tips",
+    content="Learn Django ORM...",
+    blog_id=1,  # FK
+    created_at="2025-01-01",
+    updated_at="2025-01-01",
+)
+
+#
+Entry.objects.create(
+    title="Django Tips",
+    content="Learn Django ORM...",
+    blog=b,  # FK
+    created_at="2025-01-01",
+    updated_at="2025-01-01",
+)
+
+
+
+-------------------------------------------------------------
+Model(**fields).save()	Manual object creation.
+-------------------------------------------------------------
+#
+blog = Blog(name="Travel Blog")
+blog.save()
+
+#
+entry = Entry(
+    title="Draft Post",
+    content="draft...",
+    blog_id=1
+)
+entry.title = "Final Post"
+entry.save()
+
+#
+entry = Entry(
+    title="M2M Example",
+    content="example...",
+    blog_id=1
+)
+entry.save()
+entry.authors.add(a1, a2, a3)
+
+
+
+-------------------------------------------------------------
+.update()	Bulk update fields (fast, no save signals).
+-------------------------------------------------------------
+#
+Entry.objects.filter(blog_id=1).update(title="Updated Title")
+
+#
+Entry.objects.filter(id=5).update(
+    title="New",
+    updated_at="2025-01-01"
+)
+
+
+
+-------------------------------------------------------------
+.delete()	Delete one or many objects.
+-------------------------------------------------------------
+#
+Blog.objects.get(id=3).delete()
+
+#
+Entry.objects.filter(title__icontains="draft").delete()
+
+#
+Author.objects.all().delete()
+
+
+
+-------------------------------------------------------------
+.get_or_create()	Get if exists, else create.
+-------------------------------------------------------------
+#
+author, created = Author.objects.get_or_create(name="Alice")
+
+#
+entry, created = Entry.objects.get_or_create(
+    title="Welcome",
+    defaults={
+        "content": "Hello world",
+        "blog_id": 1
+    }
+)
+
+#
+blog, created = Blog.objects.get_or_create(name="Travel Blog")
+
+
+
+-------------------------------------------------------------
+.update_or_create()	Update if exists, else create.
+-------------------------------------------------------------
+#
+author, created = Author.objects.update_or_create(
+    name="John",
+    defaults={"name": "John Doe"}  # update this if found
+)
+
+#
+entry, created = Entry.objects.update_or_create(
+    id=10,
+    defaults={
+        "title": "New Title",
+        "content": "Updated content..."
+    }
+)
+
+#
+blog, created = Blog.objects.update_or_create(
+    name="Tech Blog",
+    defaults={"name": "Tech Blog"}  # mostly used for other fields
+)
+
+
+
+-------------------------------------------------------------
+.select_for_update()	Lock rows for transaction safety.
+-------------------------------------------------------------
+#
+from django.db import transaction
+
+with transaction.atomic():
+    entry = Entry.objects.select_for_update().get(id=1)
+    entry.title = "Locked Update"
+    entry.save()
+
+#
+with transaction.atomic():
+    entries = Entry.objects.select_for_update().filter(blog_id=1)
+    for e in entries:
+        e.title += " (locked)"
+        e.save()
+
+#
+with transaction.atomic():
+    blog = Blog.objects.select_for_update().get(id=1)
+    blog.name = blog.name + "!"
+    blog.save()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4. Relations / Foreign Keys
+
+
+-------------------------------------------------------------
+FORWARD LOOKUPS
+-------------------------------------------------------------
+# Example 1 — Entry → Blog
+entry = Entry.objects.get(id=1)
+entry.blog.name
+
+# Example 2 — Entry → Many Authors
+entry = Entry.objects.get(id=1)
+authors = entry.authors.all()
+
+# Example 3 — Chain lookups (Entry → Blog → something)
+entry = Entry.objects.get(id=1)
+blog_name = entry.blog.name
+
+# .select_related() - Used for FK and OneToOne relationships (not M2M)
+❌ Without select_related (2 queries):
+entries = Entry.objects.all()
+for e in entries:
+    print(e.blog.name)
+
+✔ With select_related (1 query):
+entries = Entry.objects.select_related("blog")
+for e in entries:
+    print(e.blog.name)
+
+# 
+Entry.objects.select_related("blog", "some_other_fk")
+
+#
+Entry.objects.select_related("blog").filter(blog__name="Tech Blog")
+
+
+
+-------------------------------------------------------------
+REVERSE LOOKUPS
+-------------------------------------------------------------
+
+
+
+# Reverse FK
+
+Example 1 — Get all entries under a blog
+	blog = Blog.objects.get(id=1)
+	entries = blog.entry_set.all()
+
+Example 2 — Filter reverse entries
+	blog = Blog.objects.get(id=1)
+	recent_entries = blog.entry_set.filter(created_at__year=2025)
+
+Example 3 — Count reverse entries
+	entry_count = blog.entry_set.count()
+
+
+# Reverse M2M
+
+Example 1 — Get all entries written by an author
+	author = Author.objects.get(id=1)
+	entries = author.entry_set.all()
+
+Example 2 — Filter reverse entries
+	author = Author.objects.get(id=1)
+	django_entries = author.entry_set.filter(title__icontains="django")
+
+Example 3 — Count
+	author.entry_set.count()
+
+
+# .prefetch_related()
+> Used for ManyToMany and Reverse Relations (not FK).
+> It performs two queries and joins in Python memory — perfect for M2M.
+
+	A. Prefetch authors of entries
+		Without prefetch_related = N+1 queries.
+
+		❌ Slow:
+		entries = Entry.objects.all()
+		for e in entries:
+		    print(list(e.authors.all()))
+
+		✔ Fast:
+		entries = Entry.objects.prefetch_related("authors")
+		for e in entries:
+		    print(list(e.authors.all()))
+
+
+	B. Prefetch reverse entries (Blog → Entry)
+		blogs = Blog.objects.prefetch_related("entry_set")
+		for blog in blogs:
+		    print(blog.entry_set.all())
+
+
+	C. Prefetch multiple relationships
+		Entry.objects.prefetch_related("authors", "blog")
+		⚠ Note:
+		blog is FK, so this should be select_related("blog") for best performance.
+		Correct combined usage:
+		Entry.objects.select_related("blog").prefetch_related("authors")
+
+
+	D. Custom prefetch (advanced but simple)
+		Example: Prefetch entries but filter only recent ones.
+		from django.db.models import Prefetch
+		blogs = Blog.objects.prefetch_related(
+		    Prefetch(
+		        "entry_set",
+		        queryset=Entry.objects.filter(created_at__year=2025)
+		    )
+		)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+5. Many-to-Many (M2M)
+
+
+Reference
+-------------------------------------------------------------
+class Student(models.Model):
+    name = models.CharField(max_length=100)
+
+class Course(models.Model):
+    title = models.CharField(max_length=100)
+    students = models.ManyToManyField(Student, related_name="courses")
+-------------------------------------------------------------
+
+
+
+-------------------------------------------------------------
+obj.m2mfield.add(item)
+-------------------------------------------------------------
+#
+book.authors.add(a1, a2, a3)
+
+#
+course.students.add(student1, student2, student3)
+#
+
+course.students.add(5)   # student with ID=5
+course.students.add(7, 8)
+
+
+
+-------------------------------------------------------------
+obj.m2mfield.remove(item)
+-------------------------------------------------------------
+#
+course.students.remove(student1, student2)
+
+#
+course.students.remove(10)  # student with ID=10
+
+
+
+-------------------------------------------------------------
+obj.m2mfield.clear()
+-------------------------------------------------------------
+#
+student.courses.clear()
+
+#
+for course in Course.objects.filter(title__contains="Math"):
+    course.students.clear()
+
+
+
+-------------------------------------------------------------
+Reverse Lookups (via related_name)
+-------------------------------------------------------------
+
+Sample 1 — All courses for a student
+	student = Student.objects.get(id=10)
+	student.courses.all()
+
+Sample 2 — Reverse filter
+	Student.objects.filter(courses__title="Math 101")
+
+Sample 3 — List students who have at least 3 courses
+	# annotate is like group-by sql. More on this below
+	Student.objects.annotate(num=Count("courses")).filter(num__gte=3)
+
+
+
+-------------------------------------------------------------
+prefetch_related()
+-------------------------------------------------------------
+
+Sample 1 — Fetch courses with all related students
+	courses = Course.objects.prefetch_related("students")
+	for c in courses:
+	    print(c.title, c.students.all())  # no extra queries
+
+Sample 2 — Prefetch multiple M2M
+	students = Student.objects.prefetch_related("courses")
+
+Sample 3 — Prefetch with filter (using Prefetch)
+	from django.db.models import Prefetch
+	courses = Course.objects.prefetch_related(
+	    Prefetch("students", queryset=Student.objects.filter(name__startswith="J"))
+	)
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+6. Aggregation & Annotation
+
+
+Reference
+-------------------------------------------------------------
+class Order(models.Model):
+    customer = models.CharField(max_length=100)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+-------------------------------------------------------------
+
+
+
+-------------------------------------------------------------
+Sum
+-------------------------------------------------------------
+Aggregate — compute summary for the whole queryset
+from django.db.models import Sum
+
+Sample 1 — Total sales amount
+	Order.objects.aggregate(total=Sum("amount"))
+
+Sample 2 — Total quantity sold
+	Order.objects.aggregate(total_qty=Sum("quantity"))
+
+Sample 3 — Sum with condition
+	Order.objects.filter(customer="John").aggregate(john_total=Sum("amount"))
+
+
+
+-------------------------------------------------------------
+Avg
+-------------------------------------------------------------
+from django.db.models import Avg
+
+Sample 1 — Average order amount
+	Order.objects.aggregate(avg_amount=Avg("amount"))
+
+Sample 2 — Average quantity per order
+	Order.objects.aggregate(avg_qty=Avg("quantity"))
+
+Sample 3 — Avg for a filtered set
+	Order.objects.filter(customer="Anna").aggregate(avg=Avg("amount"))
+
+
+
+-------------------------------------------------------------
+Max
+-------------------------------------------------------------
+from django.db.models import Max
+
+Sample 1 — Highest order amount
+	Order.objects.aggregate(max_amount=Max("amount"))
+
+Sample 2 — Latest order date
+	Order.objects.aggregate(last_order=Max("created_at"))
+
+Sample 3 — Max with condition
+	Order.objects.filter(customer="Anna").aggregate(max_qty=Max("quantity"))
+
+
+
+-------------------------------------------------------------
+Min
+-------------------------------------------------------------
+from django.db.models import Min
+
+Sample 1 — Lowest order amount
+	Order.objects.aggregate(min_amount=Min("amount"))
+
+Sample 2 — First order date
+	Order.objects.aggregate(first_order=Min("created_at"))
+
+Sample 3 — Min with filter
+	Order.objects.filter(customer="John").aggregate(min_qty=Min("quantity"))
+
+
+
+-------------------------------------------------------------
+Count
+-------------------------------------------------------------
+from django.db.models import Count
+
+Sample 1 — Count all orders
+	Order.objects.aggregate(count=Count("id"))
+
+Sample 2 — Count orders for a customer
+	Order.objects.filter(customer="John").aggregate(total=Count("id"))
+
+Sample 3 — Count distinct customers
+	Order.objects.aggregate(unique_customers=Count("customer", distinct=True))
+
+
+
+-------------------------------------------------------------
+.aggregate()	Returns overall statistics.
+-------------------------------------------------------------
+> Returns a single dictionary of overall values
+> .aggregate() summarizes the entire queryset into one result.
+
+Sample 1 — Multiple aggregates at once
+	Order.objects.aggregate(
+	    total=Sum("amount"),
+	    avg=Avg("amount"),
+	    highest=Max("amount")
+	)
+
+Sample 2 — Mixed types
+	Order.objects.aggregate(
+	    total_qty=Sum("quantity"),
+	    min_date=Min("created_at")
+	)
+
+Sample 3 — Aggregate after filtering
+	Order.objects.filter(customer="Anna").aggregate(
+	    total=Sum("amount"),
+	    orders=Count("id")
+	)
+
+
+
+-------------------------------------------------------------
+.annotate()	Adds calculated fields to each row.
+-------------------------------------------------------------
+> .annotate() is like SQL GROUP BY.
+> Each object in the queryset gets an extra field.
+> When does annotate() group?
+	If you annotate without .values() → group by primary key.
+	If you annotate with .values("field") → group by that field.
+
+
+Sample 1 — Add total_price for each Order
+	Order.objects.annotate(total_price=Sum("amount"))
+	(Not very useful on a single model but good for multi-table.)
+
+Sample 2 — Count orders per customer
+	Order.objects.values("customer").annotate(
+	    order_count=Count("id")
+	)
+	Output:
+	[
+	  {"customer": "John", "order_count": 5},
+	  {"customer": "Anna", "order_count": 3},
+	]
+
+	# sql - pila na ka buok ang record for each specific customer
+	SELECT 
+		customer, 
+		COUNT(id) AS order_count 
+	FROM 
+		order 
+	GROUP BY 
+		customer;
+
+Sample 3 — Average order amount per customer
+	Order.objects.values("customer").annotate(
+	    avg_amount=Avg("amount")
+	)
+
+Sample 4 — Add month to each order (useful for reporting)
+	from django.db.models.functions import TruncMonth
+	Order.objects.annotate(month=TruncMonth("created_at"))
+
+Sample 5 — Group by month + total sales
+	Order.objects.annotate(
+	    month=TruncMonth("created_at")
+	).values("month").annotate(
+	    total_sales=Sum("amount")
+	)
+
+Sample 6 — Count orders per day
+	from django.db.models.functions import TruncDay
+	Order.objects.annotate(day=TruncDay("created_at")).values("day").annotate(
+	    total=Count("id")
+	)
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+7. Expressions (F, Q, Case, When, etc.)
+
+
+Reference
+-------------------------------------------------------------
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock = models.IntegerField(default=0)
+    sold = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+-------------------------------------------------------------
+
+
+
+-------------------------------------------------------------
+F Expressions
+-------------------------------------------------------------
+> Use F expressions when updating a field based on its own value
+> avoids race conditions, ensures DB writes correct values.
+
+✔ Sample 1 — Increase stock by 10
+	from django.db.models import F
+	Product.objects.update(stock=F("stock") + 10)
+
+✔ Sample 2 — Decrease stock based on sold
+	Product.objects.update(stock=F("stock") - F("sold"))
+
+✔ Sample 3 — Update price to 90% of old price
+	Product.objects.update(price=F("price") * 0.9)
+
+✔ Sample 4 — Update one field based on another
+	Product.objects.update(sold=F("stock"))
+
+✔ Sample 5 — Filter using F expressions
+	# get items where stock < sold
+	Product.objects.filter(stock__lt=F("sold"))
+
+
+
+-------------------------------------------------------------
+Q Expressions
+-------------------------------------------------------------
+> Use Q for complex OR / AND / NOT conditions
+
+✔ Sample 1 — OR condition
+	from django.db.models import Q
+	Product.objects.filter(
+	    Q(stock__lt=10) | Q(price__lt=100)
+	)
+
+✔ Sample 2 — Combine AND + OR
+	Product.objects.filter(
+	    Q(price__lt=100) & (Q(stock__lt=5) | Q(name__icontains="promo"))
+	)
+
+✔ Sample 3 — Exclude products with certain names
+	(NOT logic)
+	Product.objects.filter(~Q(name__in=["Apple", "Banana"]))
+
+✔ Sample 4 — Search multiple fields
+	(often used for search bars)
+	Product.objects.filter(
+	    Q(name__icontains="phone") | Q(description__icontains="phone")
+	)
+
+
+
+-------------------------------------------------------------
+Case / When
+-------------------------------------------------------------
+> Conditional expressions — like SQL CASE WHEN
+> Useful for:
+	> dynamic fields
+	> sorting
+	> conditional updates
+	> labeling rows
+
+from django.db.models import Case, When, Value, IntegerField, F
+✔ Sample 1 — Label products based on stock levels
+	Product.objects.annotate(
+	    status=Case(
+	        When(stock__gt=20, then=Value("In Stock")),
+	        When(stock__gt=0, then=Value("Low Stock")),
+	        default=Value("Out of Stock")
+	    )
+	)
+
+✔ Sample 2 — Apply discount only to expensive items
+	Product.objects.update(
+	    price=Case(
+	        When(price__gt=500, then=F("price") * 0.9),
+	        default=F("price")
+	    )
+	)
+
+✔ Sample 3 — Order by priority (custom ordering)
+	Example: Items with stock 0 appear first.
+	Product.objects.annotate(
+	    priority=Case(
+	        When(stock=0, then=Value(0)),
+	        default=Value(1),
+	        output_field=IntegerField(),
+	    )
+	).order_by("priority", "name")
+
+✔ Sample 4 — Conditional count / flags
+	Flag expired items:
+	Product.objects.annotate(
+	    low_stock_flag=Case(
+	        When(stock__lte=5, then=Value(1)),
+	        default=Value(0),
+	        output_field=IntegerField()
+	    )
+	)
+
+✔ Sample 5 — Grouping by condition
+	Count low-stock vs normal-stock:
+	from django.db.models import Count
+	Product.objects.annotate(
+	    bucket=Case(
+	        When(stock__lte=5, then=Value("low")),
+	        default=Value("normal"),
+	    )
+	).values("bucket").annotate(count=Count("id"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+8. Advanced QuerySet Features
+
+-------------------------------------------------------------
+raw()	Write raw SQL queries.
+-------------------------------------------------------------
+✔ Sample 1 — basic raw query
+	entries = Entry.objects.raw("SELECT * FROM app_entry")
+
+✔ Sample 2 — with parameter binding (recommended!)
+	entries = Entry.objects.raw(
+	    "SELECT * FROM app_entry WHERE likes > %s", [10]
+	)
+
+✔ Sample 3 — selecting custom fields
+	query = """
+	    SELECT id, title, created_at
+	    FROM app_entry
+	    WHERE blog_id = %s
+	"""
+	Entry.objects.raw(query, [1])
+
+
+
+-------------------------------------------------------------
+.extra()	Old way of inserting raw SQL fragments (deprecated).
+-------------------------------------------------------------
+Replacement for .extra()
+Use annotate(), RawSQL, Func, F, Case, When, Subqueries, etc.
+
+
+
+-------------------------------------------------------------
+.union() Combine querysets like SQL set operations.
+-------------------------------------------------------------
+✔ Sample 1 — Union of two title lists
+	q1 = Entry.objects.filter(likes__gt=10).values("title")
+	q2 = Entry.objects.filter(likes__lt=2).values("title")
+
+result = q1.union(q2)
+
+✔ Sample 2 — Remove duplicates automatically
+	Entry.objects.values("title").union(
+	    Entry.objects.values("title")
+	)
+
+✔ Sample 3 — Keep duplicates using all=True (Postgres)
+	q1.union(q2, all=True)
+
+
+
+-------------------------------------------------------------
+.intersection() Combine querysets like SQL set operations. Find records common to BOTH QuerySets.
+-------------------------------------------------------------
+✔ Sample 1 — Entries liked > 10 AND from blog 1
+	q1 = Entry.objects.filter(likes__gt=10)
+	q2 = Entry.objects.filter(blog_id=1)
+	result = q1.intersection(q2)
+
+✔ Sample 2 — intersection on values
+	a = Entry.objects.values("author_id")
+	b = Entry.objects.filter(likes__gt=0).values("author_id")
+	a.intersection(b)
+
+
+
+-------------------------------------------------------------
+.difference()	Combine querysets like SQL set operations. Records in first QuerySet NOT in the second.
+-------------------------------------------------------------
+✔ Sample 1 — entries with likes > 10 but NOT in blog 1
+	q1 = Entry.objects.filter(likes__gt=10)
+	q2 = Entry.objects.filter(blog_id=1)
+	result = q1.difference(q2)
+
+✔ Sample 2 — remove authors with any entries
+	all_authors = Author.objects.values("id")
+	active_authors = Entry.objects.values("author_id")
+	all_authors.difference(active_authors)
+
+
+
+-------------------------------------------------------------
+Subqueries	Query inside query (powerful). insert a query inside another query
+-------------------------------------------------------------
+✔ Sample 1 — latest entry date per blog
+	from django.db.models import Subquery, OuterRef
+	latest_entry = Entry.objects.filter(
+	    blog=OuterRef("pk")
+	).order_by("-created_at")
+	Blog.objects.annotate(
+	    latest_post=Subquery(latest_entry.values("created_at")[:1])
+	)
+
+✔ Sample 2 — entry count per blog
+	count_query = Entry.objects.filter(blog=OuterRef("pk")) \
+	    .values("blog") \
+	    .annotate(count=models.Count("id")) \
+	    .values("count")
+	Blog.objects.annotate(entry_count=Subquery(count_query))
+
+✔ Sample 3 — get most-liked entry’s title per blog
+	top_liked = Entry.objects.filter(blog=OuterRef("pk")) \
+	    .order_by("-likes") \
+	    .values("title")[:1]
+	Blog.objects.annotate(top_entry_title=Subquery(top_liked))
+
+
+
+-------------------------------------------------------------
+OuterRef	Reference outer query in subquery. reference parent queryset in subquery
+-------------------------------------------------------------
+✔ Sample — OuterRef + Subquery
+	avg_likes = Entry.objects.filter(
+	    blog=OuterRef("blog")
+	).values("blog").annotate(
+	    avg=models.Avg("likes")
+	).values("avg")
+	Entry.objects.annotate(
+	    blog_avg=Subquery(avg_likes)
+	).filter(likes__gt=F("blog_avg"))
+
+
+
+-------------------------------------------------------------
+Exists	Check if related rows exist. quickly check if a subquery has results
+-------------------------------------------------------------
+✔ Sample 1 — Blogs that have at least 1 entry
+	from django.db.models import Exists
+	sub = Entry.objects.filter(blog=OuterRef("pk"))
+	Blog.objects.annotate(has_posts=Exists(sub))
+
+✔ Sample 2 — Authors with entries
+	entries_by_author = Entry.objects.filter(
+	    author=OuterRef("pk")
+	)
+	Author.objects.annotate(
+	    has_entries=Exists(entries_by_author)
+	)
+
+✔ Sample 3 — Filter only blogs that contain keyword in any entry
+	sub = Entry.objects.filter(
+	    blog=OuterRef("pk"),
+	    title__icontains="django"
+	)
+	Blog.objects.filter(Exists(sub))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+9. Model Meta Options
+
+
+-------------------------------------------------------------
+ordering	Default sort order.
+-------------------------------------------------------------
+class Entry(models.Model):
+    blog = models.ForeignKey("Blog", on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ["blog__name", "title"]
+
+
+
+-------------------------------------------------------------
+unique_together	Field combinations must be unique.
+-------------------------------------------------------------
+#
+class Entry(models.Model):
+    title = models.CharField(max_length=100)
+    author = models.ForeignKey("Author", on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("title", "author")
+
+# modern preferred
+class Meta:
+    constraints = [
+        models.UniqueConstraint(fields=["title", "author"], name="unique_author_title")
+    ]
+
+
+
+-------------------------------------------------------------
+index_together	Multi-field index.
+-------------------------------------------------------------
+> Creates combined database indexes for speed.
+> Useful when you filter on two fields together a lot.
+
+#
+class Entry(models.Model):
+    author = models.ForeignKey("Author", on_delete=models.CASCADE)
+    created_at = models.DateTimeField()
+
+    class Meta:
+        index_together = [
+            ("author", "created_at"),
+        ]
+
+# modern preferred
+class Meta:
+    indexes = [
+        models.Index(fields=["author", "created_at"])
+    ]
+
+
+
+-------------------------------------------------------------
+db_table	Custom database table name.
+-------------------------------------------------------------
+> Specifies the database table name manually.
+
+✔ Example 1 — rename table
+	class Entry(models.Model):
+	    title = models.CharField(max_length=100)
+	    class Meta:
+	        db_table = "blog_entries"
+
+✔ Example 2 — prefix tables for multitenancy
+	class Meta:
+	    db_table = "tenant1_entry"
+
+✔ Example 3 — legacy tables
+	If old systems use uppercase names:
+	class Meta:
+	    db_table = "ENTRY_TABLE"
+
+
+
+-------------------------------------------------------------
+verbose_name Human names.
+-------------------------------------------------------------
+
+class Entry(models.Model):
+    title = models.CharField(max_length=100)
+    class Meta:
+        verbose_name = "Blog Entry"
+
+
+
+-------------------------------------------------------------
+verbose_name_plural	Human names.
+-------------------------------------------------------------
+
+✔ Example — irregular plural
+class Person(models.Model):
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name_plural = "People"
+
+✔ Example — override default English plural
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name_plural = "Categories"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+10. Transactions
+Feature	Description
+transaction.atomic()	Block of SQL that must succeed or fail as a whole.
+select_for_update()	Locks rows (avoid race conditions).
+Savepoints	Roll back part of a block.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+11. Custom Managers
+Feature	Description
+objects = CustomManager()	Control how queries are built.
+Useful for:	Filtering per company, status, tenant, etc.
+
+This is heavily used by Horilla, as you already saw.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+12. Custom QuerySets
+Feature	Description
+Chainable custom methods for business logic.	
+Example:	
+Employee.objects.active().staff().recent()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+13. Performance Optimization
+Feature	Description
+select_related	Join for FK (1 query).
+prefetch_related	Optimize many/many.
+.only()	Load only certain fields.
+.defer()	Load all except some fields.
+Database indexes	Speed up filters.
+Avoiding N+1 queries	#1 ORM performance issue.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+14. Migrations & Schema
+
+While not "ORM syntax" directly, ORM goes hand-in-hand with:
+
+Field types
+
+Migration files
+
+Auto field naming
+
+Schema evolution
