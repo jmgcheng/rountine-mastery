@@ -1490,49 +1490,12 @@ class Category(models.Model):
 
 
 10. Transactions
-Feature	Description
-transaction.atomic()	Block of SQL that must succeed or fail as a whole.
-select_for_update()	Locks rows (avoid race conditions).
-Savepoints	Roll back part of a block.
 
+! transaction.atomic()	Block of SQL that must succeed or fail as a whole.
+! select_for_update()	Locks rows (avoid race conditions).
+! Savepoints	Roll back part of a block.
 
-
-
-
-
-
-
-
-
-
-
-
-
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-11. Custom Managers
-Feature	Description
-objects = CustomManager()	Control how queries are built.
-Useful for:	Filtering per company, status, tenant, etc.
-
-This is heavily used by Horilla, as you already saw.
-
-
+these are done in other topics
 
 
 
@@ -1562,14 +1525,221 @@ This is heavily used by Horilla, as you already saw.
 
 
 
-12. Custom QuerySets
-Feature	Description
-Chainable custom methods for business logic.	
-Example:	
-Employee.objects.active().staff().recent()
+11. Custom Manager (classic way)
+
+
+Reference
+-------------------------------------------------------------
+class Entry(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    likes = models.IntegerField(default=0)
+    published = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+-------------------------------------------------------------
+
+
+> A Manager is an interface to DB operations.
+> Default: objects = models.Manager()
+
+✔ Example 1 — Basic custom manager
+	class EntryManager(models.Manager):
+	    def published(self):
+	        return self.filter(published=True)
+
+	    def popular(self):
+	        return self.filter(likes__gte=100)
+
+
+Attach it:
+	class Entry(models.Model):
+	    ...
+	    objects = EntryManager()
+
+
+Use it:
+	Entry.objects.published()
+	Entry.objects.popular()
+
+❗ Problem of classic Managers
+
+	Methods are NOT chainable without special handling.
+	Example:
+		Entry.objects.published().popular()  
+		➡ Works only because they return QuerySet
+		➡ But more advanced logic breaks
+
+To fix chainability we must use Custom QuerySets.
 
 
 
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+12. Custom QuerySet (recommended modern method)
+
+
+
+✔ Example 2 — Custom QuerySet
+	class EntryQuerySet(models.QuerySet):
+	    def published(self):
+	        return self.filter(published=True)
+
+	    def popular(self):
+	        return self.filter(likes__gte=100)
+
+
+Attach to Manager:
+	class EntryManager(models.Manager):
+	    def get_queryset(self):
+	        return EntryQuerySet(self.model, using=self._db)
+
+	    # Optional: expose QuerySet methods directly
+	    def published(self):
+	        return self.get_queryset().published()
+
+	    def popular(self):
+	        return self.get_queryset().popular()
+
+
+Attach both to model:
+
+	class Entry(models.Model):
+	    ...
+	    objects = EntryManager()
+
+🧪 Now usage becomes chainable:
+Entry.objects.published().popular().order_by("-created_at")
+
+
+
+
+
+
+
+-------------------------------------------------------------
+Chainable Custom QuerySet Business Logic Examples
+-------------------------------------------------------------
+
+✔ Example A — last 7 days entries
+	from django.utils import timezone
+	from datetime import timedelta
+
+	class EntryQuerySet(models.QuerySet):
+	    def recent(self):
+	        week_ago = timezone.now() - timedelta(days=7)
+	        return self.filter(created_at__gte=week_ago)
+
+	Usage:
+		Entry.objects.published().recent()
+
+
+✔ Example B — search helper
+	class EntryQuerySet(models.QuerySet):
+	    def search(self, keyword):
+	        return self.filter(title__icontains=keyword)
+
+	Usage:
+		Entry.objects.search("django").popular()
+
+
+✔ Example C — filter by multiple statuses
+	class EntryQuerySet(models.QuerySet):
+	    def status(self, published=None, min_likes=None):
+	        qs = self
+	        if published is not None:
+	            qs = qs.filter(published=published)
+	        if min_likes is not None:
+	            qs = qs.filter(likes__gte=min_likes)
+	        return qs
+
+	Usage:
+		Entry.objects.status(published=True, min_likes=50)
+
+
+
+
+-------------------------------------------------------------
+Using Custom QuerySet as Default Manager
+-------------------------------------------------------------
+> Manager.from_queryset auto-exposes all QuerySet methods.
+
+✔ Example — clean and modern
+	class EntryQuerySet(models.QuerySet):
+	    def published(self):
+	        return self.filter(published=True)
+
+	    def popular(self):
+	        return self.filter(likes__gte=100)
+
+	    def search(self, keyword):
+	        return self.filter(title__icontains=keyword)
+
+
+	Manager made automatically:
+		EntryManager = models.Manager.from_queryset(EntryQuerySet)
+
+
+	Attach to model:
+		class Entry(models.Model):
+		    ...
+		    objects = EntryManager()
+
+
+✔ Chainable usage (super clean)
+	Entry.objects.published().search("python").popular()
+
+
+
+
+-------------------------------------------------------------
+Advanced Business Logic Examples
+-------------------------------------------------------------
+
+✔ Example A — "active" records pattern
+	class EntryQuerySet(models.QuerySet):
+	    def active(self):
+	        return self.filter(published=True, likes__gt=0)
+
+	Usage:
+		Entry.objects.active().order_by("-likes")
+
+
+✔ Example B — annotate & filter pattern
+	from django.db.models import Count
+
+	class EntryQuerySet(models.QuerySet):
+	    def with_comment_count(self):
+	        return self.annotate(comment_count=Count("comments"))
+
+	Usage:
+		Entry.objects.with_comment_count().filter(comment_count__gt=5)
+
+
+✔ Example C — combine two methods for readable queries
+	Entry.objects.published().popular().recent().search("django")
 
 
 
@@ -1599,52 +1769,97 @@ Employee.objects.active().staff().recent()
 
 
 13. Performance Optimization
-Feature	Description
-select_related	Join for FK (1 query).
-prefetch_related	Optimize many/many.
+
+
+
+-------------------------------------------------------------
 .only()	Load only certain fields.
+-------------------------------------------------------------
+> Loads only a subset of fields; all other fields become deferred.
+
+
+✔ Example 1 — Load only names
+	authors = Author.objects.only("name")
+	authors[0].name → loaded immediately
+	authors[0].bio → triggers extra DB query because it's deferred.
+
+✔ Example 2 — Only title & created date of Entries
+	entries = Entry.objects.only("title", "created_at")
+
+✔ Example 3 — Combine with select_related
+	entries = Entry.objects.select_related("blog").only(
+	    "title", "blog__name"
+	)
+
+
+
+-------------------------------------------------------------
 .defer()	Load all except some fields.
+-------------------------------------------------------------
+> Opposite of .only().
+
+✔ Example 1 — Defer large text content
+	entries = Entry.objects.defer("content")
+
+✔ Example 2 — Defer multiple fields
+	entries = Entry.objects.defer("content", "updated_at")
+
+✔ Example 3 — Defer related object fields
+	entries = Entry.objects.select_related("blog").defer("blog__description")
+
+
+-------------------------------------------------------------
 Database indexes	Speed up filters.
+-------------------------------------------------------------
+> Indexes speed up filters and ordering.
+
+✔ Example 1 — Add index to Blog name
+	class Blog(models.Model):
+	    name = models.CharField(max_length=200, db_index=True)
+
+✔ Example 2 — Add composite index
+	Searchable by (author, created_at):
+	class Entry(models.Model):
+	    class Meta:
+	        indexes = [
+	            models.Index(fields=["author", "created_at"])
+	        ]
+
+✔ Example 3 — Unique index (alternative to unique_together)
+	class Author(models.Model):
+	    email = models.EmailField(unique=True)
+
+
+
+-------------------------------------------------------------
 Avoiding N+1 queries	#1 ORM performance issue.
+-------------------------------------------------------------
+
+use:
+	- select_related
+	- prefetch_related
+	- .count
+	- .exist
+	- .iterator
+	- .values
+	- .value_list
+	- caching (Optional but powerful)
+		from django.core.cache import cache
+		entries = cache.get_or_set("entries_list", Entry.objects.all(), 300)
+
+
+avoid:
+	- order_by #unless needed
+
+
+updaing:
+	Bad:
+		entry = Entry.objects.get(id=1)
+		entry.title = "New"
+		entry.save()
+
+	Good:
+		Entry.objects.filter(id=1).update(title="New")
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-14. Migrations & Schema
-
-While not "ORM syntax" directly, ORM goes hand-in-hand with:
-
-Field types
-
-Migration files
-
-Auto field naming
-
-Schema evolution
