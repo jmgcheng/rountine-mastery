@@ -1277,6 +1277,80 @@ Subqueries	Query inside query (powerful). insert a query inside another query
 
 
 
+
+
+
+
+---
+SELECT name
+FROM employee
+WHERE salary > (
+    SELECT avg(salary) FROM employee
+)
+
+from django.db.models import Avg, Subquery, OuterRef
+avg_salary_sq = Employee.objects.all().values(avg_salary=Avg("salary"))
+qs = Employee.objects.filter(
+    salary__gt=Subquery(avg_salary_sq.values("avg_salary")[:1])
+)
+
+
+
+
+---
+SELECT
+    e.name,
+    (SELECT name FROM department d WHERE d.id = e.dept_id) AS department_name
+FROM employee e;
+
+from django.db.models import Subquery, OuterRef
+dept_name_sq = Department.objects.filter(
+    id=OuterRef("department_id")
+).values("name")[:1]
+qs = Employee.objects.annotate(
+    department_name=Subquery(dept_name_sq)
+).values("name", "department_name")
+
+
+
+
+
+
+---
+SELECT
+    e.name
+FROM
+    employee e
+JOIN (
+        SELECT dept_id, avg(salary) AS dept_avg_salary
+        FROM employee
+        GROUP BY dept_id
+     ) dt
+     ON dt.dept_id = e.dept_id
+WHERE
+    e.salary > dt.dept_avg_salary;
+
+from django.db.models import Avg, Subquery, OuterRef, F
+dept_avg_sq = (
+    Employee.objects
+    .filter(department_id=OuterRef("department_id"))
+    .values("department_id")
+    .annotate(avg_salary=Avg("salary"))
+    .values("avg_salary")[:1]
+)
+qs = (
+    Employee.objects
+    .annotate(dept_avg_salary=Subquery(dept_avg_sq))
+    .filter(salary__gt=F("dept_avg_salary"))
+)
+
+
+
+
+
+
+
+
 -------------------------------------------------------------
 OuterRef	Reference outer query in subquery. reference parent queryset in subquery
 -------------------------------------------------------------
@@ -1860,6 +1934,7 @@ updaing:
 
 	Good:
 		Entry.objects.filter(id=1).update(title="New")
+
 
 
 
