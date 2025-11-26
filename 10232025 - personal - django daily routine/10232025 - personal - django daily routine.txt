@@ -1074,3 +1074,216 @@ wala ko copy..., ngita sa lain repo kaw
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------
+Custom Template Tag
+---------------------------------------------
+
+yourapp/
+    templatetags/
+        __init__.py
+        user_extras.py
+
+
+'user_extras.py'
+from django import template
+register = template.Library()
+@register.simple_tag
+def shout_name(user):
+    """Return the user's full name in uppercase."""
+    return user.get_full_name().upper()
+
+
+template
+{% load user_extras %}
+<p>Your loud name: {% shout_name request.user %}</p>
+
+
+
+
+
+---------------------------------------------
+Signal
+---------------------------------------------
+project/
+    settings.py
+account/
+    __init__.py
+    apps.py
+    models.py
+    signals.py
+    views.py
+
+
+'account/models.py'
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True)
+
+
+'account/signals.py'
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+from .models import Profile
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+'account/apps.py'
+from django.apps import AppConfig
+class AccountConfig(AppConfig):
+    name = 'account'
+    def ready(self):
+        import account.signals
+
+
+'account/__init__.py'
+default_app_config = 'account.apps.AccountConfig'
+
+
+
+
+
+
+---------------------------------------------
+Middleware
+---------------------------------------------
+'settings.py'
+MIDDLEWARE = [
+    ...,
+    'yourapp.middleware.ClassName',
+    'yourapp.middleware.RequestTimingMiddleware',
+]
+
+
+
+
+✅ Example 0: 
+	'middleware.py'
+	import time
+
+	class RequestTimingMiddleware:
+	    def __init__(self, get_response):
+	        self.get_response = get_response
+
+	    def __call__(self, request):
+	        start = time.time()
+	        response = self.get_response(request)
+	        duration = (time.time() - start) * 1000
+	        print(f"[TIMING] {request.path} took {duration:.2f} ms")
+	        return response
+
+
+
+✅ Example A: Block users who are not logged in
+	(Instead of using login_required everywhere)
+
+	'middleware.py'
+	from django.shortcuts import redirect
+	
+	class ForceLoginMiddleware:
+	    def __init__(self, get_response):
+	        self.get_response = get_response
+
+	    def __call__(self, request):
+	        # allow the login page and admin
+	        if request.path not in ['/login/', '/admin/login/'] and not request.user.is_authenticated:
+	            return redirect('/login/')
+
+	        return self.get_response(request)
+
+
+
+✅ Example B: Add a custom header to every response
+	Useful for tracing or debugging deployments.
+
+	class VersionHeaderMiddleware:
+	    def __init__(self, get_response):
+	        self.get_response = get_response
+
+	    def __call__(self, request):
+	        response = self.get_response(request)
+	        response['X-App-Version'] = '1.2.7'
+	        return response
+
+
+
+✅ Example C: Display request time in template
+	(This is fun and helps you understand how middleware “injects” data)
+
+	'middleware.py'
+	import time
+	class PageTimingMiddleware:
+	    def __init__(self, get_response):
+	        self.get_response = get_response
+
+	    def __call__(self, request):
+	        request.start_time = time.time()   # store it in request
+	        response = self.get_response(request)
+	        duration = time.time() - request.start_time
+	        response['X-Page-Timing'] = f"{duration:.3f}s"
+	        return response
+
+	Then you can use it in template:
+	<p>Page load time: {{ request.start_time }}</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+
