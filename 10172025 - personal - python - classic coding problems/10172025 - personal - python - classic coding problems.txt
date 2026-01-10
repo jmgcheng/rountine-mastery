@@ -246,6 +246,139 @@ def play_guess_game():
 
 
 
+
+
+
+14. sort list of tuples
+
+items = [
+	('Product1', 10),
+	('Product2', 9),
+]
+def sort_item(item):
+	return item[1]
+items.sort(key=sort_item)
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+
+15. sort list of tuples with lambda
+
+items = [
+	('Product1', 10),
+	('Product2', 9),
+]
+items.sort(key=lambda item:item[1])
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+16. filter pricey items of listed tuple 
+
+
+items = [
+	('Product1', 10),
+	('Product2', 9),
+]
+pricey_items = [item for item in items if item[1] >= 10]
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+17. get sum of a listed tuple
+
+
+from functools import reduce
+
+expenses = [
+	('Product1', 10),
+	('Product2', 9),
+]
+sum = reduce(lambda a, b: a[1] + b[1], expenses)
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+
+18. convert input numbers to words
+
+dict = {
+	'1': 'One',
+	'2': 'Two'
+}
+phone = input('Number: ')
+output = ''
+for ch in phone:
+	output = f'{output} {dict.get(ch, '!')} '
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+
+19. simple decorator
+
+def logtime(func):
+	def wrapper():
+		print('before')
+		val = func()
+		print('after')
+		return val
+	return wrapper
+@logtime
+def hello():
+	print('hello')
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
 ----------------------------------------------------------------
 
 
@@ -349,6 +482,7 @@ def play_guess_game():
 
 
 ----------------------------------------------------------------
+
 
 
 
