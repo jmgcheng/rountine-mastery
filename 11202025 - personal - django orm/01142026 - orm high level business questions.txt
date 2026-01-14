@@ -1,0 +1,812 @@
+“Show me all entries.”
+	Entry.objects.all()
+
+
+“Show me the first 5 entries.”
+	Entry.objects.all()[:5]
+
+
+“Show me entries 6 through 15.”
+	Entry.objects.all()[5:15]
+
+
+“Get the blog whose name is exactly ‘Tech Blog’.”
+	Blog.objects.get(name="Tech Blog")
+
+
+“Find all blogs named ‘Tech Blog’.”
+	Blog.objects.filter(name="Tech Blog")
+
+
+“Does an author named John exist?”
+	Author.objects.filter(name="John").exists()
+
+
+“Are there any entries under blog ID 1?”
+	Entry.objects.filter(blog_id=1).exists()
+
+
+“How many entries belong to blog ID 1?”
+	Entry.objects.filter(blog_id=1).count()
+
+
+“Find entries whose title contains the word ‘Django’ (case-sensitive).”
+	Entry.objects.filter(title__contains="Django")
+
+
+“Find entries whose title contains ‘django’, regardless of case.”
+	Entry.objects.filter(title__icontains="django")
+
+
+“Find entries whose title ends with ‘guide’, ignoring case.”
+	Entry.objects.filter(title__iendswith="guide")
+
+
+“Find authors whose name is exactly ‘john doe’, regardless of capitalization.”
+	Author.objects.filter(name__iexact="john doe")
+
+
+“Delete all entries that contain the word ‘draft’ in the title.”
+	Entry.objects.filter(title__icontains="draft").delete()
+
+
+“Find entries that belong to the blog named ‘Angular’.”
+	Entry.objects.filter(blog_name='Angular')
+
+
+“Find entries that are not assigned to any blog.”
+	Entry.objects.filter(blog__isnull=True)
+
+
+“Find authors whose name is not empty.”
+	Author.objects.filter(name__isnull=False)
+
+
+“Find students who are enrolled in the course ‘Math 101’.”
+	Student.objects.filter(courses__title="Math 101")
+
+
+“Find entries created in the year 2024.”
+	Entry.objects.filter(created_at__year=2024)
+
+
+“Find entries created in 2025.”
+	Entry.objects.filter(created_at__year=2025)
+
+
+“Find entries created in March.”
+	Entry.objects.filter(created_at__month=3)
+
+
+“Find entries created on or after January 1, 2025.”
+	Entry.objects.filter(created_at__gte="2025-01-01")
+
+
+“Find entries created between January 1 and January 31, 2025.”
+	Entry.objects.filter(created_at__range=("2025-01-01", "2025-01-31"))
+
+
+“Find blogs with IDs 1, 3, or 5.”
+	Blog.objects.filter(pk__in=[1, 3, 5])
+
+
+“Find authors whose names do not start with the letter A.”
+	Author.objects.exclude(name__startswith="A")
+
+
+“List entries from newest to oldest.”
+	Entry.objects.order_by("-created_at")
+
+
+“Get the oldest entry.”
+	Entry.objects.order_by("-created_at").last()
+
+
+“Reverse the order of entries sorted by creation date.”
+	Entry.objects.order_by("created_at").reverse()
+
+
+“Sort entries first by blog, then by title.”
+	Entry.objects.order_by("blog", "title")
+
+
+“Reverse the current ordering of entries.”
+	Entry.objects.reverse()
+
+
+“Get the first entry in the current ordering.”
+	Entry.objects.first()
+
+
+“Show each entry’s title along with its blog name.”
+	Entry.objects.values("title", "blog__name")
+
+
+“Show all unique blogs that have entries.”
+	Entry.objects.values("blog").distinct()
+
+
+“Show all unique dates on which entries were created.”
+	Entry.objects.values("created_at__date").distinct()
+
+
+“Return entry IDs and titles as tuples.”
+	Entry.objects.values_list("id", "title")
+
+
+“Return a flat list of all entry titles.”
+	Entry.objects.values_list("title", flat=True)
+
+
+“What is the earliest entry ever created?”
+	Entry.objects.earliest("created_at")
+
+
+“What is the most recently updated entry?”
+	Entry.objects.latest("updated_at")
+
+
+“Create a new blog called ‘Tech Blog’.”
+	Blog.objects.create(name="Tech Blog")
+
+
+“Create a new entry titled ‘Django Tips’ under a specific blog, with its content and timestamps already set.”
+	Entry.objects.create(
+	    title="Django Tips",
+	    content="Learn Django ORM...",
+	    blog=b,
+	    created_at="2025-01-01",
+	    updated_at="2025-01-01",
+	)
+
+
+“Start a draft entry, update its title to the final version, then save it.”
+	entry = Entry(
+	    title="Draft Post",
+	    content="draft...",
+	    blog_id=1
+	)
+	entry.title = "Final Post"
+	entry.save()
+
+
+“Create a new entry and associate it with multiple authors.”
+	entry = Entry(
+	    title="M2M Example",
+	    content="example...",
+	    blog_id=1
+	)
+	entry.save()
+	entry.authors.add(a1, a2, a3)
+
+
+“Assign multiple authors to this book.”
+	book.authors.add(a1, a2, a3)
+
+
+“Enroll multiple students into this course.”
+	course.students.add(student1, student2, student3)
+
+
+“Unenroll specific students from this course.”
+	course.students.remove(student1, student2)
+
+
+“Remove the student from all enrolled courses.”
+	student.courses.clear()
+
+
+“Create multiple blogs in one operation.”
+	blogs = [
+	    Blog(name="Tech"),
+	    Blog(name="Food"),
+	    Blog(name="Travel"),
+	]
+	Blog.objects.bulk_create(blogs)
+
+
+“Update the titles of all entries under a specific blog in bulk.”
+	entries = Entry.objects.filter(blog_id=1)
+	for e in entries:
+	    e.title = e.title + " (Updated)"
+	Entry.objects.bulk_update(entries, ["title", "updated_at"])
+
+
+“If an entry titled ‘Welcome’ already exists, use it; otherwise, create it with default content.”
+	entry, created = Entry.objects.get_or_create(
+	    title="Welcome",
+	    defaults={
+	        "content": "Hello world",
+	        "blog_id": 1
+	    }
+	)
+
+
+“If an author named John exists, update their details; otherwise, create a new author.”
+	author, created = Author.objects.update_or_create(
+	    name="John",
+	    defaults={"name": "John Doe"}
+	)
+
+
+“Safely update an entry while preventing other users or processes from modifying it at the same time.”
+	with transaction.atomic():
+	    entry = Entry.objects.select_for_update().get(id=1)
+	    entry.title = "Locked Update"
+	    entry.save()
+
+
+“For a specific entry, show which blog it belongs to and list all of its authors.”
+	entry = Entry.objects.get(id=1)
+	entry.blog.name
+	entry.authors.all()
+
+
+“For a given blog, list all its entries, find the ones created in 2025, and show how many entries it has.”
+	blog = Blog.objects.get(id=1)
+	entries = blog.entry_set.all()
+	recent_entries = blog.entry_set.filter(created_at__year=2025)
+	entry_count = blog.entry_set.count()
+
+
+“For a specific author, list all their entries, filter entries related to Django, and count how many entries they’ve written.”
+	author = Author.objects.get(id=1)
+	entries = author.entry_set.all()
+	django_entries = author.entry_set.filter(title__icontains="django")
+	author.entry_set.count()
+
+
+“Retrieve entries along with their blog information efficiently.”
+	Entry.objects.select_related("blog")
+
+
+“Retrieve entries that belong to the ‘Tech Blog’, including blog details efficiently.”
+	Entry.objects.select_related("blog").filter(blog__name="Tech Blog")
+
+
+“Retrieve courses and preload all students enrolled in each course.”
+	Course.objects.prefetch_related("students")
+
+
+“Retrieve students and preload all courses each student is enrolled in.”
+	Student.objects.prefetch_related("courses")
+
+
+“Retrieve courses and preload only the students whose names start with ‘J’.”
+	Course.objects.prefetch_related(
+	    Prefetch("students", queryset=Student.objects.filter(name__startswith="J"))
+	)
+
+
+“Retrieve entries with their blog (single relation) and all associated authors (multiple relations) efficiently.”
+	Entry.objects.select_related("blog").prefetch_related("authors")
+
+
+“Loop through entries and display their authors without triggering extra database queries.”
+	entries = Entry.objects.prefetch_related("authors")
+	for e in entries:
+	    print(list(e.authors.all()))
+
+
+“Loop through blogs and display their entries efficiently.”
+	blogs = Blog.objects.prefetch_related("entry_set")
+	for blog in blogs:
+	    print(blog.entry_set.all())
+
+
+“Retrieve blogs and preload only their entries created in 2025.”
+	blogs = Blog.objects.prefetch_related(
+	    Prefetch(
+	        "entry_set",
+	        queryset=Entry.objects.filter(created_at__year=2025)
+	    )
+	)
+
+
+“What is the total amount of all orders combined?”
+	Order.objects.aggregate(total=Sum("amount"))
+
+
+“What is the total quantity of items ordered across all orders?”
+	Order.objects.aggregate(total_qty=Sum("quantity"))
+
+
+“How much has John spent in total?”
+	Order.objects.filter(customer="John").aggregate(john_total=Sum("amount"))
+
+
+“What is the average order amount?”
+	Order.objects.aggregate(avg_amount=Avg("amount"))
+
+
+“On average, how many items are included per order?”
+	Order.objects.aggregate(avg_qty=Avg("quantity"))
+
+
+“What is Anna’s average order value?”
+	Order.objects.filter(customer="Anna").aggregate(avg=Avg("amount"))
+
+
+“What is the highest order amount ever placed?”
+	Order.objects.aggregate(max_amount=Max("amount"))
+
+
+“When was the most recent order placed?”
+	Order.objects.aggregate(last_order=Max("created_at"))
+
+
+“What is the largest quantity Anna has ordered in a single order?”
+	Order.objects.filter(customer="Anna").aggregate(max_qty=Max("quantity"))
+
+
+“What is the smallest order amount ever recorded?”
+	Order.objects.aggregate(min_amount=Min("amount"))
+
+
+“When was the very first order placed?”
+	Order.objects.aggregate(first_order=Min("created_at"))
+
+
+“What is the smallest quantity John has ordered in a single order?”
+	Order.objects.filter(customer="John").aggregate(min_qty=Min("quantity"))
+
+
+“How many orders are there in total?”
+	Order.objects.aggregate(count=Count("id"))
+
+
+“How many orders has John placed?”
+	Order.objects.filter(customer="John").aggregate(total=Count("id"))
+
+
+“How many unique customers have placed orders?”
+	Order.objects.aggregate(unique_customers=Count("customer", distinct=True))
+
+
+“Give me the total sales, average order value, and highest order amount.”
+	Order.objects.aggregate(
+	    total=Sum("amount"),
+	    avg=Avg("amount"),
+	    highest=Max("amount")
+	)
+
+
+“What is the total number of items sold, and when was the first order placed?”
+	Order.objects.aggregate(
+	    total_qty=Sum("quantity"),
+	    min_date=Min("created_at")
+	)
+
+
+“How much has Anna spent in total, and how many orders has she placed?”
+	Order.objects.filter(customer="Anna").aggregate(
+	    total=Sum("amount"),
+	    orders=Count("id")
+	)
+
+
+“For each order, attach a calculated total price.”
+	Order.objects.annotate(total_price=Sum("amount"))
+
+
+“How many orders has each customer placed?”
+	Order.objects.values("customer").annotate(
+	    order_count=Count("id")
+	)
+
+
+“What is the average order value for each customer?”
+	Order.objects.values("customer").annotate(
+	    avg_amount=Avg("amount")
+	)
+
+
+“Which students are enrolled in three or more courses?”
+	Student.objects.annotate(num=Count("courses")).filter(num__gte=3)
+
+
+“For each product, label its stock status based on quantity.”
+	Product.objects.annotate(
+	    status=Case(
+	        When(stock__gt=20, then=Value("In Stock")),
+	        When(stock__gt=0, then=Value("Low Stock")),
+	        default=Value("Out of Stock")
+	    )
+	)
+
+
+“Apply a 10% discount to products priced above 500.”
+	Product.objects.update(
+	    price=Case(
+	        When(price__gt=500, then=F("price") * 0.9),
+	        default=F("price")
+	    )
+	)
+
+
+“Show out-of-stock products first, then sort everything by name.”
+	Product.objects.annotate(
+	    priority=Case(
+	        When(stock=0, then=Value(0)),
+	        default=Value(1),
+	        output_field=IntegerField(),
+	    )
+	).order_by("priority", "name")
+
+
+“Mark products that are low on stock.”
+	Product.objects.annotate(
+	    low_stock_flag=Case(
+	        When(stock__lte=5, then=Value(1)),
+	        default=Value(0),
+	        output_field=IntegerField()
+	    )
+	)
+
+
+“How many products are low-stock vs normal-stock?”
+	Product.objects.annotate(
+	    bucket=Case(
+	        When(stock__lte=5, then=Value("low")),
+	        default=Value("normal"),
+	    )
+	).values("bucket").annotate(count=Count("id"))
+
+
+“Which products have sold more than their current stock?”
+	Product.objects.filter(stock__lt=F("sold"))
+
+
+“Which products are either low on stock or cheap?”
+	Product.objects.filter(
+	    Q(stock__lt=10) | Q(price__lt=100)
+	)
+
+
+“Which cheap products are either almost out of stock or part of a promotion?”
+	Product.objects.filter(
+	    Q(price__lt=100) & (Q(stock__lt=5) | Q(name__icontains="promo"))
+	)
+
+
+“Show all products except Apple and Banana.”
+	Product.objects.filter(~Q(name__in=["Apple", "Banana"]))
+
+
+“Find products that mention ‘phone’ in the name or description.”
+	Product.objects.filter(
+	    Q(name__icontains="phone") | Q(description__icontains="phone")
+	)
+
+
+“Update this specific record without loading it into memory.”
+	Entry.objects.filter(id=5).update(
+	    title="New",
+	    updated_at="2025-01-01"
+	)
+
+
+“Increase stock by 10 for all products.”
+	Product.objects.update(stock=F("stock") + 10)
+
+
+“Reduce stock based on how many items were sold.”
+	Product.objects.update(stock=F("stock") - F("sold"))
+
+
+“Apply a 10% discount across all products.”
+	Product.objects.update(price=F("price") * 0.9)
+
+
+“Mark all current stock as sold.”
+	Product.objects.update(sold=F("stock"))
+
+
+“Can we quickly find a blog by its name?”
+“Blog names are frequently searched or filtered, so lookups must be fast.”
+	class Blog(models.Model):
+	    name = models.CharField(max_length=200, db_index=True)
+
+
+“Show entries written by a specific author, ordered or filtered by date.”
+	class Entry(models.Model):
+	    author = models.ForeignKey("Author", on_delete=models.CASCADE)
+	    created_at = models.DateTimeField()
+
+	    class Meta:
+	        index_together = [
+	            ("author", "created_at"),
+	        ]
+
+		# modern preferred
+		class Meta:
+		    indexes = [
+		        models.Index(fields=["author", "created_at"])
+		    ]
+
+
+“Each email address uniquely identifies a single author.”
+“Is this email already registered?”
+	class Author(models.Model):
+	    email = models.EmailField(unique=True)
+
+
+“How should entries be listed when no explicit sorting is requested?”
+“Group entries by blog, then alphabetize them.”
+	class Entry(models.Model):
+	    blog = models.ForeignKey("Blog", on_delete=models.CASCADE)
+	    title = models.CharField(max_length=100)
+
+	    class Meta:
+	        ordering = ["blog__name", "title"]
+
+
+“An author cannot publish two entries with the same title.”
+	class Entry(models.Model):
+	    title = models.CharField(max_length=100)
+	    author = models.ForeignKey("Author", on_delete=models.CASCADE)
+
+	    class Meta:
+	        unique_together = ("title", "author")
+
+	# modern preferred
+	class Meta:
+	    constraints = [
+	        models.UniqueConstraint(fields=["title", "author"], name="unique_author_title")
+	    ]
+
+
+“What entries did this author create, and when?”
+	class Entry(models.Model):
+	    author = models.ForeignKey("Author", on_delete=models.CASCADE)
+	    created_at = models.DateTimeField()
+
+	    class Meta:
+	        index_together = [
+	            ("author", "created_at"),
+	        ]
+
+	# modern preferred
+	class Meta:
+	    indexes = [
+	        models.Index(fields=["author", "created_at"])
+	    ]
+
+
+
+“Which entries are publicly visible?”
+“Which entries are considered popular?”
+	class EntryManager(models.Manager):
+	    def published(self):
+	        return self.filter(published=True)
+
+	    def popular(self):
+	        return self.filter(likes__gte=100)
+
+	Attached as:
+
+	objects = EntryManager()
+
+	Entry.objects.published()
+	Entry.objects.popular()
+
+
+
+“QuerySet style”
+
+	class EntryQuerySet(models.QuerySet):
+	    def published(self):
+	        return self.filter(published=True)
+
+	    def popular(self):
+	        return self.filter(likes__gte=100)
+
+	class EntryManager(models.Manager):
+	    def get_queryset(self):
+	        return EntryQuerySet(self.model, using=self._db)
+
+	class Entry(models.Model):
+	    ...
+	    objects = EntryManager()
+
+	Entry.objects.published().popular().order_by("-created_at")
+
+
+“Show me a list of authors, but I only care about their names.”
+	authors = Author.objects.only("name")
+
+
+“Show entry titles with their publish dates — nothing else.”
+	entries = Entry.objects.only("title", "created_at")
+
+
+“Show each entry title with its blog name.”
+	entries = Entry.objects.select_related("blog").only(
+	    "title", "blog__name"
+	)
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+“Show all blogs with the number of entries published this year”
+	blogs = Blog.objects.annotate(
+	    entries_this_year=Count(
+	        "entry",
+	        filter=Q(entry__created_at__year=2025)
+	    )
+	)
+
+
+“List all buildings and preload their inspections from 2025 only”
+	buildings = Building.objects.prefetch_related(
+	    Prefetch(
+	        "inspection_set",
+	        queryset=Inspection.objects.filter(created_at__year=2025)
+	    )
+	)
+
+
+“Find buildings that have more than 5 reported damages”
+	buildings = Building.objects.annotate(
+	    damage_count=Count("inspection__damages")
+	).filter(
+	    damage_count__gt=5
+	)
+
+
+“Return total inspection cost per building”
+	costs = Inspection.objects.values(
+	    "building_id"
+	).annotate(
+	    total_cost=Sum("cost")
+	)
+
+
+“Fetch all entries and their blog in the most efficient way”
+	entries = Entry.objects.select_related("blog")
+
+
+“Fetch all blogs and their entries efficiently”
+	blogs = Blog.objects.prefetch_related("entry_set")
+
+
+“Show products with a computed stock status”
+	products = Product.objects.annotate(
+	    stock_status=Case(
+	        When(stock__gt=20, then=Value("In Stock")),
+	        When(stock__gt=0, then=Value("Low Stock")),
+	        default=Value("Out of Stock"),
+	        output_field=CharField()
+	    )
+	)
+
+
+“Find customers whose total order amount exceeds 10,000”
+	customers = Order.objects.values(
+	    "customer"
+	).annotate(
+	    total_spent=Sum("amount")
+	).filter(
+	    total_spent__gt=10000
+	)
+
+
+“Fetch courses with only students whose name starts with J”
+	courses = Course.objects.prefetch_related(
+	    Prefetch(
+	        "students",
+	        queryset=Student.objects.filter(name__startswith="J")
+	    )
+	)
+
+
+“Lock an inspection record while updating its status”
+	with transaction.atomic():
+	    inspection = Inspection.objects.select_for_update().get(id=1)
+	    inspection.status = "reviewed"
+	    inspection.save()
+
+
+“Show all blogs with the number of entries they have”
+	blogs = Blog.objects.annotate(
+	    entry_count=Count("entry")
+	)
+	# Each blog now has an extra attribute:
+	# blog.entry_count
+
+
+“Show only blogs that have more than 5 entries”
+	blogs = Blog.objects.annotate(
+	    entry_count=Count("entry")
+	).filter(entry_count__gt=5)
+
+
+“Get total sales amount for customer John”
+	result = Order.objects.filter(
+	    customer="John"
+	).aggregate(
+	    total_sales=Sum("amount")
+	)
+
+
+“List customers with how many orders they placed”
+	orders = Order.objects.values(
+	    "customer"
+	).annotate(
+	    order_count=Count("id")
+	)
+	# Result looks like:
+	# [{"customer": "John", "order_count": 3}, ...]
+
+
+
+“Show all entries and their blog name efficiently”
+	entries = Entry.objects.select_related("blog")
+	for entry in entries:
+	    print(entry.blog.name)  # NO extra query
+
+
+“Show all blogs and their entries from 2025 only”
+	blogs = Blog.objects.prefetch_related(
+	    Prefetch(
+	        "entry_set",
+	        queryset=Entry.objects.filter(created_at__year=2025)
+	    )
+	)
+	for blog in blogs:
+	    for entry in blog.entry_set.all():
+	        print(entry.title)
+
+
+“Show products and mark stock status (In / Low / Out)”
+	products = Product.objects.annotate(
+	    stock_status=Case(
+	        When(stock__gt=20, then=Value("In Stock")),
+	        When(stock__gt=0, then=Value("Low Stock")),
+	        default=Value("Out of Stock"),
+	        output_field=CharField()
+	    )
+	)
+	# product.stock_status is now usable
+
+
+“Find products where sold quantity exceeds stock”
+	products = Product.objects.filter(
+	    sold__gt=F("stock")
+	)
+
+
+“Show authors with their published entry count”
+	authors = Author.objects.annotate(
+	    published_count=Count(
+	        "entry",
+	        filter=Q(entry__published=True)
+	    )
+	)
+
+
+“Get blogs with entries AND authors efficiently”
+	blogs = Blog.objects.prefetch_related(
+	    Prefetch(
+	        "entry_set",
+	        queryset=Entry.objects.select_related("blog").prefetch_related("authors")
+	    )
+	)
