@@ -1,0 +1,113 @@
+1. What is the difference between select_related and prefetch_related?
+    ✅ Answer
+
+    select_related performs a SQL JOIN and is used for ForeignKey / OneToOne relationships.
+
+    prefetch_related performs separate queries and joins data in Python, used for ManyToMany or reverse ForeignKey relationships.
+
+    Example
+    Entry.objects.select_related("blog")        # FK
+    Entry.objects.prefetch_related("authors")   # M2M
+
+2. When would you use annotate() instead of aggregate()?
+    ✅ Answer
+
+    Use annotate() when you want a computed value per row/object.
+
+    Use aggregate() when you want one final summary value.
+
+    Example
+    Blog.objects.annotate(entry_count=Count("entry"))   # per blog
+    Blog.objects.aggregate(total=Count("id"))           # global
+
+3. What causes the N+1 query problem in Django?
+    ✅ Answer
+
+    The N+1 problem happens when:
+
+    One query fetches a list of objects
+
+    Each object then triggers another query when accessing related data
+
+    Example
+    entries = Entry.objects.all()
+    for e in entries:
+        print(e.blog.name)  # ❌ N+1
+
+    Fix
+    Entry.objects.select_related("blog")
+
+4. What is the purpose of Q objects?
+    ✅ Answer
+
+    Q objects allow complex queries using AND, OR, and NOT logic.
+
+    Example
+    Product.objects.filter(
+        Q(stock__lt=10) | Q(price__lt=100)
+    )
+
+5. What does F() do in Django ORM?
+    ✅ Answer
+
+    F() allows database-level field comparisons or updates without loading objects into Python.
+
+    Example
+    Product.objects.filter(stock__lt=F("sold"))
+    Product.objects.update(stock=F("stock") - 1)
+
+6. What is transaction.atomic() used for?
+    ✅ Answer
+
+    It ensures that all database operations inside the block succeed or fail together (ACID).
+
+    Example
+    with transaction.atomic():
+        order.save()
+        payment.save()
+
+
+    If one fails → everything rolls back.
+
+7. What is the difference between get() and filter()?
+    ✅ Answer
+
+    get() returns exactly one object and raises an error if 0 or >1 results exist.
+
+    filter() returns a QuerySet (can be empty).
+
+8. What happens if you call save() inside a loop?
+    ✅ Answer
+
+    It causes multiple database writes, which is slow.
+
+    Better approach
+    Model.objects.bulk_update(objects, ["field"])
+
+9. What is clean() vs save() in models?
+    ✅ Answer
+
+    clean() is used for validation
+
+    save() persists data
+
+    clean() is not automatically called unless invoked explicitly or via forms.
+
+10. What is the difference between null=True and blank=True?
+    ✅ Answer
+
+    null=True → database-level (stores NULL)
+
+    blank=True → form-level (allows empty input)
+
+11. What is a QuerySet?
+
+    A lazy database query that is only executed when evaluated.
+
+12. What does values() return?
+
+    A list of dictionaries instead of model instances.
+
+13. Why is Django ORM considered lazy?
+
+    Queries are not executed until results are accessed.

@@ -1,0 +1,159 @@
+1. Create a basic DRF serializer
+    ❓ Question
+        Create a serializer for a Product model with name and price.
+
+    ✅ Answer
+        from rest_framework import serializers
+
+        class ProductSerializer(serializers.ModelSerializer):
+            class Meta:
+                model = Product
+                fields = ["id", "name", "price"]
+
+
+2. Create an API view that returns JSON list
+    ❓ Question
+        Return all products as a JSON response.
+
+    ✅ Answer
+        from rest_framework.decorators import api_view
+        from rest_framework.response import Response
+
+        @api_view(["GET"])
+        def product_list(request):
+            products = Product.objects.all()
+            serializer = ProductSerializer(products, many=True)
+            return Response(serializer.data)
+
+
+3. Handle POST request to create an object
+    ❓ Question
+        Create an API endpoint to add a new product.
+
+    ✅ Answer
+        @api_view(["POST"])
+        def create_product(request):
+            serializer = ProductSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=201)
+            return Response(serializer.errors, status=400)
+
+4. Use APIView instead of function-based view
+    ❓ Question
+        Rewrite a GET/POST product API using APIView.
+
+    ✅ Answer
+        from rest_framework.views import APIView
+
+        class ProductView(APIView):
+            def get(self, request):
+                products = Product.objects.all()
+                serializer = ProductSerializer(products, many=True)
+                return Response(serializer.data)
+
+            def post(self, request):
+                serializer = ProductSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=201)
+                return Response(serializer.errors, status=400)
+
+
+5. Retrieve a single object by ID
+    ❓ Question
+        Return a single product by ID or 404.
+
+    ✅ Answer
+        from django.shortcuts import get_object_or_404
+
+        @api_view(["GET"])
+        def product_detail(request, pk):
+            product = get_object_or_404(Product, pk=pk)
+            serializer = ProductSerializer(product)
+            return Response(serializer.data)
+
+
+6. Update an object via PUT
+    ❓ Question
+        Update a product’s price.
+
+    ✅ Answer
+        @api_view(["PUT"])
+        def update_product(request, pk):
+            product = get_object_or_404(Product, pk=pk)
+            serializer = ProductSerializer(product, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=400)
+
+
+7. Partial update via PATCH
+    ❓ Question
+        Allow partial updates.
+
+    ✅ Answer
+        serializer = ProductSerializer(
+            product,
+            data=request.data,
+            partial=True
+        )
+
+
+8. Delete an object via API
+    ❓ Question
+        Delete a product via API.
+
+    ✅ Answer
+        @api_view(["DELETE"])
+        def delete_product(request, pk):
+            product = get_object_or_404(Product, pk=pk)
+            product.delete()
+            return Response(status=204)
+
+
+9. Use ViewSets for CRUD
+    ❓ Question
+        Create a ViewSet for Product.
+
+    ✅ Answer
+        from rest_framework.viewsets import ModelViewSet
+
+        class ProductViewSet(ModelViewSet):
+            queryset = Product.objects.all()
+            serializer_class = ProductSerializer
+
+
+10. Register ViewSet with router
+    ❓ Question
+        Expose the Product API using a router.
+
+    ✅ Answer
+        from rest_framework.routers import DefaultRouter
+
+        router = DefaultRouter()
+        router.register("products", ProductViewSet)
+
+        urlpatterns = router.urls
+
+
+11. Add authentication to an API
+    ❓ Question
+        Restrict API access to authenticated users.
+
+    ✅ Answer
+        from rest_framework.permissions import IsAuthenticated
+
+        class ProductViewSet(ModelViewSet):
+            permission_classes = [IsAuthenticated]
+
+
+12. Return proper HTTP status codes
+    ❓ Question
+        Return correct status code on creation.
+
+    ✅ Answer
+        from rest_framework import status
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -1,0 +1,1370 @@
+1. Create a Django model with validation
+    ❓ Question
+        Create a Product model with:
+        name (required)
+        price (must be positive)
+        created_at (auto)
+
+    ✅ Answer
+        from django.db import models
+        from django.core.exceptions import ValidationError
+
+        class Product(models.Model):
+            name = models.CharField(max_length=100)
+            price = models.DecimalField(max_digits=10, decimal_places=2)
+            created_at = models.DateTimeField(auto_now_add=True)
+
+            def clean(self):
+                if self.price <= 0:
+                    raise ValidationError("Price must be positive")
+
+
+2. Create a ModelForm with custom validation
+    ❓ Question
+        Create a form for Product that ensures price is greater than 100.
+
+    ✅ Answer
+        from django import forms
+
+        class ProductForm(forms.ModelForm):
+            class Meta:
+                model = Product
+                fields = ["name", "price"]
+
+            def clean_price(self):
+                price = self.cleaned_data["price"]
+                if price <= 100:
+                    raise forms.ValidationError("Price must be greater than 100")
+                return price
+
+
+3. Function-based view to handle GET and POST
+    ❓ Question
+        Create a view that displays a form and saves a product.
+
+    ✅ Answer
+        from django.shortcuts import render, redirect
+
+        def create_product(request):
+            if request.method == "POST":
+                form = ProductForm(request.POST)
+                if form.is_valid():
+                    form.save()
+                    return redirect("success")
+            else:
+                form = ProductForm()
+
+            return render(request, "product_form.html", {"form": form})
+
+
+4. Class-based CreateView
+    ❓ Question
+        Create a CBV that allows creating products.
+
+    ✅ Answer
+        from django.views.generic import CreateView
+
+        class ProductCreateView(CreateView):
+            model = Product
+            fields = ["name", "price"]
+            success_url = "/success/"
+
+
+5. Update a model instance safely
+    ❓ Question
+        Write a view that updates the price of a product.
+
+    ✅ Answer
+        from django.shortcuts import get_object_or_404
+
+        def update_price(request, pk):
+            product = get_object_or_404(Product, pk=pk)
+            product.price += 10
+            product.save()
+
+
+6. Delete a model instance
+    ❓ Question
+        Create a view that deletes a product.
+
+    ✅ Answer
+        def delete_product(request, pk):
+            product = get_object_or_404(Product, pk=pk)
+            product.delete()
+
+
+7. Simple REST-style JSON response
+    ❓ Question
+        Return all products as JSON.
+
+    ✅ Answer
+        from django.http import JsonResponse
+
+        def product_list(request):
+            data = list(Product.objects.values("id", "name", "price"))
+            return JsonResponse(data, safe=False)
+
+
+8. Custom model manager
+    ❓ Question
+        Add a manager that returns only expensive products.
+
+    ✅ Answer
+        class ProductManager(models.Manager):
+            def expensive(self):
+                return self.filter(price__gt=1000)
+
+        class Product(models.Model):
+            name = models.CharField(max_length=100)
+            price = models.DecimalField(max_digits=10, decimal_places=2)
+
+            objects = ProductManager()
+
+
+9. Protect a view with login requirement
+    ❓ Question
+        Restrict access to logged-in users.
+
+    ✅ Answer
+        from django.contrib.auth.decorators import login_required
+
+        @login_required
+        def dashboard(request):
+            return render(request, "dashboard.html")
+
+
+10. Handle form errors properly
+    ❓ Question
+        Show form validation errors in a template.
+
+    ✅ Answer
+        <form method="post">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          {{ form.name.errors }}
+          {{ form.price.errors }}
+          {{ form.as_p }}
+          <button type="submit">Save</button>
+        </form>
+
+
+11. Custom model save logic
+    ❓ Question
+        Automatically generate a slug from a title when saving a model.
+
+    ✅ Answer
+        from django.utils.text import slugify
+
+        class Article(models.Model):
+            title = models.CharField(max_length=200)
+            slug = models.SlugField(unique=True, blank=True)
+
+            def save(self, *args, **kwargs):
+                if not self.slug:
+                    self.slug = slugify(self.title)
+                super().save(*args, **kwargs)
+
+
+12. Model-level unique validation error
+    ❓ Question
+        Ensure a user cannot create two articles with the same title.
+
+    ✅ Answer
+        class Article(models.Model):
+            title = models.CharField(max_length=200)
+            author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+            class Meta:
+                constraints = [
+                    models.UniqueConstraint(
+                        fields=["title", "author"],
+                        name="unique_article_per_author"
+                    )
+                ]
+
+
+13. Pagination in a function-based view
+    ❓ Question
+        Paginate a list of products (10 per page).
+
+    ✅ Answer
+        from django.core.paginator import Paginator
+
+        def product_list(request):
+            products = Product.objects.all()
+            paginator = Paginator(products, 10)
+
+            page = request.GET.get("page")
+            page_obj = paginator.get_page(page)
+
+            return render(request, "products.html", {"page_obj": page_obj})
+
+        ---
+
+        <h1>Product List</h1>
+        <ul>
+            {% for product in page_obj %}
+                <li>
+                    <strong>{{ product.name }}</strong> - ${{ product.price }}<br>
+                    {{ product.description }}
+                </li>
+            {% empty %}
+                <li>No products found.</li>
+            {% endfor %}
+        </ul>
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </div>            
+
+
+14. Handle file upload
+    ❓ Question
+        Allow users to upload a profile picture.
+
+    ✅ Answer
+        class Profile(models.Model):
+            image = models.ImageField(upload_to="profiles/")
+
+        class ProfileForm(forms.ModelForm):
+            class Meta:
+                model = Profile
+                fields = ["image"]
+
+        def upload_profile(request):
+            if request.method == "POST":
+                form = ProfileForm(request.POST, request.FILES)
+                if form.is_valid():
+                    form.save()
+
+
+15. Use signals to create related object
+    ❓ Question
+        Create a profile automatically when a user is created.
+
+    ✅ Answer
+        from django.db.models.signals import post_save
+        from django.dispatch import receiver
+
+        @receiver(post_save, sender=User)
+        def create_profile(sender, instance, created, **kwargs):
+            if created:
+                Profile.objects.create(user=instance)
+
+
+16. Django middleware logic
+    ❓ Question
+        Log request path and user for every request.
+
+    ✅ Answer
+        class RequestLogMiddleware:
+            def __init__(self, get_response):
+                self.get_response = get_response
+
+            def __call__(self, request):
+                user = request.user if request.user.is_authenticated else None
+                print(request.path, user)
+                return self.get_response(request)
+
+
+17. CSRF-exempt API view
+    ❓ Question
+        Create an endpoint that accepts POST requests without CSRF.
+
+    ✅ Answer
+        from django.views.decorators.csrf import csrf_exempt
+
+        @csrf_exempt
+        def webhook(request):
+            if request.method == "POST":
+                return JsonResponse({"status": "ok"})
+
+
+18. Custom permission check
+    ❓ Question
+        Restrict a view to staff users only.
+
+    ✅ Answer
+        from django.contrib.admin.views.decorators import staff_member_required
+
+        @staff_member_required
+        def admin_view(request):
+            return render(request, "admin.html")
+
+
+19. Query optimization inside a view
+    ❓ Question
+        Optimize a view that displays posts with authors.
+
+    ✅ Answer
+        def post_list(request):
+            posts = Post.objects.select_related("author")
+            return render(request, "posts.html", {"posts": posts})
+
+
+20. Custom template filter
+    ❓ Question
+        Create a template filter that uppercases text.
+
+    ✅ Answer
+        from django import template
+
+        register = template.Library()
+
+        @register.filter
+        def upper(value):
+            return value.upper()
+
+        ---
+
+        {% load custom_filters %}
+        {{ my_text|upper }}
+
+
+21. Create a simple ListView
+    ❓ Question
+        Create a CBV that lists all published blog posts.
+
+    ✅ Answer
+        from django.views.generic import ListView
+        from .models import Post
+
+        class PostListView(ListView):
+            model = Post
+            template_name = "post_list.html"
+            context_object_name = "posts"
+
+            def get_queryset(self):
+                return Post.objects.filter(published=True)
+
+
+22. DetailView by slug
+    ❓ Question
+        Display a single post using its slug instead of id.
+
+    ✅ Answer
+        from django.views.generic import DetailView
+        from .models import Post
+
+        class PostDetailView(DetailView):
+            model = Post
+            slug_field = "slug"
+            slug_url_kwarg = "slug"
+
+
+23. CreateView with logged-in user
+    ❓ Question
+        Create a post and automatically assign the logged-in user as the author.
+
+    ✅ Answer
+        from django.views.generic import CreateView
+        from django.contrib.auth.mixins import LoginRequiredMixin
+
+        class PostCreateView(LoginRequiredMixin, CreateView):
+            model = Post
+            fields = ["title", "content"]
+
+            def form_valid(self, form):
+                form.instance.author = self.request.user
+                return super().form_valid(form)
+
+
+24. UpdateView with permission check
+    ❓ Question
+        Only allow the post author to update their post.
+
+    ✅ Answer
+        from django.core.exceptions import PermissionDenied
+        from django.views.generic import UpdateView
+
+        class PostUpdateView(UpdateView):
+            model = Post
+            fields = ["title", "content"]
+
+            def dispatch(self, request, *args, **kwargs):
+                post = self.get_object()
+                if post.author != request.user:
+                    raise PermissionDenied
+                return super().dispatch(request, *args, **kwargs)
+
+
+26. DeleteView with redirect
+    ❓ Question
+        Delete a post and redirect to /posts/.
+
+    ✅ Answer
+        from django.views.generic import DeleteView
+        from django.urls import reverse_lazy
+
+        class PostDeleteView(DeleteView):
+            model = Post
+            success_url = reverse_lazy("post-list")
+
+
+27. ListView with pagination
+    ❓ Question
+        Paginate posts with 5 items per page.
+
+    ✅ Answer
+        class PostListView(ListView):
+            model = Post
+            paginate_by = 5
+
+
+28. Filter ListView using query params
+    ❓ Question
+        Filter posts by ?q=django.
+
+    ✅ Answer
+        class PostSearchView(ListView):
+            model = Post
+
+            def get_queryset(self):
+                q = self.request.GET.get("q", "")
+                return Post.objects.filter(title__icontains=q)
+
+
+29. CBV using custom context data
+    ❓ Question
+        Add total post count to the template context.
+
+    ✅ Answer
+        class PostListView(ListView):
+            model = Post
+
+            def get_context_data(self, **kwargs):
+                context = super().get_context_data(**kwargs)
+                context["total_posts"] = Post.objects.count()
+                return context
+
+
+30. FormView example (no model)
+    ❓ Question
+        Handle a contact form submission.
+
+    ✅ Answer
+        from django.views.generic import FormView
+        from .forms import ContactForm
+
+        class ContactView(FormView):
+            template_name = "contact.html"
+            form_class = ContactForm
+            success_url = "/thanks/"
+
+            def form_valid(self, form):
+                form.send_email()
+                return super().form_valid(form)
+
+
+31. CBV with multiple mixins
+    ❓ Question
+        Require login and staff status.
+
+    ✅ Answer
+        from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+        class StaffOnlyView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+            model = User
+
+            def test_func(self):
+                return self.request.user.is_staff
+
+
+32. Override get_object()
+    ❓ Question
+        Retrieve object based on URL parameter username.
+
+    ✅ Answer
+        class ProfileView(DetailView):
+            model = User
+
+            def get_object(self):
+                return User.objects.get(username=self.kwargs["username"])
+
+
+33. API-style CBV (JSON response)
+    ❓ Question
+        Return all posts as JSON using a CBV.
+
+    ✅ Answer
+        from django.views import View
+        from django.http import JsonResponse
+
+        class PostAPIView(View):
+            def get(self, request):
+                data = list(Post.objects.values("id", "title"))
+                return JsonResponse(data, safe=False)
+
+
+34. Basic Django Form
+    ❓ Question
+        Create a form with name and email.
+
+    ✅ Answer
+        from django import forms
+
+        class ContactForm(forms.Form):
+            name = forms.CharField(max_length=100)
+            email = forms.EmailField()
+
+
+35. Validate a field manually
+    ❓ Question
+        Ensure name is at least 3 characters long.
+
+    ✅ Answer
+        class ContactForm(forms.Form):
+            name = forms.CharField(max_length=100)
+
+            def clean_name(self):
+                name = self.cleaned_data["name"]
+                if len(name) < 3:
+                    raise forms.ValidationError("Name too short")
+                return name
+
+
+36. Cross-field validation
+    ❓ Question
+        Ensure password and confirm_password match.
+
+    ✅ Answer
+        class RegisterForm(forms.Form):
+            password = forms.CharField(widget=forms.PasswordInput)
+            confirm_password = forms.CharField(widget=forms.PasswordInput)
+
+            def clean(self):
+                cleaned = super().clean()
+                if cleaned.get("password") != cleaned.get("confirm_password"):
+                    raise forms.ValidationError("Passwords do not match")
+                return cleaned
+
+
+37. ModelForm basic usage
+    ❓ Question
+        Create a ModelForm for Post.
+
+    ✅ Answer
+        from django.forms import ModelForm
+        from .models import Post
+
+        class PostForm(ModelForm):
+            class Meta:
+                model = Post
+                fields = ["title", "content"]
+
+
+38. Exclude fields in ModelForm
+    ❓ Question
+        Exclude author from form.
+
+    ✅ Answer
+        class PostForm(ModelForm):
+            class Meta:
+                model = Post
+                exclude = ["author"]
+
+
+39. Add custom validation in ModelForm
+    ❓ Question
+        Prevent duplicate post titles.
+
+    ✅ Answer
+        class PostForm(ModelForm):
+            class Meta:
+                model = Post
+                fields = ["title", "content"]
+
+            def clean_title(self):
+                title = self.cleaned_data["title"]
+                if Post.objects.filter(title=title).exists():
+                    raise forms.ValidationError("Title already exists")
+                return title
+
+
+40. Override form save()
+    ❓ Question
+        Assign logged-in user during save.
+
+    ✅ Answer
+        class PostForm(ModelForm):
+            class Meta:
+                model = Post
+                fields = ["title", "content"]
+
+            def save(self, commit=True):
+                post = super().save(commit=False)
+                post.author = self.initial["user"]
+                if commit:
+                    post.save()
+                return post
+
+
+        Usage in view:
+
+        form = PostForm(request.POST, initial={"user": request.user})
+
+
+41. Use widgets
+    ❓ Question
+        Render textarea for content.
+
+    ✅ Answer
+        class PostForm(ModelForm):
+            class Meta:
+                model = Post
+                fields = ["title", "content"]
+                widgets = {
+                    "content": forms.Textarea(attrs={"rows": 5}),
+                }
+
+
+42. Disable a field
+    ❓ Question
+        Make email read-only.
+
+    ✅ Answer
+        class ProfileForm(forms.Form):
+            email = forms.EmailField(disabled=True)
+
+
+43. Dynamic field choices
+    ❓ Question
+        Load category choices dynamically.
+
+    ✅ Answer
+        class PostForm(forms.Form):
+            category = forms.ChoiceField()
+
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                self.fields["category"].choices = [
+                    (c.id, c.name) for c in Category.objects.all()
+                ]
+
+
+44. File upload form
+    ❓ Question
+        Upload an image.
+
+    ✅ Answer
+        class UploadForm(forms.Form):
+            image = forms.ImageField()
+
+
+        View:
+
+        form = UploadForm(request.POST, request.FILES)
+
+
+45. Clean vs clean_field (exam trick)
+    ❓ Question
+        What’s the difference?
+
+    ✅ Answer
+
+        clean_field() → validates one field
+
+        clean() → validates multiple fields together
+
+        Example:
+
+        def clean_price(self):
+            ...
+
+        def clean(self):
+            ...
+
+
+46. Form with initial data
+    ❓ Question
+        Pre-populate a form.
+
+    ✅ Answer
+        form = ContactForm(initial={"name": "John"})
+
+
+47. Custom error messages
+    ❓ Question
+        Add custom required message.
+
+    ✅ Answer
+        class ContactForm(forms.Form):
+            name = forms.CharField(
+                error_messages={"required": "Name is required"}
+            )
+
+
+48. Form validation flow (theory question)
+    ❓ Question
+        What is Django form validation order?
+
+    ✅ Answer
+        Field validators
+
+        clean_<field>()
+
+        clean()
+
+
+49. Default value if variable is missing
+    ❓ Question
+        Show "Guest" if username is empty.
+
+    ✅ Answer
+        {{ username|default:"Guest" }}
+
+
+50. Conditional rendering
+    ❓ Question
+        Show admin menu if user is staff.
+
+    ✅ Answer
+        {% if user.is_staff %}
+            <a href="/admin/">Admin</a>
+        {% endif %}
+
+
+51. Access related objects
+    ❓ Question
+        Display blog name from entry.
+
+    ✅ Answer
+        {{ entry.blog.name }}
+
+
+52. Loop counter
+    ❓ Question
+        Show index of items.
+
+    ✅ Answer
+        {% for post in posts %}
+            {{ forloop.counter }}. {{ post.title }}
+        {% endfor %}
+
+
+53. If / elif / else
+    ❓ Question
+        Display status based on likes.
+
+    ✅ Answer
+        {% if post.likes > 100 %}
+            Popular
+        {% elif post.likes > 50 %}
+            Trending
+        {% else %}
+            Normal
+        {% endif %}
+
+
+54. Template inheritance (base)
+    ❓ Question
+        Create base template.
+
+    ✅ Answer
+        <!-- base.html -->
+        <html>
+        <body>
+            {% block content %}{% endblock %}
+        </body>
+        </html>
+
+
+55. Extend base template
+    ❓ Question
+        Extend base template.
+
+    ✅ Answer
+        {% extends "base.html" %}
+        {% block content %}
+            <h1>Home</h1>
+        {% endblock %}
+
+
+56. Include another template
+    ❓ Question
+        Include header.
+
+    ✅ Answer
+        {% include "header.html" %}
+
+
+57. Template filters
+    ❓ Question
+        Uppercase title.
+
+    ✅ Answer
+        {{ post.title|upper }}
+
+
+58. Date formatting
+    ❓ Question
+        Format date.
+
+    ✅ Answer
+        {{ post.created_at|date:"Y-m-d" }}
+
+
+59. Safe HTML rendering
+    ❓ Question
+        Render HTML content safely.
+
+    ✅ Answer
+        {{ post.content|safe }}
+        ⚠️ Exam note: Only safe if trusted content.
+
+
+60. CSRF token
+    ❓ Question
+        Protect form.
+
+    ✅ Answer
+        <form method="post">
+            {% csrf_token %}
+        </form>
+
+
+61. URL reversing
+    ❓ Question
+        Generate URL using name.
+
+    ✅ Answer
+        <a href="{% url 'post_detail' post.id %}">View</a>
+
+
+62. Static files
+    ❓ Question
+        Load CSS.
+
+    ✅ Answer
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
+63. Custom template filter
+    ❓ Question
+        Create a custom filter.
+
+    ✅ Answer
+        # templatetags/custom_filters.py
+        from django import template
+
+        register = template.Library()
+
+        @register.filter
+        def multiply(val, arg):
+            return val * arg
+
+
+        Usage:
+
+        {{ price|multiply:2 }}
+
+
+64. With block (optimize access)
+    ❓ Question
+        Assign variable inside template.
+
+    ✅ Answer
+        {% with total=cart.items.count %}
+            Items: {{ total }}
+        {% endwith %}
+
+
+65. Render a Django form safely
+    ❓ Question
+        Render a form with CSRF protection.
+
+    ✅ Answer
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+
+
+66. Render form fields manually
+    ❓ Question
+        Render username and show errors.
+
+    ✅ Answer
+        <form method="post">
+            {% csrf_token %}
+
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {{ form.username.errors }}
+
+            <button type="submit">Save</button>
+        </form>
+
+
+67. Display non-field errors
+    ❓ Question
+        Show cross-field validation errors.
+
+    ✅ Answer
+        {{ form.non_field_errors }}
+
+
+68. Preserve form input after error
+    ❓ Question
+        How does Django keep input values?
+
+    ✅ Answer
+        Automatically handled if you render:
+        {{ form }}
+
+        ⚠️ Exam trick:
+        Do NOT manually override value unless needed.
+
+
+69. Display help text
+    ❓ Question
+        Show help text below field.
+
+    ✅ Answer
+        {{ form.email.help_text }}
+
+
+70. Add CSS class to field (template side)
+    ❓ Question
+        Add class to input.
+
+    ✅ Answer
+        {{ form.username|add_class:"form-control" }}
+
+
+    ⚠️ Trick: Requires django-widget-tweaks
+    Correct exam alternative:
+
+    {{ form.username }}
+
+    (Styling should be done via widgets.)
+
+
+71. Loop over form fields
+    ❓ Question
+        Render all fields manually.
+
+    ✅ Answer
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div>
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+        </form>
+
+
+72. Display paginated objects
+    ❓ Question
+        Loop over paginated posts.
+
+    ✅ Answer
+        {% for post in page_obj %}
+            {{ post.title }}
+        {% endfor %}
+
+
+73. Show current page info
+    ❓ Question
+        Display current page number.
+
+    ✅ Answer
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+
+
+74. Next & previous page links
+    ❓ Question
+        Add next and previous links.
+
+    ✅ Answer
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+
+
+75. Page number links
+    ❓ Question
+        Render numbered pagination.
+
+    ✅ Answer
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <strong>{{ num }}</strong>
+            {% else %}
+                <a href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+
+76. Preserve search query in pagination
+    ❓ Question
+        Keep search term across pages.
+
+    ✅ Answer
+        <a href="?q={{ request.GET.q }}&page={{ num }}">{{ num }}</a>
+
+    ⚠️ Common exam trap: forgetting query params.
+
+
+77. Show empty pagination result
+    ❓ Question
+        Handle no results.
+
+    ✅ Answer
+        {% if page_obj %}
+            {% for item in page_obj %}
+                {{ item }}
+            {% empty %}
+                No results found
+            {% endfor %}
+        {% endif %}
+
+
+78. Search form with paginated results
+    ❓ Question
+        Template for search + results.
+
+    ✅ Answer
+        <form method="get">
+            <input type="text" name="q" value="{{ request.GET.q }}">
+            <button type="submit">Search</button>
+        </form>
+
+        {% for post in page_obj %}
+            {{ post.title }}
+        {% endfor %}
+
+
+79. Basic ModelSerializer
+    Question: 
+        Create a serializer for Book model with fields id, title, author.
+
+    Answer:
+
+        from rest_framework import serializers
+        from .models import Book
+
+        class BookSerializer(serializers.ModelSerializer):
+            class Meta:
+                model = Book
+                fields = ['id', 'title', 'author']
+
+
+80. Serializer with all fields
+    Question: 
+        Include all fields in serializer.
+
+    Answer:
+
+        class BookSerializer(serializers.ModelSerializer):
+            class Meta:
+                model = Book
+                fields = '__all__'
+
+
+81. Nested serializer
+    Question: 
+        Serialize Entry with nested Blog name.
+
+    Answer:
+        class BlogSerializer(serializers.ModelSerializer):
+            class Meta:
+                model = Blog
+                fields = ['id', 'name']
+
+        class EntrySerializer(serializers.ModelSerializer):
+            blog = BlogSerializer(read_only=True)
+            
+            class Meta:
+                model = Entry
+                fields = ['id', 'title', 'blog']
+
+
+82.  Read-only & write-only fields
+    Question: 
+        Make created_at read-only and password write-only.
+
+    Answer:
+        class UserSerializer(serializers.ModelSerializer):
+            class Meta:
+                model = User
+                fields = ['username', 'email', 'password', 'created_at']
+                read_only_fields = ['created_at']
+                extra_kwargs = {'password': {'write_only': True}}
+
+
+83. Custom validation
+    Question: 
+        Validate that title is not empty.
+
+    Answer:
+        class EntrySerializer(serializers.ModelSerializer):
+            class Meta:
+                model = Entry
+                fields = ['id', 'title', 'content']
+
+            def validate_title(self, value):
+                if not value.strip():
+                    raise serializers.ValidationError("Title cannot be empty")
+                return value
+
+
+84. SerializerMethodField
+    Question: 
+        Add author_name computed field.
+
+    Answer:
+        class EntrySerializer(serializers.ModelSerializer):
+            author_name = serializers.SerializerMethodField()
+            
+            class Meta:
+                model = Entry
+                fields = ['id', 'title', 'author_name']
+
+            def get_author_name(self, obj):
+                return obj.author.name
+
+
+85. Overriding create() method
+    Question: 
+        Hash password when creating user.
+
+    Answer:
+        class UserSerializer(serializers.ModelSerializer):
+            class Meta:
+                model = User
+                fields = ['username', 'password']
+                extra_kwargs = {'password': {'write_only': True}}
+
+            def create(self, validated_data):
+                user = User(
+                    username=validated_data['username']
+                )
+                user.set_password(validated_data['password'])
+                user.save()
+                return user
+
+
+B. API Views
+86.  Function-based API view
+    Question: 
+        Return all books as JSON.
+
+    Answer:
+        from rest_framework.decorators import api_view
+        from rest_framework.response import Response
+        from .models import Book
+        from .serializers import BookSerializer
+
+        @api_view(['GET'])
+        def book_list(request):
+            books = Book.objects.all()
+            serializer = BookSerializer(books, many=True)
+            return Response(serializer.data)
+
+
+87.  APIView class-based view
+    Question: 
+        List all entries.
+
+    Answer:
+        from rest_framework.views import APIView
+        from rest_framework.response import Response
+        from .models import Entry
+        from .serializers import EntrySerializer
+
+        class EntryListAPIView(APIView):
+            def get(self, request):
+                entries = Entry.objects.all()
+                serializer = EntrySerializer(entries, many=True)
+                return Response(serializer.data)
+
+
+88.  APIView with POST
+    Question: 
+        Create an entry.
+
+    Answer:
+        class EntryListCreateAPIView(APIView):
+            def get(self, request):
+                entries = Entry.objects.all()
+                serializer = EntrySerializer(entries, many=True)
+                return Response(serializer.data)
+
+            def post(self, request):
+                serializer = EntrySerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=201)
+                return Response(serializer.errors, status=400)
+
+
+89.  Generic ListAPIView
+    Question: 
+        DRF generic view for listing books.
+
+    Answer:
+        from rest_framework.generics import ListAPIView
+        from .models import Book
+        from .serializers import BookSerializer
+
+        class BookListAPIView(ListAPIView):
+            queryset = Book.objects.all()
+            serializer_class = BookSerializer
+
+
+90. Generic ListCreateAPIView
+    Question: 
+        List and create entries.
+
+    Answer:
+        from rest_framework.generics import ListCreateAPIView
+        from .models import Entry
+        from .serializers import EntrySerializer
+
+        class EntryListCreateAPIView(ListCreateAPIView):
+            queryset = Entry.objects.all()
+            serializer_class = EntrySerializer
+
+
+91. RetrieveUpdateDestroyAPIView
+    Question: 
+        Handle GET, PUT, DELETE for a single entry.
+
+    Answer:
+        from rest_framework.generics import RetrieveUpdateDestroyAPIView
+        from .models import Entry
+        from .serializers import EntrySerializer
+
+        class EntryDetailAPIView(RetrieveUpdateDestroyAPIView):
+            queryset = Entry.objects.all()
+            serializer_class = EntrySerializer
+
+
+92. Filtering with generics
+    Question: 
+        List books by author_id query param.
+
+    Answer:
+        class BookListAPIView(ListAPIView):
+            serializer_class = BookSerializer
+
+            def get_queryset(self):
+                author_id = self.request.GET.get('author_id')
+                qs = Book.objects.all()
+                if author_id:
+                    qs = qs.filter(author_id=author_id)
+                return qs
+
+
+93. Pagination in API
+    Question: 
+        Add pagination to a generic view.
+
+    Answer:
+        from rest_framework.pagination import PageNumberPagination
+
+        class StandardResultsSetPagination(PageNumberPagination):
+            page_size = 10
+            page_size_query_param = 'page_size'
+            max_page_size = 100
+
+        class BookListAPIView(ListAPIView):
+            queryset = Book.objects.all()
+            serializer_class = BookSerializer
+            pagination_class = StandardResultsSetPagination
+
+
+94. Filtering + Searching
+    Question: 
+        Search books by title.
+
+    Answer:
+        from rest_framework import filters
+
+        class BookListAPIView(ListAPIView):
+            queryset = Book.objects.all()
+            serializer_class = BookSerializer
+            filter_backends = [filters.SearchFilter]
+            search_fields = ['title', 'author__name']
+
+
+95. Nested writable serializer
+    Question: 
+        Create Entry with nested Blog.
+
+    Answer:
+        class BlogSerializer(serializers.ModelSerializer):
+            class Meta:
+                model = Blog
+                fields = ['id', 'name']
+
+        class EntrySerializer(serializers.ModelSerializer):
+            blog = BlogSerializer()
+            
+            class Meta:
+                model = Entry
+                fields = ['id', 'title', 'blog']
+
+            def create(self, validated_data):
+                blog_data = validated_data.pop('blog')
+                blog, _ = Blog.objects.get_or_create(**blog_data)
+                entry = Entry.objects.create(blog=blog, **validated_data)
+                return entry
+
+
+96. ModelViewSet
+    Question: 
+        Provide CRUD endpoints automatically.
+
+    Answer:
+        from rest_framework.viewsets import ModelViewSet
+        from .models import Book
+        from .serializers import BookSerializer
+
+        class BookViewSet(ModelViewSet):
+            queryset = Book.objects.all()
+            serializer_class = BookSerializer
+
+
+        Then in urls.py:
+
+        from rest_framework.routers import DefaultRouter
+        from .views import BookViewSet
+
+        router = DefaultRouter()
+        router.register(r'books', BookViewSet)
+        urlpatterns = router.urls
+
+
+97. Custom action in ViewSet
+    Question: 
+        Add /books/popular/ endpoint.
+
+    Answer:
+        from rest_framework.decorators import action
+        from rest_framework.response import Response
+
+        class BookViewSet(ModelViewSet):
+            queryset = Book.objects.all()
+            serializer_class = BookSerializer
+
+            @action(detail=False)
+            def popular(self, request):
+                popular_books = self.queryset.filter(rating__gte=4.5)
+                serializer = self.get_serializer(popular_books, many=True)
+                return Response(serializer.data)
