@@ -371,12 +371,401 @@ def hello():
 ----------------------------------------------------------------
 
 
+20. sort characters in string 
+
+s = 'BBDdcdC'
+# target output BBDDDCC
+s = s.upper()
+s = ''.join(sorted(s))
 
 
 
 
 
 
+
+----------------------------------------------------------------
+
+21. Two Sum (Very Common)
+
+Question
+Given a list of integers and a target, return indices of two numbers that add up to the target.
+
+nums = [2, 7, 11, 15]
+target = 9
+
+Answer
+
+def two_sum(nums, target):
+    seen = {}
+    for i, num in enumerate(nums):
+        diff = target - num
+        if diff in seen:
+            return [seen[diff], i]
+        seen[num] = i
+
+Tests
+
+print(two_sum([2, 7, 11, 15], 9))  # [0, 1]
+
+Concept: Hash table, time complexity
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+22. Find Second Largest Number
+
+Question
+Find the second largest number in a list.
+
+Answer
+
+def second_largest(nums):
+    unique = list(set(nums))
+    unique.sort(reverse=True)
+    return unique[1]
+
+
+Concept: Sorting, edge cases
+
+
+
+
+----------------------------------------------------------------
+
+
+
+23. Check Anagram
+
+Question
+Check if two strings are anagrams.
+
+"listen" and "silent"
+
+Answer
+
+from collections import Counter
+
+def is_anagram(a, b):
+    return Counter(a) == Counter(b)
+
+
+Concept: Hashing, string processing
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+24. Merge Two Sorted Lists
+
+Question
+Merge two sorted lists into one sorted list.
+
+Answer
+
+def merge_sorted(a, b):
+    result = []
+    i = j = 0
+
+    while i < len(a) and j < len(b):
+        if a[i] < b[j]:
+            result.append(a[i])
+            i += 1
+        else:
+            result.append(b[j])
+            j += 1
+
+    return result + a[i:] + b[j:]
+
+Concept: Two-pointer technique
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+25. Count Vowels in a String
+
+Question
+
+"interview"
+
+Answer
+
+def count_vowels(s):
+    vowels = "aeiou"
+    return sum(1 for ch in s.lower() if ch in vowels)
+
+Concept: Iteration, string ops
+
+
+
+----------------------------------------------------------------
+
+
+
+
+26. Find Duplicates in List
+
+Question
+Return duplicate elements from a list.
+
+Answer
+
+def find_duplicates(nums):
+    seen = set()
+    dupes = set()
+
+    for n in nums:
+        if n in seen:
+            dupes.add(n)
+        else:
+            seen.add(n)
+
+    return list(dupes)
+
+Concept: Set logic
+
+
+
+----------------------------------------------------------------
+
+
+
+
+27. Flatten a Nested List
+
+Question
+
+[1, [2, [3, 4]], 5]
+
+
+Answer
+
+def flatten(lst):
+    result = []
+    for item in lst:
+        if isinstance(item, list):
+            result.extend(flatten(item))
+        else:
+            result.append(item)
+    return result
+
+Concept: Recursion
+
+
+
+
+----------------------------------------------------------------
+
+
+28. Find Longest Word in a Sentence
+
+Question
+
+"Python is really powerful"
+
+
+Answer
+
+def longest_word(sentence):
+    words = sentence.split()
+    return max(words, key=len)
+
+
+Concept: Built-ins, strings
+
+
+
+----------------------------------------------------------------
+
+
+
+29. Rotate List (Right Rotation)
+
+Question
+Rotate list by k steps.
+
+nums = [1, 2, 3, 4, 5]
+k = 2
+
+
+Answer
+
+def rotate(nums, k):
+    k %= len(nums)
+    return nums[-k:] + nums[:-k]
+
+
+Concept: Slicing
+
+
+----------------------------------------------------------------
+
+
+
+
+
+
+30. Check Substring Without Using in
+
+Question
+Check if "cat" exists in "concatenate".
+
+Answer
+
+def contains(s, sub):
+    for i in range(len(s) - len(sub) + 1):
+        if s[i:i+len(sub)] == sub:
+            return True
+    return False
+
+
+Concept: Sliding window
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+31. Count Words in a Sentence
+
+Answer
+
+def word_count(sentence):
+    counts = {}
+    for word in sentence.split():
+        counts[word] = counts.get(word, 0) + 1
+    return counts
+
+
+Concept: Dictionary usage
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+32. Find Intersection of Two Lists
+
+Answer
+
+def intersection(a, b):
+    return list(set(a) & set(b))
+
+
+Concept: Set operations
+
+
+
+
+----------------------------------------------------------------
+
+
+
+33. Check if List Is Sorted
+
+Answer
+
+def is_sorted(nums):
+    return nums == sorted(nums)
+
+
+Concept: Comparison, sorting
+
+
+
+----------------------------------------------------------------
+
+
+
+34. Implement Simple Cache (LRU-like)
+
+Question
+Store last n items.
+
+Answer
+
+from collections import OrderedDict
+
+class SimpleCache:
+    def __init__(self, size):
+        self.size = size
+        self.cache = OrderedDict()
+
+    def put(self, key, value):
+        if key in self.cache:
+            self.cache.pop(key)
+        elif len(self.cache) >= self.size:
+            self.cache.popitem(last=False)
+        self.cache[key] = value
+
+
+Concept: OrderedDict, caching
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+35. Generator: Even Numbers
+
+Answer
+
+def even_numbers(n):
+    for i in range(n):
+        if i % 2 == 0:
+            yield i
+
+
+Concept: Generators
+
+
+
+
+
+----------------------------------------------------------------
+
+
+
+
+
+
+36. Read File Line by Line (Memory Safe)
+
+Answer
+
+def read_file(path):
+    with open(path) as f:
+        for line in f:
+            print(line.strip())
+
+
+Concept: File handling
 
 
 ----------------------------------------------------------------
@@ -392,97 +781,6 @@ def hello():
 
 
 ----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
-
-
-
-
-----------------------------------------------------------------
-
 
 
 
