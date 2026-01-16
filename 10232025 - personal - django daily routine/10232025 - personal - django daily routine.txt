@@ -174,8 +174,18 @@ done
 
 django
 	forms
+	template
+	exceptions
+		ValidationError
+	core
+		Paginator
+		exceptions
+			PermissionDenied
 django.contrib
 	admin
+		views
+			decorators
+				staff_members_required
 	messages
 django.contrib.auth.models
 	User
@@ -193,24 +203,36 @@ django.contrib.auth.decorator
 django.contrib.auth.mixins 
 	LoginRequiredMixin
 	UserPassesTestMixin
+django.views.decorators.csrf
+	csrf_exempt
+django.dispatch
+	receiver
 django.db
 	models
+		Count, Max, Avg, F, Q, Min
+		signals
+			post_save
 django.urls
 	path
 	include
 	reverse_lazy
 django.http
 	HttpResponse
+	JsonResponse
 django.shortcuts
 	render
 	redirect
 	reverse
 	HttpResponseRedirect
 	get_object_or_404
-django.utils.timezone
-	now
+django.utils
+	timezone
+		now
+	text
+		slugify
 datetime
 	date
+	timedelta
 app.views
 	post_list
 	PostListView
@@ -221,9 +243,29 @@ app.models
 app.forms
 	PostForm
 django.views.generic
-	ListView, DetailView, CreateView, UpdateView, DeleteView
+	ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 rest_framework 
-	serializers, generics, permissions
+	serializers, permissions
+	generics
+		ListAPIView
+		ListCreateAPIView
+		RetrieveUpdateDestroyAPIVIew
+	pagination
+		PageNumberPagination
+	decorators
+		api_view
+		action
+	views
+		APIView
+	response
+		Response
+	filters
+	viewsets
+		ModelViewSet
+	routers
+		DefaultRouter
+	response
+		Response
 rest_framework.exceptions
 	PermissionDenied
 app.serializers
@@ -1286,4 +1328,5 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
