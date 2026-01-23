@@ -277,6 +277,51 @@ app.serializers
 
 
 
+
+CharField
+TextField
+SlugField
+ForeignKey
+ManyToManyField
+OneToOneField
+DateTimeField
+DateField
+PositiveIntegerField
+DecimalField
+BooleanField
+ImageField
+FileField
+URLField
+EmailField
+JSONField
+
+
+
+models.CharField(max_length=100, unique=True)
+models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_DRAFT)
+models.TextField()
+models.SlugField(max_length=220, unique=True, blank=True)
+models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
+models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="posts")
+models.ManyToManyField(Tag, blank=True, related_name="posts")
+models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+models.DateTimeField(auto_now=True)
+models.DateField(null=True, blank=True)
+models.PositiveIntegerField(default=0)
+models.DecimalField(max_digits=6, decimal_places=2, default=0.00, help_text="Consultation rate in USD")
+models.BooleanField(default=True, help_text="Uncheck to hide this category globally.")
+models.ImageField(upload_to='posts/banners/', blank=True, null=True)
+models.FileField(upload_to='resumes/', blank=True, null=True)
+models.URLField(blank=True, help_text="Link to personal portfolio")
+models.EmailField(blank=True, verbose_name="Contact Email")
+models.JSONField(default=dict, blank=True, help_text="JSON format: {'keywords': [], 'description': ''}")
+
+
+
+
+
+
+
 --- core/urls.py ---------------------------------------------------------------
 
 from django.contrib import admin
@@ -1328,5 +1373,6 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
 
