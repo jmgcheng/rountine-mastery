@@ -322,6 +322,68 @@ models.JSONField(default=dict, blank=True, help_text="JSON format: {'keywords': 
 
 
 
+
+
+- model - skeleton ----------------------------------------
+class Module(models.Model):
+    field = ...
+    field2 = ...
+
+    class Meta:
+        ordering = ["-field"]
+        indexes = [
+            models.Index(fields=["field", "field2"]),
+        ]
+
+    def clean(self):
+        if self.field < 0:
+            raise ValidationError("field cannot be negative")
+
+    def save(self, *args, **kwargs):
+    	# do some stuffs
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    @property
+    def custom_property(self):
+    	# do some stuffs
+        return self.field > 10
+
+
+- form - skeleton ------------------------------------------
+class ModuleForm(forms.ModelForm):
+    class Meta:
+        model = Module
+        fields = [...]
+        widgets = {...}
+
+    def clean_field(self):
+        value = self.cleaned_data["field"]
+        # do some stuffs
+        return value
+
+	def clean(self):
+		cleaned_data = super().clean()
+		field = cleaned_data.get('field')
+		# do some stuffs
+		return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        # do some stuffs
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
+
+
+
+
+
+
+
+
+
 --- core/urls.py ---------------------------------------------------------------
 
 from django.contrib import admin
@@ -1373,6 +1435,7 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
 
 
