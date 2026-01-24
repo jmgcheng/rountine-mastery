@@ -402,12 +402,25 @@ class Module(models.Model):
             models.Index(fields=["field", "field2"]),
         ]
 
-    def clean(self):
-        if self.field < 0:
-            raise ValidationError("field cannot be negative")
+	def clean(self):
+	    errors = {}
+
+	    if self.field1 < 0:
+	        errors["field1"] = "Must be >= 0"
+	
+	    if self.field2 < 0:
+	        errors["field2"] = "Must be >= 0"
+	
+	    if self.field3 < 0:
+	        errors["field3"] = "Must be >= 0"
+
+		# other logical trappings
+
+	    if errors:
+	        raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
-    	# do some stuffs
+    	# do all validation in 'def clean'
         self.full_clean()
         super().save(*args, **kwargs)
 
@@ -1502,6 +1515,7 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
 
 
