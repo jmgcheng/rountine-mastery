@@ -419,8 +419,11 @@ class Module(models.Model):
 	    if errors:
 	        raise ValidationError(errors)
 
-    def save(self, *args, **kwargs):
-    	# do all validation in 'def clean'
+    def save(self, *args, **kwargs):  # save() = prepares, clean() = complains
+		# do all auto logic here like self.slug = slugify(self.title)
+        if not self.slug:
+            self.slug = generate_unique_slug(self, "title")
+    	# next, self.full_clean() because do all validation in 'def clean'
         self.full_clean()
         super().save(*args, **kwargs)
 
@@ -428,6 +431,20 @@ class Module(models.Model):
     def custom_property(self):
     	# do some stuffs
         return self.field > 10
+
+	def generate_unique_slug(instance, field, slug_field="slug"):
+	    base_slug = slugify(getattr(instance, field))
+	    slug = base_slug
+	    model = instance.__class__
+	    counter = 1
+	
+	    while model.objects.filter(**{slug_field: slug}).exclude(pk=instance.pk).exists():
+	        slug = f"{base_slug}-{counter}"
+	        counter += 1
+	
+	    return slug
+
+
 
 
 - form - skeleton ------------------------------------------
@@ -1515,6 +1532,7 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
 
 
