@@ -666,6 +666,76 @@ class EntrySerializer(serializers.ModelSerializer):
 
 
 
+-----
+
+
+
+
+class ModuleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Module
+        fields = [
+            "id",
+            "field1",
+            "field2",
+            "created_at",
+        ]
+        read_only_fields = ["id", "created_at"]
+
+    def validate_field1(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Must be >= 0")
+        return value
+
+    def validate(self, attrs):
+        field1 = attrs.get("field1")
+        field2 = attrs.get("field2")
+
+        if field1 and field2 and field1 > field2:
+            raise serializers.ValidationError(
+                "field1 cannot be greater than field2"
+            )
+
+        return attrs
+
+    def create(self, validated_data):
+        instance = Module(**validated_data)
+        instance.save()  # calls model.full_clean()
+        return instance
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()  # calls model.full_clean()
+        return instance
+
+
+-----
+
+
+class ModuleSerializer(serializers.ModelSerializer):
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True,
+        required=False,
+    )
+
+    class Meta:
+        model = Module
+        fields = ["id", "field", "tags"]
+
+    def create(self, validated_data):
+        tags = validated_data.pop("tags", [])
+        instance = Module.objects.create(**validated_data)
+        instance.tags.set(tags)
+        return instance
+
+
+
+
+
+
+
 
 
 
@@ -1532,6 +1602,7 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
 
 
