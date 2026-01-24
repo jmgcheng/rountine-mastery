@@ -321,6 +321,73 @@ models.JSONField(default=dict, blank=True, help_text="JSON format: {'keywords': 
 
 
 
+forms.TextInput
+forms.CheckboxInput
+forms.Select
+forms.CheckboxSelectMultiple
+forms.Textarea
+forms.URLInput
+forms.EmailInput
+forms.ClearableFileInput
+forms.DateInput
+forms.NumberInput
+
+
+
+widgets = {
+    "name": forms.TextInput(attrs={
+        "class": "form-control",
+        "placeholder": "Category name",
+    }),
+    "slug": forms.TextInput(attrs={
+        "class": "form-control",
+        "placeholder": "auto-generated-if-empty",
+    }),
+    "is_active": forms.CheckboxInput(attrs={
+        "class": "form-check-input",
+    }),
+}
+widgets = {
+    "category": forms.Select(attrs={
+        "class": "form-select",
+    }),
+    "tags": forms.CheckboxSelectMultiple(),
+    "content": forms.Textarea(attrs={
+        "class": "form-control",
+        "rows": 8,
+        "placeholder": "Write your article here...",
+    }),
+    "seo_metadata": forms.Textarea(attrs={
+        "class": "form-control",
+        "rows": 4,
+        "placeholder": "{'keywords': [], 'description': ''}",
+    })
+}
+widgets = {
+    "website": forms.URLInput(attrs={
+        "class": "form-control",
+        "placeholder": "https://yourportfolio.com",
+    }),
+    "public_email": forms.EmailInput(attrs={
+        "class": "form-control",
+        "placeholder": "contact@email.com",
+    }),
+    "resume": forms.ClearableFileInput(attrs={
+        "class": "form-control",
+    }),
+    "birthday": forms.DateInput(attrs={
+        "class": "form-control",
+        "type": "date",
+    }),
+    "hourly_rate": forms.NumberInput(attrs={
+        "class": "form-control",
+        "step": "0.01",
+        "min": "0",
+    }),
+}
+
+
+
 
 
 
@@ -1435,6 +1502,7 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
 
 
