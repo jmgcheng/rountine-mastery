@@ -175,12 +175,12 @@ done
 django
 	forms
 	template
-	exceptions
-		ValidationError
 	core
 		Paginator
 		exceptions
 			PermissionDenied
+	exceptions
+		ValidationError
 django.contrib
 	admin
 		views
@@ -203,10 +203,6 @@ django.contrib.auth.decorator
 django.contrib.auth.mixins 
 	LoginRequiredMixin
 	UserPassesTestMixin
-django.views.decorators.csrf
-	csrf_exempt
-django.dispatch
-	receiver
 django.db
 	models
 		Count, Max, Avg, F, Q, Min
@@ -231,6 +227,7 @@ django.utils
 	text
 		slugify
 datetime
+	datetime
 	date
 	timedelta
 app.views
@@ -242,23 +239,30 @@ app.models
 	Post
 app.forms
 	PostForm
+app.serializers
+	EntrySerializer
 django.views.generic
 	ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
+django.views.decorators.csrf
+	csrf_exempt
+django.dispatch
+	receiver
 rest_framework 
-	serializers, permissions
+	serializers
+	permissions
+	exceptions
+		PermissionDenied
+	decorators
+		api_view
+		action
 	generics
 		ListAPIView
 		ListCreateAPIView
 		RetrieveUpdateDestroyAPIVIew
 	pagination
 		PageNumberPagination
-	decorators
-		api_view
-		action
 	views
 		APIView
-	response
-		Response
 	filters
 	viewsets
 		ModelViewSet
@@ -266,10 +270,6 @@ rest_framework
 		DefaultRouter
 	response
 		Response
-rest_framework.exceptions
-	PermissionDenied
-app.serializers
-	EntrySerializer
 
 
 
@@ -278,22 +278,22 @@ app.serializers
 
 
 
-CharField
-TextField
-SlugField
-ForeignKey
-ManyToManyField
-OneToOneField
-DateTimeField
-DateField
-PositiveIntegerField
-DecimalField
-BooleanField
-ImageField
-FileField
-URLField
-EmailField
-JSONField
+models.CharField
+models.TextField
+models.SlugField
+models.ForeignKey
+models.ManyToManyField
+models.OneToOneField
+models.DateTimeField
+models.DateField
+models.PositiveIntegerField
+models.DecimalField
+models.BooleanField
+models.ImageField
+models.FileField
+models.URLField
+models.EmailField
+models.JSONField
 
 
 
@@ -1631,6 +1631,7 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
 
 
