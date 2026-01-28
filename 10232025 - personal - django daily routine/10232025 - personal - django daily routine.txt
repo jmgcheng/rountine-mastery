@@ -187,6 +187,10 @@ django.contrib
 			decorators
 				staff_members_required
 	messages
+django.contrib.auth
+	authenticate
+	login
+	logout
 django.contrib.auth.models
 	User
 	AbstractUser
@@ -1637,6 +1641,7 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
 
 
