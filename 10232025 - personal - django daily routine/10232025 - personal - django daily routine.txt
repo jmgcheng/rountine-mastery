@@ -179,6 +179,8 @@ django
 		Paginator
 		exceptions
 			PermissionDenied
+		validators
+			MinValueValidator, MaxValueValidator
 	exceptions
 		ValidationError
 django.contrib
@@ -1641,6 +1643,7 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
 
 
