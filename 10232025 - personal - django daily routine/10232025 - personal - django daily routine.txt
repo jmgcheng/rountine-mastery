@@ -336,6 +336,7 @@ forms.EmailInput
 forms.ClearableFileInput
 forms.DateInput
 forms.NumberInput
+forms.PasswordInput
 
 
 
@@ -1636,6 +1637,7 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
 
 
