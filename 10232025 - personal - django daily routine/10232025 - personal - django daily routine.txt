@@ -189,6 +189,11 @@ django.contrib
 	messages
 django.contrib.auth.models
 	User
+	AbstractUser
+	PermissionsMixin
+	BaseUserManager
+django.contrib.auth.base_user
+	AbstractBaseUser
 django.contrib.auth.forms
 	UserCreationForm
 django.contrib.auth.views
@@ -1631,6 +1636,7 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
 
 
