@@ -63,7 +63,10 @@
 
 
 “Find students who are enrolled in the course ‘Math 101’.”
-	Student.objects.filter(courses__title="Math 101")
+	Student.objects.filter(courses__name="Math 101")
+	#
+	math101 = Course.objects.get(name="Math 101")
+	enrolled_students = math101.students.all()	
 
 
 “Find entries created in the year 2024.”
@@ -123,7 +126,7 @@
 
 
 “Show all unique blogs that have entries.”
-	Entry.objects.values("blog").distinct()
+	Blog.objects.filter(entries__isnull=False).distinct()
 
 
 “Show all unique dates on which entries were created.”
