@@ -907,15 +907,22 @@
 “Find employees whose salary is higher than the average salary of their department.”
 	class Department(models.Model):
 	    name = models.CharField(max_length=100)
-
+	
 	class Employee(models.Model):
-	    department = models.ForeignKey(Department, on_delete=models.CASCADE)
-	    salary = models.DecimalField(max_digits=10, decimal_places=2)
+	    name = models.CharField(max_length=100)
+	    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='employees')
+	    salary = models.DecimalField(max_digits=10, decimal_places=2)   # or IntegerField
 
-	from django.db.models import Avg, F
-	employees = Employee.objects.annotate(
-	    dept_avg=Avg("department__employee__salary")
-	).filter(salary__gt=F("dept_avg"))
+	from django.db.models import OuterRef, Subquery, Avg
+	high_earners = Employee.objects.annotate(
+	    dept_avg_salary=Subquery(
+	        Employee.objects
+	            .filter(department=OuterRef('department'))
+	            .values('department')           # group by department
+	            .annotate(avg_sal=Avg('salary'))
+	            .values('avg_sal')[:1]          # return single value
+	    )
+	).filter(salary__gt=F('dept_avg_salary'))
 
 
 “Find users who have not logged in during the past 90 days.”
