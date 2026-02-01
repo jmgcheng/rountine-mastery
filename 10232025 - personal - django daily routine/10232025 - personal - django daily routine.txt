@@ -187,7 +187,7 @@ django.contrib
 	admin
 		views
 			decorators
-				staff_members_required
+				staff_member_required
 	messages
 django.contrib.auth
 	authenticate
@@ -1643,6 +1643,7 @@ MIDDLEWARE = [
 ---------------------------------------------
 ---------------------------------------------
 ---------------------------------------------
+
 
 
 
