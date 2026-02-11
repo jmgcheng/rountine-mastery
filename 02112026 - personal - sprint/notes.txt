@@ -1,0 +1,131 @@
+What Is A Sprint?
+	A sprint = short fixed time window to do work.
+
+	Your case:
+		1 sprint = 2 weeks
+	Inside those 2 weeks:
+	Team agrees:
+		“We will try to finish these tasks.”
+
+
+
+
+
+
+What Is A Ticket
+	A ticket = a unit of work.
+	ticket = Fix printer offline log bug
+
+
+
+
+
+
+
+
+Story Point (SP)
+	Story point != hours
+	SP = difficulty
+
+SP = How painful is this task?
+	1 = trivial
+	2 = small
+	3 = medium
+	5 = big
+	8 = very big
+	13 = huge
+
+
+eg
+Task A: change button color
+	A = 1 SP
+Task B: rewrite emulator logging
+	B = 8 SP
+Not because hours.
+Because complexity.
+
+
+
+
+
+
+Why
+	To estimate capacity.
+	eg
+		Team has 5 developers.
+		Each can handle:
+			10 SP per sprint
+		So team capacity:
+			50 SP
+			try not to exceed that.
+
+
+
+
+
+Sprint Cycle Step-by-Step
+
+1) Sprint Planning
+	Team looks at backlog.
+	They choose tickets until capacity is full.
+	eg
+		Ticket A = 5 SP
+		Ticket B = 3 SP
+		Ticket C = 2 SP
+		Total = 10 SP
+
+2) Daily Standup (5–10 minutes)
+	Each person says:
+		- What I did yesterday
+		- What I’ll do today
+		- Blockers
+	Nothing more.
+
+3) Work Happens
+	You code.
+
+4) Sprint Review (End of Sprint)
+	Show finished tickets.
+
+5) Sprint Retrospective
+	Discuss:
+		What went well
+		What didn’t
+		What to improve
+
+
+
+
+
+
+
+How To Estimate
+	Use this safe pattern:
+		“I think this is around 3 SP, but I’ll know better after I look at the code.”
+	Or:
+		“Let me inspect first before committing to SP.”
+
+
+
+
+What Happens If You Underestimate?
+	“It’s bigger than expected.”
+		Ticket gets adjusted.
+		No crime.
+		Only bad teams punish estimates.
+		Healthy teams adjust.
+
+
+
+
+Common Scrum Vocabulary (Mini Glossary)
+	Backlog – list of all tickets
+	Sprint – 2-week work period
+	Ticket / Story – task
+	Story Point (SP) – relative size
+	Standup – daily sync
+	Sprint Planning – choose tickets
+	Sprint Review – demo
+	Retro – improvement meeting
+	Velocity – how many SP team finishes per sprint
+	Blocker – something stopping you

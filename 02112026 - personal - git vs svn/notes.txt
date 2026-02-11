@@ -1,0 +1,333 @@
+--- GIT normal flow sample start -----------------------------------------------------------------------------------------
+- simple
+	> cd ~/Documents/Visual Studio Code/projName
+	> git pull origin main
+	> do your updates
+	> git add --all
+	> git commit -m "..."
+	> git push origin main
+
+
+
+
+
+
+- feature branching
+	- creating a new feature
+		- in local
+			- go to main branch
+				> git checkout main
+			- update your main branch
+				> git pull origin main
+			- create a new branch for your new feature
+				> git branch feature/new-feature-name
+				> git checkout feature/new-feature-name
+			- start coding and development for your project using runserver until your finish
+				> conda env list
+				> conda activate ...
+				> python manage.py runserver
+			- always update your branch
+				> git checkout main
+				> git pull origin main
+				> git checkout feature/new-feature-name
+				> git merge main
+			- test in docker environment for errors
+				> cd compose
+				> docker compose -f "backend-compose.yaml" build --no-cache
+				> docker compose -f "backend-compose.yaml" up
+				- check localhost
+				> d
+				> docker compose -f "backend-compose.yaml" down
+			- done testing in docker environment
+				> docker compose -f "backend-compose.yaml" down
+			- push your new feature in github
+				> git add --all
+				> git commit -m "comment about your push"
+				> git push origin feature/new-feature-name
+			- notify me for pull request for code review
+
+
+
+
+
+
+- from QA to Deploy (web-ops)
+	- in local
+		- update files
+			> git checkout main
+			> git fetch origin
+			> git checkout main
+			> git pull origin main
+			> git checkout dev
+			> git pull origin dev
+			> git checkout production
+			> git pull origin production
+		- get feature(teamates) latest files
+			> git checkout feature/new-feature-name
+			> git pull origin feature/new-feature-name
+		- compare feature(teamates) file in dev branch
+			> git checkout feature/new-feature-name
+			> git diff dev..feature/new-feature-name
+		- compare feature(teamates) file in main branch
+			> git checkout feature/new-feature-name
+			> git diff main..feature/new-feature-name
+		- check feature(teamates) project in runserver
+			> git checkout feature/new-feature-name
+			> conda env list
+			> conda activate ...
+			> python manage.py runserver
+		- check feature(teamates) project in docker environment
+			> git checkout feature/new-feature-name
+			> cd compose
+			> docker compose -f "backend-compose.yaml" build --no-cache
+			> docker compose -f "backend-compose.yaml" up
+			- check localhost
+			> d
+			> docker compose -f "backend-compose.yaml" down
+		- try merge new feature in dev branch and test
+			> git checkout dev
+			> git pull origin dev
+			> git merge feature/new-feature-name
+			- if conflict
+				> git merge --abort
+			> conda env list
+			> conda activate ...
+			> python manage.py runserver
+			> 
+			> cd compose
+			> docker compose -f "backend-compose.yaml" build --no-cache
+			> docker compose -f "backend-compose.yaml" up
+			- check localhost
+			> d
+			> docker compose -f "backend-compose.yaml" down
+		- update dev repo
+			> git checkout dev
+			> git pull origin dev
+			> git add --all
+			> git commit -m "..."
+			> git push origin dev
+		- try merge dev branch in main branch and test
+			> git checkout main
+			> git pull origin main
+			> git merge dev
+			- if conflict
+				> git merge --abort
+			> conda env list
+			> conda activate ...
+			> python manage.py runserver
+			> 
+			> cd compose
+			> docker compose -f "backend-compose.yaml" build --no-cache
+			> docker compose -f "backend-compose.yaml" up
+			- check localhost
+			> d
+			> docker compose -f "backend-compose.yaml" down
+		- update main repo
+			> git checkout main
+			> git pull origin main
+			> git add --all
+			> git commit -m "..."
+			> git push origin main
+		? trigger cicd
+			> git checkout production
+			> git pull origin production
+			> git merge main
+			- if conflict
+				> git merge --abort
+			> git push origin production
+			> check action
+				> https://github.com/jmgcheng/projName/actions
+		? manual deployment
+			> cd compose
+			> docker compose -f "backend-compose.yaml" build --no-cache
+			> docker compose -f "backend-compose.yaml" up
+			> docker compose -f "backend-compose.yaml" down
+			> docker login
+			> docker images	
+			? docker image tag 4fb69961aff9 jmgcheng/projName:backend-latest     # situational
+			? docker image rm jmgcheng/projName:backend-latest 					# situational
+			> docker push jmgcheng/projName:backend-latest
+			- ssh
+				> cd /var/www/web01
+				> ./deploy-switch.sh
+--- GIT normal flow sample end-- -----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Basic SVN Command Mapping
+| Git                 | SVN          |
+| ------------------- | ------------ |
+| git clone           | svn checkout |
+| git pull            | svn update   |
+| git status          | svn status   |
+| git add             | svn add      |
+| git commit          | svn commit   |
+| git log             | svn log      |
+| git diff            | svn diff     |
+| git checkout branch | svn switch   |
+| git branch          | svn copy     |
+
+
+
+
+
+Most SVN repos look like
+project/
+   trunk/
+   branches/
+   tags/
+
+
+
+
+
+
+Git Workflow pt1 → SVN Equivalent
+--- Git pt1 ---
+git pull origin main
+do changes
+git add --all
+git commit -m "..."
+git push origin main
+---------------
+--- SVN Version ---
+svn update
+(make changes)
+svn status
+svn add <new files if any>
+svn commit -m "..."
+-------------------
+
+
+
+
+
+Git Workflow pt2 (Feature Branching) → SVN Style
+--- GIT ---
+git checkout main
+git pull origin main
+git branch feature/new-feature
+git checkout feature/new-feature
+-----------
+--- SVN ---
+svn update
+svn copy ^/trunk ^/branches/feature-new-feature -m "Create feature branch"
+svn switch ^/branches/feature-new-feature
+-----------
+Work Normally
+(make changes)
+svn status
+svn add <files>
+svn commit -m "Work on feature"
+
+
+
+
+
+
+Keep Branch Updated With Trunk
+--- GIT ---
+git checkout main
+git pull
+git checkout feature
+git merge main
+-----------
+--- SVN ---
+svn switch ^/trunk
+svn update
+svn switch ^/branches/feature-new-feature
+svn merge ^/trunk
+svn commit -m "Merge trunk into feature branch"
+-----------
+When Feature Is Done → Merge Back To Trunk
+Equivalent of PR merge.
+svn switch ^/trunk
+svn update
+svn merge ^/branches/feature-new-feature
+svn commit -m "Merge feature-new-feature into trunk"
+
+
+
+
+
+
+
+Your Git pt3 (Dev → Main → Prod)
+- Most SVN shops do not use multiple long-lived branches like Git.
+- Typical pattern:
+	trunk = active development
+	tags = releases
+- Release Flow
+	trunk → tag → deployed
+
+
+
+
+
+
+Create Release Tag
+--- GIT ---
+git checkout production
+git merge main
+git push
+-----------
+--- SVN ---
+svn copy ^/trunk ^/tags/release-2026-02-11 -m "Create release tag"
+-----------
+
+
+
+
+
+
+Practical Daily Workflow
+--- SVN ---
+svn update
+(make fix)
+svn status
+svn commit -m "Fix printer log overflow"
+-----------
+
+
+
+
+
+Does SVN Have do Branching?
+Yes.
+	But culturally:
+		Git: branch by default
+		SVN: branch only when necessary
+Git → cheap copies
+SVN → expensive copies
+So:
+	Big feature → maybe branch
+	Risky refactor → maybe branch
+	Small bug fix → trunk
+Most daily work = trunk.
+
+
+
+
+
